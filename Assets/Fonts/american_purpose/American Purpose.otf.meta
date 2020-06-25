@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c9f4206e72c45b7218e7d4f506368a9a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: American Purpose
+  fontNames:
+  - American Purpose
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 667a22d519c0b70d9a9d6f4e4f51fae0, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
