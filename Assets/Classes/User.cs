@@ -16,7 +16,7 @@ public class User
     village = _village;
     serverId = _serverId;
     bounty = 0;
-    resources = new int[3] { 200, 300, 5 };
+    resources = new int[3] { 900, 900, 99 };
     pearl = 5;
   }
 
