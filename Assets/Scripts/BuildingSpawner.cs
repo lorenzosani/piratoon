@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,11 +8,38 @@ using System.Collections.Generic;
 public class BuildingSpawner : MonoBehaviour
 {
   ControllerScript controller;
+  Building currentlyBuilding = null;
+  Slider loadingSlider;
+  Text loadingText;
+
   public UIScript ui;
+  public GameObject loadingBar;
+
+  //*****************************************************************
+  // START and UPDATE methods
+  //*****************************************************************
 
   void Start()
   {
     controller = GetComponent<ControllerScript>();
+    loadingSlider = loadingBar.GetComponent<Slider>();
+    loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
+  }
+
+  void Update()
+  {
+    if (currentlyBuilding != null)
+    {
+      int totalTime = currentlyBuilding.getValue();
+      int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+      if (timeLeft == 0)
+      {
+        loadingBar.SetActive(false);
+        spawn(currentlyBuilding);
+      }
+      loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
+      loadingText.text = timeLeft > 60 ? Math.Floor((double)timeLeft / 60) + "m " + timeLeft % 60 + "s" : timeLeft + "s";
+    }
   }
 
   //*****************************************************************
@@ -19,6 +47,12 @@ public class BuildingSpawner : MonoBehaviour
   //*****************************************************************
   public void main(string buildingName)
   {
+    // Check if something is already been built
+    if (currentlyBuilding != null)
+    {
+      ui.showPopupMessage("There's already a building in construction! You can build only one at a time");
+      return;
+    }
     // Check if the building has already been built
     foreach (Building b in controller.getUser().getVillage().getBuildings())
     {
@@ -41,7 +75,7 @@ public class BuildingSpawner : MonoBehaviour
     // Add building's value to user's bounty
     controller.getUser().addBounty(building.getValue());
     // Spawn building
-    spawn(building);
+    startConstruction(building);
   }
 
   //*****************************************************************
@@ -61,13 +95,19 @@ public class BuildingSpawner : MonoBehaviour
     return (GameObject)Resources.Load("Prefabs/" + new CultureInfo("en-US", false).TextInfo.ToTitleCase(buildingName), typeof(GameObject));
   }
 
+  //This starts the construction of a building
+  void startConstruction(Building b)
+  {
+    currentlyBuilding = b;
+    loadingBar.transform.position = b.getPosition(); ;
+    loadingBar.SetActive(true);
+  }
+
   //This instantiates the building on the scene
   void spawn(Building b)
   {
-    if (b != null)
-    {
-      GameObject building = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
-    }
+    GameObject building = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
+    currentlyBuilding = null;
   }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,6 +12,7 @@ public class Building
   Vector3 position;
   int value;
   int[] cost;
+  DateTime completionTime;
 
   Dictionary<string, int> buildingsValue = new Dictionary<string, int>(){
     { "Inventor", 120 },
@@ -42,6 +44,7 @@ public class Building
     position = _position;
     value = buildingsValue[_name];
     cost = buildingsCost[_name];
+    completionTime = DateTime.UtcNow.AddSeconds(value * level);
   }
 
   public void increaseLevel()
@@ -77,5 +80,15 @@ public class Building
   public int[] getCost()
   {
     return cost;
+  }
+
+  public void setCompletionTime(DateTime t)
+  {
+    completionTime = t;
+  }
+
+  public DateTime getCompletionTime()
+  {
+    return completionTime;
   }
 }
