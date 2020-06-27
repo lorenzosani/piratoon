@@ -18,6 +18,10 @@ public class ControllerScript : MonoBehaviour
   }
 
   public void produceWood(){
-    user.increaseResource(0, 1);
+    user.increaseResource(0,1);
   } 
+
+  public void produceStone(){
+    user.increaseResource(1,1);
+  }
 }
