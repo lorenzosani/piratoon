@@ -16,4 +16,8 @@ public class ControllerScript : MonoBehaviour
   {
     return user;
   }
+
+  public void produceWood(){
+    user.increaseResource(0, 1);
+  } 
 }

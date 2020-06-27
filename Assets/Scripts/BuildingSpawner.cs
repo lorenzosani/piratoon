@@ -82,11 +82,19 @@ public class BuildingSpawner : MonoBehaviour
   // Helper methods
   //*****************************************************************
 
-  //This creates a new Building object for your building
-  Building createBuilding(string buildingName)
-  {
-    GameObject prefab = getPrefab(buildingName);
-    return new Building(buildingName, prefab.transform.position, prefab);
+  // Factory method that returns the correct building object
+  Building createBuilding(string name){
+    switch(name){
+      case "Inventor": return new Inventor();
+      case "Woodcutter": return new Woodcutter();
+      case "Stonecutter": return new Stonecutter();
+      case "Watchtower": return new Watchtower();
+      case "Headquarter": return new Headquarter();
+      case "Defence": return new Defence();
+      case "Shipyard": return new Shipyard();
+      case "Storage": return new Storage();
+      default: return null;
+    }
   }
 
   //This fetches the prefab of the building to be shown
@@ -103,11 +111,14 @@ public class BuildingSpawner : MonoBehaviour
     loadingBar.SetActive(true);
   }
 
-  //This instantiates the building on the scene
+  //This instantiates the building on the scene and implements its functionality
   void spawn(Building b)
   {
+    // Instantiate building on the scene
     GameObject building = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
     currentlyBuilding = null;
+    // Implement buildings functionality
+    b.startFunctionality(controller);
   }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price

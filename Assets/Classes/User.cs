@@ -45,6 +45,11 @@ public class User
     resources = r;
   }
 
+  public void increaseResource(int i, int n)
+  {
+    resources[i] = resources[i] + n;
+  }
+
   public int getPearl()
   {
     return pearl;
