@@ -9,6 +9,7 @@ public class User
   int bounty;
   int[] resources;
   int pearl;
+  int storage;
 
   public User(int _id, int _serverId, Village _village)
   {
@@ -16,8 +17,9 @@ public class User
     village = _village;
     serverId = _serverId;
     bounty = 0;
-    resources = new int[3] { 900, 900, 99 };
+    resources = new int[3] { 500, 500, 100 };
     pearl = 5;
+    storage = 500;
   }
 
   public int getId()
@@ -42,12 +44,14 @@ public class User
 
   public void setResources(int[] r)
   {
-    resources = r;
+    for(int i=0; i<r.Length; i++) {
+      resources[i] = (r[i] > storage) ? storage : r[i];
+    }
   }
 
   public void increaseResource(int i, int n)
   {
-    resources[i] = resources[i] + n;
+    resources[i] = (resources[i]+n > storage) ? storage : resources[i] + n;
   }
 
   public int getPearl()
@@ -63,5 +67,9 @@ public class User
   public void addBounty(int value)
   {
     bounty += value;
+  }
+
+  public void setStorage(int s){
+    storage = s;
   }
 }
