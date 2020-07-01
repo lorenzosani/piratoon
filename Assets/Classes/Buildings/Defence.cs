@@ -14,4 +14,8 @@ public class Defence : Building
     cost = new int[3] { 100, 300, 5 };
     completionTime = DateTime.UtcNow.AddSeconds(value * level);
   }
+
+  public override void startFunctionality(ControllerScript controller){
+    controller.getUser().getVillage().increaseStrength(140);
+  }
 }

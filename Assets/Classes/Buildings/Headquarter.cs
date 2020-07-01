@@ -11,7 +11,7 @@ public class Headquarter : Building
     name = "Headquarter";
     position = prefab.transform.position;
     value = 150;
-    cost = new int[3] { 400, 550, 25 };
+    cost = new int[3] { 200, 250, 10 };
     completionTime = DateTime.UtcNow.AddSeconds(value * level);
   }
 }
