@@ -45,10 +45,14 @@ public class Building
     return value * level;
   }
 
+  public int getFutureValue(){
+    return value * (level+1);
+  }
+
   public int[] getBaseCost(){
     return cost;
   }
-
+  
   public int[] getCost()
   {
     int[] c = new int[3] {cost[0]*(level+1), cost[1]*(level+1), cost[2]*(level+1)};

@@ -30,11 +30,15 @@ public class BuildingSpawner : MonoBehaviour
   {
     if (currentlyBuilding != null)
     {
-      int totalTime = currentlyBuilding.getValue();
+      int totalTime = currentlyBuilding.getFutureValue()/4;
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
       if (timeLeft == 0)
       {
         loadingBar.SetActive(false);
+        currentlyBuilding.increaseLevel();
+        // Add building's value to user's bounty
+        controller.getUser().addBounty(currentlyBuilding.getValue());
+        // Spawn the uilding on the scene
         spawn(currentlyBuilding);
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
@@ -47,7 +51,7 @@ public class BuildingSpawner : MonoBehaviour
   //*****************************************************************
   public void main(string buildingName)
   {
-    // Check if something is already been built
+    // Check if something is already being built
     if (currentlyBuilding != null)
     {
       ui.showPopupMessage("There's already a building in construction! You can build only one at a time");
@@ -72,8 +76,6 @@ public class BuildingSpawner : MonoBehaviour
     }
     // Register the new building with the controller
     controller.getUser().getVillage().addBuilding(building);
-    // Add building's value to user's bounty
-    controller.getUser().addBounty(building.getValue());
     // Spawn building
     startConstruction(building);
   }

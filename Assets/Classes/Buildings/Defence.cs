@@ -7,12 +7,12 @@ public class Defence : Building
 {
   public Defence(){
     prefab = (GameObject)Resources.Load("Prefabs/Defence", typeof(GameObject));
-    level = 1;
+    level = 0;
     name = "Defence";
     position = prefab.transform.position;
-    value = 60;
+    value = 240;
     cost = new int[3] { 100, 300, 5 };
-    completionTime = DateTime.UtcNow.AddSeconds(value * level);
+    completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
   }
 
   public override void startFunctionality(ControllerScript controller){

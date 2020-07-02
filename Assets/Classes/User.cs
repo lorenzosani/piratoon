@@ -4,6 +4,7 @@ using System.Collections;
 public class User
 {
   int id;
+  int level;
   Village village;
   int serverId;
   int bounty;
@@ -14,6 +15,7 @@ public class User
   public User(int _id, int _serverId, Village _village)
   {
     id = _id;
+    level = 1;
     village = _village;
     serverId = _serverId;
     bounty = 0;
@@ -25,6 +27,14 @@ public class User
   public int getId()
   {
     return id;
+  }
+
+  public int getLevel(){
+    return level;
+  }
+
+  public void increaseLevel(){
+    level=level+=1;
   }
 
   public Village getVillage()

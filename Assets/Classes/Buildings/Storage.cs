@@ -8,12 +8,12 @@ public class Storage : Building
   int storage;
   public Storage(){
     prefab = (GameObject)Resources.Load("Prefabs/Storage", typeof(GameObject));
-    level = 1;
+    level = 0;
     name = "Storage";
     position = prefab.transform.position;
-    value = 30;
+    value = 120;
     cost = new int[3] { 100, 150, 0 };
-    completionTime = DateTime.UtcNow.AddSeconds(value * level);
+    completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     storage = 1000*level;
   }
 
