@@ -41,6 +41,7 @@ public class UIScript : MonoBehaviour
       bountyObject.maxValue = bountyObject.maxValue*3;
       bountyObject.value = value;
       showPopupMessage("Woohooa! You have reached bounty level " + controller.getUser().getLevel() + "!");
+      playSuccessSound();
     } else {
       bountyObject.value = value;
     }
@@ -55,5 +56,9 @@ public class UIScript : MonoBehaviour
     if (number < 100000) return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
     if (number < 1000000) return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
     return stringNumber;
+  }
+  
+  public void playSuccessSound(){
+    messagePopup.GetComponent<AudioSource>().Play();
   }
 }

@@ -11,6 +11,7 @@ public class BuildingSpawner : MonoBehaviour
   Building currentlyBuilding = null;
   Slider loadingSlider;
   Text loadingText;
+  AudioSource audioSource;
 
   public UIScript ui;
   public GameObject loadingBar;
@@ -24,6 +25,7 @@ public class BuildingSpawner : MonoBehaviour
     controller = GetComponent<ControllerScript>();
     loadingSlider = loadingBar.GetComponent<Slider>();
     loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
+    audioSource = GetComponent<AudioSource>();
   }
 
   void Update()
@@ -38,7 +40,7 @@ public class BuildingSpawner : MonoBehaviour
         currentlyBuilding.increaseLevel();
         // Add building's value to user's bounty
         controller.getUser().addBounty(currentlyBuilding.getValue());
-        // Spawn the uilding on the scene
+        // Spawn the building on the scene
         spawn(currentlyBuilding);
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
@@ -111,6 +113,7 @@ public class BuildingSpawner : MonoBehaviour
     currentlyBuilding = b;
     loadingBar.transform.position = b.getPosition(); ;
     loadingBar.SetActive(true);
+    playBuildingSound();
   }
 
   //This instantiates the building on the scene and implements its functionality
@@ -136,5 +139,10 @@ public class BuildingSpawner : MonoBehaviour
     }
     controller.getUser().setResources(remainingResources);
     return true;
+  }
+
+
+  public void playBuildingSound(){
+    audioSource.Play();
   }
 }
