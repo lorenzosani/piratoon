@@ -24,4 +24,8 @@ public class ControllerScript : MonoBehaviour
   public void produceStone(){
     user.increaseResource(1,1);
   }
+
+  public void produceGold(){
+    user.increaseResource(2,1);
+  }
 }

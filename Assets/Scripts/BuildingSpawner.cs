@@ -59,7 +59,8 @@ public class BuildingSpawner : MonoBehaviour
       ui.showPopupMessage("There's already a building in construction! You can build only one at a time");
       return;
     }
-    // Check if the building has already been built
+    // Check if the building and headquarters have already been built
+    bool headquarter = false;
     foreach (Building b in controller.getUser().getVillage().getBuildings())
     {
       if (b.getName() == buildingName)
@@ -67,6 +68,13 @@ public class BuildingSpawner : MonoBehaviour
         ui.showPopupMessage("Oops, you can't build this twice!");
         return;
       }
+      if (b.getName() == "Headquarter"){
+        headquarter = true;
+      }
+    }
+    if (!headquarter && buildingName != "Headquarter") {
+      ui.showPopupMessage("Don't rush! Let's first build headquarters.");
+      return;
     }
     // Create a new building object
     Building building = createBuilding(buildingName);
@@ -97,6 +105,7 @@ public class BuildingSpawner : MonoBehaviour
       case "Defence": return new Defence();
       case "Shipyard": return new Shipyard();
       case "Storage": return new Storage();
+      case "Inn": return new Inn();
       default: return null;
     }
   }

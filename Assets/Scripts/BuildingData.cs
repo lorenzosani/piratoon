@@ -50,6 +50,7 @@ public class BuildingData : MonoBehaviour
       case "Defence": return new Defence();
       case "Shipyard": return new Shipyard();
       case "Storage": return new Storage();
+      case "Inn": return new Inn();
       default: return null;
     }
   }
