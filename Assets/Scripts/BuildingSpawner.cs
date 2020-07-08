@@ -12,6 +12,8 @@ public class BuildingSpawner : MonoBehaviour
   Slider loadingSlider;
   Text loadingText;
   AudioSource audioSource;
+  Building building;
+  bool newBuilding;
 
   public UIScript ui;
   public GameObject loadingBar;
@@ -26,6 +28,7 @@ public class BuildingSpawner : MonoBehaviour
     loadingSlider = loadingBar.GetComponent<Slider>();
     loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
     audioSource = GetComponent<AudioSource>();
+    newBuilding = true;
   }
 
   void Update()
@@ -41,7 +44,11 @@ public class BuildingSpawner : MonoBehaviour
         // Add building's value to user's bounty
         controller.getUser().addBounty(currentlyBuilding.getValue());
         // Spawn the building on the scene
-        spawn(currentlyBuilding);
+        if (newBuilding) spawn(currentlyBuilding);
+        // Reset global variables
+        currentlyBuilding = null;
+        building = null;
+        newBuilding = true;
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
       loadingText.text = timeLeft > 60 ? Math.Floor((double)timeLeft / 60) + "m " + timeLeft % 60 + "s" : timeLeft + "s";
@@ -60,32 +67,40 @@ public class BuildingSpawner : MonoBehaviour
       return;
     }
     // Check if the building and headquarters have already been built
-    bool headquarter = false;
+    Building headquarter = null;
     foreach (Building b in controller.getUser().getVillage().getBuildings())
     {
       if (b.getName() == buildingName)
       {
-        ui.showPopupMessage("Oops, you can't build this twice!");
-        return;
+        building = b;
+        newBuilding = false;
       }
       if (b.getName() == "Headquarter"){
-        headquarter = true;
+        headquarter = b;
       }
     }
-    if (!headquarter && buildingName != "Headquarter") {
-      ui.showPopupMessage("Don't rush! Let's first build headquarters.");
+    if (headquarter==null && buildingName != "Headquarter") {
+      ui.showPopupMessage("Don't rush! Let's build headquarters first.");
       return;
     }
-    // Create a new building object
-    Building building = createBuilding(buildingName);
+    if (!newBuilding && headquarter.getLevel()==building.getLevel()){
+      ui.showPopupMessage("In order to upgrade this building, you need to upgrade your Headquarters first!");
+      building = null;
+      newBuilding = true;
+      return;
+    }
+    // If it doesn't exist already, create a new building object
+    if (newBuilding) building = createBuilding(buildingName);
     // Check if user can afford the building, if yes pay
     if (!canAfford(building))
     {
       ui.showPopupMessage("Oops, it looks like you don't have enough resources to build this.");
+      building = null;
+      newBuilding = true;
       return;
     }
     // Register the new building with the controller
-    controller.getUser().getVillage().addBuilding(building);
+    if (newBuilding) controller.getUser().getVillage().addBuilding(building);
     // Spawn building
     startConstruction(building);
   }
@@ -119,6 +134,7 @@ public class BuildingSpawner : MonoBehaviour
   //This starts the construction of a building
   void startConstruction(Building b)
   {
+    if (!newBuilding) b.setCompletionTime(DateTime.UtcNow.AddSeconds(b.getValue()/4 * (b.getLevel()+1)));
     currentlyBuilding = b;
     loadingBar.transform.position = b.getPosition(); ;
     loadingBar.SetActive(true);
@@ -129,8 +145,7 @@ public class BuildingSpawner : MonoBehaviour
   void spawn(Building b)
   {
     // Instantiate building on the scene
-    GameObject building = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
-    currentlyBuilding = null;
+    GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
     // Implement buildings functionality
     b.startFunctionality(controller);
   }
