@@ -213,8 +213,8 @@ public class PanAndZoom : MonoBehaviour {
             if (cam.orthographic) {
                 var currentPinchPosition = cam.ScreenToWorldPoint(center);
 
-                cam.orthographicSize = Mathf.Max(0.1f, cam.orthographicSize * oldDistance / newDistance);
-
+                cam.orthographicSize = Mathf.Max(4.0f, cam.orthographicSize * oldDistance / newDistance);
+                
                 var newPinchPosition = cam.ScreenToWorldPoint(center);
 
                 cam.transform.position -= newPinchPosition - currentPinchPosition;
