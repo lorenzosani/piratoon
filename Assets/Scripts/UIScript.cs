@@ -40,7 +40,7 @@ public class UIScript : MonoBehaviour
       controller.getUser().increaseLevel();
       bountyObject.maxValue = bountyObject.maxValue*3;
       bountyObject.value = value;
-      showPopupMessage("Woohooa! You have reached bounty level " + controller.getUser().getLevel() + "!");
+      showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + controller.getUser().getLevel() + "!");
       playSuccessSound();
     } else {
       bountyObject.value = value;

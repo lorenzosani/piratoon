@@ -15,6 +15,9 @@ public class BuildingData : MonoBehaviour
     Village village = controller.getUser().getVillage();
     // Go through each building in the menu
     foreach (Transform child in transform){
+      // Populate building name in the correct language
+      Text title = child.Find("Title").GetComponent<Text>();
+      title.text = Language.Field[child.name.ToUpper()];
       // Inventor and Watchtower are unlocked only after headquarters are upgraded
       if (child.name == "Inventor" || child.name == "Watchtower"){
         Building headquarter = village.getBuildingInfo("Headquarter");
@@ -70,7 +73,7 @@ public class BuildingData : MonoBehaviour
     GameObject stoneObject = resorucesObject.Find("Stone").gameObject;
     GameObject goldObject = resorucesObject.Find("Gold").gameObject;
     // Set building level
-    levelObject.GetComponent<Text>().text = "Lev."+level.ToString();
+    levelObject.GetComponent<Text>().text = Language.Field["LEVEL_SHORT"]+" "+level.ToString();
     // Set building cost
     woodObject.GetComponent<Text>().text = cost[0].ToString();
     stoneObject.GetComponent<Text>().text = cost[1].ToString();
@@ -80,27 +83,27 @@ public class BuildingData : MonoBehaviour
   void lockBuilding(Transform building, int level){
     // Get child objects
     Button btn = building.GetComponent<Button>();
-    Color titleColor = building.Find("Text").GetComponent<Text>().color;
+    Color titleColor = building.Find("Title").GetComponent<Text>().color;
     Text levelText = building.Find("Level").GetComponent<Text>();
     GameObject resources = building.Find("Resources").gameObject;
     // Set objects to blocked
     btn.interactable = false;
     titleColor.a = 0.66f;
-    building.Find("Text").GetComponent<Text>().color = titleColor;
-    levelText.text = "Unlock at level " + level;
+    building.Find("Title").GetComponent<Text>().color = titleColor;
+    levelText.text = Language.Field["LEVEL_UNLOCK"] + " " + level;
     resources.SetActive(false);
   }
 
   void unlockBuilding(Transform building){
     // Get child objects
     Button btn = building.GetComponent<Button>();
-    Color titleColor = building.Find("Text").GetComponent<Text>().color;
+    Color titleColor = building.Find("Title").GetComponent<Text>().color;
     Text level = building.Find("Level").GetComponent<Text>();
     GameObject resources = building.Find("Resources").gameObject;
     // Set objects to blocked
     btn.interactable = true;
     titleColor.a = 1f;
-    building.Find("Text").GetComponent<Text>().color = titleColor;
+    building.Find("Title").GetComponent<Text>().color = titleColor;
     resources.SetActive(true);
   }
 }

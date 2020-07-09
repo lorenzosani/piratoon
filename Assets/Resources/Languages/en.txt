@@ -1,0 +1,19 @@
+INVENTOR = Inventor
+DEFENCE = Defence
+HEADQUARTER = Headquarter
+INN = Inn
+SHIPYARD = Shipyard
+STONECUTTER = Stonecutter
+STORAGE = Storage
+WATCHTOWER = Watchtower
+WOODCUTTER = Woodcutter
+LEVEL_UNLOCK = Unlock at level
+LEVEL_SHORT = Lev.
+MINUTES_FIRST_LETTER = m
+SECONDS_FIRST_LETTER = s
+DUPLICATE_BUILDING = There's already a building in construction!\n\nYou can build only one at a time...
+HEADQUARTERS_FIRST = Don't rush!\n\nLet's build headquarters first.
+UPGRADE_HEADQUARTERS = In order to upgrade this building, you need to upgrade your Headquarters first!
+NOT_RESOURCES = Oops, it looks like you don't have enough resources to build this.
+BOUNTY_LEVELUP = Woohooa!\n\nYou have reached bounty level 
+

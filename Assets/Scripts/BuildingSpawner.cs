@@ -51,7 +51,7 @@ public class BuildingSpawner : MonoBehaviour
         newBuilding = true;
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
-      loadingText.text = timeLeft > 60 ? Math.Floor((double)timeLeft / 60) + "m " + timeLeft % 60 + "s" : timeLeft + "s";
+      loadingText.text = timeLeft > 60 ? Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] : timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
     }
   }
 
@@ -63,7 +63,7 @@ public class BuildingSpawner : MonoBehaviour
     // Check if something is already being built
     if (currentlyBuilding != null)
     {
-      ui.showPopupMessage("There's already a building in construction! You can build only one at a time");
+      ui.showPopupMessage(Language.Field["DUPLICATE_BUILDING"]);
       return;
     }
     // Check if the building and headquarters have already been built
@@ -80,11 +80,11 @@ public class BuildingSpawner : MonoBehaviour
       }
     }
     if (headquarter==null && buildingName != "Headquarter") {
-      ui.showPopupMessage("Don't rush! Let's build headquarters first.");
+      ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
       return;
     }
     if (!newBuilding && headquarter.getLevel()==building.getLevel()){
-      ui.showPopupMessage("In order to upgrade this building, you need to upgrade your Headquarters first!");
+      ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
       building = null;
       newBuilding = true;
       return;
@@ -94,7 +94,7 @@ public class BuildingSpawner : MonoBehaviour
     // Check if user can afford the building, if yes pay
     if (!canAfford(building))
     {
-      ui.showPopupMessage("Oops, it looks like you don't have enough resources to build this.");
+      ui.showPopupMessage(Language.Field["NOT_RESOURCES"]);
       building = null;
       newBuilding = true;
       return;
