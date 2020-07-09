@@ -52,6 +52,14 @@ public class User
     return resources;
   }
 
+  public int[] getStorageSpaceLeft(){
+    int[] spaceLeft = new int[3];
+    for(int i=0; i<resources.Length; i++) {
+      spaceLeft[i] = storage - resources[i];
+    }
+    return spaceLeft;
+  }
+
   public void setResources(int[] r)
   {
     for(int i=0; i<r.Length; i++) {

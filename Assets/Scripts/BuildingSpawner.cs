@@ -17,6 +17,7 @@ public class BuildingSpawner : MonoBehaviour
 
   public UIScript ui;
   public GameObject loadingBar;
+  public bool checkHeadquarter;
 
   //*****************************************************************
   // START and UPDATE methods
@@ -79,7 +80,7 @@ public class BuildingSpawner : MonoBehaviour
         headquarter = b;
       }
     }
-    if (headquarter==null && buildingName != "Headquarter") {
+    if (headquarter==null && buildingName != "Headquarter" && checkHeadquarter) {
       ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
       return;
     }
@@ -146,6 +147,7 @@ public class BuildingSpawner : MonoBehaviour
   {
     // Instantiate building on the scene
     GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
+    buildingObj.name = b.getName();
     // Implement buildings functionality
     b.startFunctionality(controller);
   }

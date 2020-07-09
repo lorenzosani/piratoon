@@ -69,6 +69,14 @@ public class Building
     return completionTime;
   }
 
+  public virtual int getLocalStorage(){
+    return -1;
+  }
+
+  public virtual void resetLocalStorage(){
+    Debug.Log("No virtual storage present for building " + name);
+  }
+
   public virtual void startFunctionality(ControllerScript controller){
     Debug.Log("No functionality to implement for this building");
   }

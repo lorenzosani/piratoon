@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Storage : Building
 {
   int storage;
+  
   public Storage(){
     prefab = (GameObject)Resources.Load("Prefabs/Storage", typeof(GameObject));
     level = 0;

@@ -16,16 +16,4 @@ public class ControllerScript : MonoBehaviour
   {
     return user;
   }
-
-  public void produceWood(){
-    user.increaseResource(0,1);
-  } 
-
-  public void produceStone(){
-    user.increaseResource(1,1);
-  }
-
-  public void produceGold(){
-    user.increaseResource(2,1);
-  }
 }
