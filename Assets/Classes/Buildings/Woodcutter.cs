@@ -17,6 +17,7 @@ public class Woodcutter : Building
     cost = new int[3] { 25, 50, 0 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     productionPerHour = (level+1)*10;
+    localStorage = 0;
   }
 
   public override void startFunctionality(ControllerScript controller){
