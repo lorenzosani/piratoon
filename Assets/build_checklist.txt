@@ -1,0 +1,4 @@
+TO DO BEFORE BUILDING THE APP:
+
+1. Disable 'Use Mouse' on Pan&Zoom script
+2. Enable 'Check Headquarters' on BuildingSpawner script

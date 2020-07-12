@@ -16,7 +16,7 @@ public class Stonecutter : Building
     value = 80;
     cost = new int[3] { 25, 50, 0 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
-    productionPerHour = level*10;
+    productionPerHour = (level+1)*10;
     localStorage = 0;
   }
 

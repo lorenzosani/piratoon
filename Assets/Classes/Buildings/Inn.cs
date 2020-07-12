@@ -16,7 +16,7 @@ public class Inn : Building
     value = 200;
     cost = new int[3] { 200, 250, 20 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
-    productionPerHour = level*1;
+    productionPerHour = (level+1)*1;
     localStorage = 0;
   }
 
