@@ -1,3 +1,7 @@
 Library/
 Temp/
 Logs/
+PlayFabEditorExtensions/
+PlayFabSDK/
+PlayFabEditorExtensions.meta
+PlayFabSDK.meta
