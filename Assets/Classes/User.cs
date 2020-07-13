@@ -1,18 +1,28 @@
 using UnityEngine;
 using System.Collections;
+using Newtonsoft.Json;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class User
 {
-  int id;
+  [JsonProperty]
+  string id;
+  [JsonProperty]
   int level;
+  [JsonProperty]
   Village village;
-  int serverId;
+  [JsonProperty]
+  string serverId;
+  [JsonProperty]
   int bounty;
+  [JsonProperty]
   int[] resources;
+  [JsonProperty]
   int pearl;
+  [JsonProperty]
   int storage;
 
-  public User(int _id, int _serverId, Village _village)
+  public User(string _id, string _serverId, Village _village)
   {
     id = _id;
     level = 1;
@@ -24,7 +34,7 @@ public class User
     storage = 500;
   }
 
-  public int getId()
+  public string getId()
   {
     return id;
   }
@@ -42,7 +52,7 @@ public class User
     return village;
   }
 
-  public int getServerId()
+  public string getServerId()
   {
     return serverId;
   }
@@ -50,6 +60,10 @@ public class User
   public int[] getResources()
   {
     return resources;
+  }
+
+  public int getStorage(){
+    return storage;
   }
 
   public int[] getStorageSpaceLeft(){

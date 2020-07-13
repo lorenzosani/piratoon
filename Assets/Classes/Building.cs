@@ -4,15 +4,23 @@ using System;
 using System.Windows;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class Building
 {
   protected GameObject prefab;
+  [JsonProperty]
   protected int level;
+  [JsonProperty]
   protected string name;
+  [JsonProperty]
   protected Vector3 position;
+  [JsonProperty]
   protected DateTime completionTime;
+  [JsonProperty]
   protected int value;
+  [JsonProperty]
   protected int[] cost;
 
   public void increaseLevel()

@@ -1,12 +1,17 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Generic;using Newtonsoft.Json;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class Village
 {
+  [JsonProperty]
   List<Building> buildings;
+  [JsonProperty]
   int level;
+  [JsonProperty]
   Vector3 position;
+  [JsonProperty]
   int strength;
 
   public Village(Vector3 _position)
