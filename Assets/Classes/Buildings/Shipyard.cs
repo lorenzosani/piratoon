@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Shipyard : Building
 {
-  public Shipyard(){
+  public Shipyard(ObserverScript observer){
     prefab = (GameObject)Resources.Load("Prefabs/Shipyard", typeof(GameObject));
     level = 0;
     name = "Shipyard";
@@ -13,5 +13,6 @@ public class Shipyard : Building
     value = 160;
     cost = new int[3] { 100, 150, 0 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    attachObserver(observer);
   }
 }

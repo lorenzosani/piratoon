@@ -8,6 +8,7 @@ using System.Collections.Generic;
 public class BuildingSpawner : MonoBehaviour
 {
   ControllerScript controller;
+  ObserverScript observer;
   Building currentlyBuilding = null;
   Slider loadingSlider;
   Text loadingText;
@@ -26,6 +27,7 @@ public class BuildingSpawner : MonoBehaviour
   void Start()
   {
     controller = GetComponent<ControllerScript>();
+    observer = GetComponent<ObserverScript>();
     loadingSlider = loadingBar.GetComponent<Slider>();
     loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
     audioSource = GetComponent<AudioSource>();
@@ -111,17 +113,17 @@ public class BuildingSpawner : MonoBehaviour
   //*****************************************************************
 
   // Factory method that returns the correct building object
-  Building createBuilding(string name){
+  public Building createBuilding(string name){
     switch(name){
-      case "Inventor": return new Inventor();
-      case "Woodcutter": return new Woodcutter();
-      case "Stonecutter": return new Stonecutter();
-      case "Watchtower": return new Watchtower();
-      case "Headquarter": return new Headquarter();
-      case "Defence": return new Defence();
-      case "Shipyard": return new Shipyard();
-      case "Storage": return new Storage();
-      case "Inn": return new Inn();
+      case "Inventor": return new Inventor(observer);
+      case "Woodcutter": return new Woodcutter(observer);
+      case "Stonecutter": return new Stonecutter(observer);
+      case "Watchtower": return new Watchtower(observer);
+      case "Headquarter": return new Headquarter(observer);
+      case "Defence": return new Defence(observer);
+      case "Shipyard": return new Shipyard(observer);
+      case "Storage": return new Storage(observer);
+      case "Inn": return new Inn(observer);
       default: return null;
     }
   }
@@ -150,6 +152,21 @@ public class BuildingSpawner : MonoBehaviour
     buildingObj.name = b.getName();
     // Implement buildings functionality
     b.startFunctionality(controller);
+  }
+
+  public void addBuildingFromServer(Building b){
+    int constructionTimeLeft = (int)(b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+    if (constructionTimeLeft > 0) {
+      currentlyBuilding = b;
+      loadingBar.transform.position = b.getPosition(); ;
+      loadingBar.SetActive(true);
+    } else {
+      GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
+      buildingObj.name = b.getName();
+      if(b.getName()=="Woodcutter" || b.getName()=="Stonecutter" || b.getName()=="Inn"){
+        b.startFunctionality(controller);
+      }
+    }
   }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price

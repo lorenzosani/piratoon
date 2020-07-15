@@ -6,9 +6,8 @@ using System.Collections.Generic;
 public class Inn : Building
 {
   int productionPerHour;
-  int localStorage;
 
-  public Inn(){
+  public Inn(ObserverScript observer){
     prefab = (GameObject)Resources.Load("Prefabs/Inn", typeof(GameObject));
     level = 0;
     name = "Inn";
@@ -16,8 +15,8 @@ public class Inn : Building
     value = 200;
     cost = new int[3] { 200, 250, 20 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
-    productionPerHour = (level+1)*1;
     localStorage = 0;
+    attachObserver(observer);
   }
 
   public override void startFunctionality(ControllerScript controller){
@@ -30,14 +29,18 @@ public class Inn : Building
 
   public override void resetLocalStorage(){
     localStorage = 0;
+    notifyChange();
   }
 
   IEnumerator ProduceGold(ControllerScript controller) 
   {
     while(true)
     {
-      if (controller.getUser().getStorageSpaceLeft()[0]-localStorage > 0) localStorage += 1;
-      yield return new WaitForSeconds((float)3600/productionPerHour);
+      if (controller.getUser().getStorageSpaceLeft()[0]-localStorage > 0){
+        localStorage += 1;
+        notifyChange();
+      } 
+      yield return new WaitForSeconds((float)3600/(level+1)*1);
     }
   }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Defence : Building
 {
-  public Defence(){
+  public Defence(ObserverScript observer){
     prefab = (GameObject)Resources.Load("Prefabs/Defence", typeof(GameObject));
     level = 0;
     name = "Defence";
@@ -13,9 +13,11 @@ public class Defence : Building
     value = 240;
     cost = new int[3] { 100, 300, 5 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    attachObserver(observer);
   }
 
   public override void startFunctionality(ControllerScript controller){
     controller.getUser().getVillage().increaseStrength(140);
+    notifyChange();
   }
 }

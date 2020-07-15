@@ -5,9 +5,13 @@ using System.Collections;
 
 public class BuildingData : MonoBehaviour
 {
-  public ControllerScript controller;
+  ControllerScript controller;
+  ObserverScript observer;
 
   void Start(){
+    GameObject gameController = GameObject.Find("GameController");
+    controller = gameController.GetComponent<ControllerScript>();
+    observer = gameController.GetComponent<ObserverScript>();
     InvokeRepeating("populateBuildingsMenu", 0.0f, 3.0f);
   }
 
@@ -52,15 +56,15 @@ public class BuildingData : MonoBehaviour
   // Factory method that returns the correct building object
   Building createBuilding(string name){
     switch(name){
-      case "Inventor": return new Inventor();
-      case "Woodcutter": return new Woodcutter();
-      case "Stonecutter": return new Stonecutter();
-      case "Watchtower": return new Watchtower();
-      case "Headquarter": return new Headquarter();
-      case "Defence": return new Defence();
-      case "Shipyard": return new Shipyard();
-      case "Storage": return new Storage();
-      case "Inn": return new Inn();
+      case "Inventor": return new Inventor(observer);
+      case "Woodcutter": return new Woodcutter(observer);
+      case "Stonecutter": return new Stonecutter(observer);
+      case "Watchtower": return new Watchtower(observer);
+      case "Headquarter": return new Headquarter(observer);
+      case "Defence": return new Defence(observer);
+      case "Shipyard": return new Shipyard(observer);
+      case "Storage": return new Storage(observer);
+      case "Inn": return new Inn(observer);
       default: return null;
     }
   }

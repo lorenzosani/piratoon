@@ -7,9 +7,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class Building
+public class Building : Observable
 {
   protected GameObject prefab;
+  protected ObserverScript observer;
   [JsonProperty]
   protected int level;
   [JsonProperty]
@@ -22,10 +23,18 @@ public class Building
   protected int value;
   [JsonProperty]
   protected int[] cost;
+  [JsonProperty]
+  protected int localStorage;
 
   public void increaseLevel()
   {
     level += 1;
+    notifyChange();
+  }
+
+  public void setLevel(int l)
+  {
+    level = l;
   }
 
   public int getLevel()
@@ -43,6 +52,11 @@ public class Building
     return position;
   }
 
+  public void setPosition(Vector3 v)
+  {
+    position = v;
+  }
+
   public GameObject getPrefab()
   {
     return prefab;
@@ -51,6 +65,11 @@ public class Building
   public int getValue()
   {
     return value * level;
+  }
+
+  public void setValue(int v)
+  {
+    value = v;
   }
 
   public int getFutureValue(){
@@ -75,6 +94,10 @@ public class Building
   public DateTime getCompletionTime()
   {
     return completionTime;
+  }
+
+  public void setLocalStorage(int s){
+    localStorage = s;
   }
 
   public virtual int getLocalStorage(){

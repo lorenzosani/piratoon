@@ -14,6 +14,7 @@ public class UIScript : MonoBehaviour
   public GameObject messagePopup;
 
   int previousBounty;
+  int userLevel;
 
   void Update()
   {
@@ -36,9 +37,11 @@ public class UIScript : MonoBehaviour
 
   void updateBounty(int value){
     if (value == previousBounty) return;
-    if (value >= (int) bountyObject.maxValue){
+    userLevel = controller.getUser().getLevel();
+    bountyObject.maxValue = userLevel*100;
+    if (value >= userLevel*100){
       controller.getUser().increaseLevel();
-      bountyObject.maxValue = bountyObject.maxValue*3;
+      bountyObject.maxValue = userLevel*100;
       bountyObject.value = value;
       showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + controller.getUser().getLevel() + "!");
       playSuccessSound();

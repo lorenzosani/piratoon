@@ -3,14 +3,13 @@ using System.Collections;
 using Newtonsoft.Json;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class User
+public class User : Observable
 {
+  Village village;
   [JsonProperty]
   string id;
   [JsonProperty]
   int level;
-  [JsonProperty]
-  Village village;
   [JsonProperty]
   string serverId;
   [JsonProperty]
@@ -22,7 +21,7 @@ public class User
   [JsonProperty]
   int storage;
 
-  public User(string _id, string _serverId, Village _village)
+  public User(string _id, string _serverId, Village _village, ObserverScript _observer)
   {
     id = _id;
     level = 1;
@@ -32,6 +31,7 @@ public class User
     resources = new int[3] { 500, 500, 100 };
     pearl = 5;
     storage = 500;
+    this.attachObserver(_observer);
   }
 
   public string getId()
@@ -45,11 +45,17 @@ public class User
 
   public void increaseLevel(){
     level=level+=1;
+    notifyChange();
   }
 
   public Village getVillage()
   {
     return village;
+  }
+
+  public void setVillage(Village v)
+  {
+    village = v;
   }
 
   public string getServerId()
@@ -79,11 +85,13 @@ public class User
     for(int i=0; i<r.Length; i++) {
       resources[i] = (r[i] > storage) ? storage : r[i];
     }
+    notifyChange();
   }
 
   public void increaseResource(int i, int n)
   {
     resources[i] = (resources[i]+n > storage) ? storage : resources[i] + n;
+    notifyChange();
   }
 
   public int getPearl()
@@ -99,9 +107,11 @@ public class User
   public void addBounty(int value)
   {
     bounty += value;
+    notifyChange();
   }
 
   public void setStorage(int s){
     storage = s;
+    notifyChange();
   }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Headquarter : Building
 {
-  public Headquarter(){
+  public Headquarter(ObserverScript observer){
     prefab = (GameObject)Resources.Load("Prefabs/Headquarter", typeof(GameObject));
     level = 0;
     name = "Headquarter";
@@ -13,5 +13,6 @@ public class Headquarter : Building
     value = 200;
     cost = new int[3] { 200, 250, 10 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    attachObserver(observer);
   }
 }
