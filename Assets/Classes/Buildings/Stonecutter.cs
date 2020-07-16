@@ -14,6 +14,7 @@ public class Stonecutter : Building
     cost = new int[3] { 25, 50, 0 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     localStorage = 0;
+    built = false;
     attachObserver(observer);
   }
 

@@ -13,6 +13,7 @@ public class Headquarter : Building
     value = 200;
     cost = new int[3] { 200, 250, 10 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    built = false;
     attachObserver(observer);
   }
 }

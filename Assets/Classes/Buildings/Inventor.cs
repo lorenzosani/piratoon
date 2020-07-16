@@ -13,6 +13,7 @@ public class Inventor : Building
     value = 480;
     cost = new int[3] { 300, 500, 50 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    built = false;
     attachObserver(observer);
   }
 }

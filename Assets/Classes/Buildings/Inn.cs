@@ -16,6 +16,7 @@ public class Inn : Building
     cost = new int[3] { 200, 250, 20 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     localStorage = 0;
+    built = false;
     attachObserver(observer);
   }
 

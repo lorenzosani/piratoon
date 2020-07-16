@@ -41,7 +41,7 @@ public class UIScript : MonoBehaviour
     bountyObject.maxValue = userLevel*100;
     if (value >= userLevel*100){
       controller.getUser().increaseLevel();
-      bountyObject.maxValue = userLevel*100;
+      bountyObject.maxValue = controller.getUser().getLevel()*100;
       bountyObject.value = value;
       showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + controller.getUser().getLevel() + "!");
       playSuccessSound();

@@ -25,6 +25,8 @@ public class Building : Observable
   protected int[] cost;
   [JsonProperty]
   protected int localStorage;
+  [JsonProperty]
+  protected bool built;
 
   public void increaseLevel()
   {
@@ -102,6 +104,14 @@ public class Building : Observable
 
   public virtual int getLocalStorage(){
     return -1;
+  }
+
+  public void setBuilt(bool v){
+    built = v;
+  }
+
+  public bool isBuilt(){
+    return built;
   }
 
   public virtual void resetLocalStorage(){

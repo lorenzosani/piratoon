@@ -13,7 +13,6 @@ public class BuildingSpawner : MonoBehaviour
   Slider loadingSlider;
   Text loadingText;
   AudioSource audioSource;
-  Building building;
   bool newBuilding;
 
   public UIScript ui;
@@ -42,16 +41,7 @@ public class BuildingSpawner : MonoBehaviour
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
       if (timeLeft == 0)
       {
-        loadingBar.SetActive(false);
-        currentlyBuilding.increaseLevel();
-        // Add building's value to user's bounty
-        controller.getUser().addBounty(currentlyBuilding.getValue());
-        // Spawn the building on the scene
-        if (newBuilding) spawn(currentlyBuilding);
-        // Reset global variables
-        currentlyBuilding = null;
-        building = null;
-        newBuilding = true;
+        finishBuilding(currentlyBuilding);
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
       loadingText.text = timeLeft > 60 ? Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] : timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
@@ -63,6 +53,8 @@ public class BuildingSpawner : MonoBehaviour
   //*****************************************************************
   public void main(string buildingName)
   {
+    Building building = null;
+    Building headquarter = null;
     // Check if something is already being built
     if (currentlyBuilding != null)
     {
@@ -70,7 +62,6 @@ public class BuildingSpawner : MonoBehaviour
       return;
     }
     // Check if the building and headquarters have already been built
-    Building headquarter = null;
     foreach (Building b in controller.getUser().getVillage().getBuildings())
     {
       if (b.getName() == buildingName)
@@ -86,9 +77,8 @@ public class BuildingSpawner : MonoBehaviour
       ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
       return;
     }
-    if (!newBuilding && headquarter.getLevel()==building.getLevel()){
+    if (!newBuilding && headquarter.getLevel()<=building.getLevel() && checkHeadquarter){
       ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
-      building = null;
       newBuilding = true;
       return;
     }
@@ -98,12 +88,15 @@ public class BuildingSpawner : MonoBehaviour
     if (!canAfford(building))
     {
       ui.showPopupMessage(Language.Field["NOT_RESOURCES"]);
-      building = null;
       newBuilding = true;
       return;
     }
     // Register the new building with the controller
-    if (newBuilding) controller.getUser().getVillage().addBuilding(building);
+    if (newBuilding){
+      controller.getUser().getVillage().addBuilding(building);
+    } else {
+      building.setCompletionTime(DateTime.UtcNow.AddSeconds(building.getValue()/4 * (building.getLevel()+1)));
+    }
     // Spawn building
     startConstruction(building);
   }
@@ -128,6 +121,19 @@ public class BuildingSpawner : MonoBehaviour
     }
   }
 
+  void finishBuilding(Building b){
+    loadingBar.SetActive(false);
+    b.setBuilt(true);
+    b.increaseLevel();
+    // Add building's value to user's bounty
+    controller.getUser().addBounty(b.getValue());
+    // Spawn the building on the scene
+    if (newBuilding) spawn(b);
+    // Reset global variables
+    currentlyBuilding = null;
+    newBuilding = true;
+  }
+
   //This fetches the prefab of the building to be shown
   GameObject getPrefab(string buildingName)
   {
@@ -137,7 +143,7 @@ public class BuildingSpawner : MonoBehaviour
   //This starts the construction of a building
   void startConstruction(Building b)
   {
-    if (!newBuilding) b.setCompletionTime(DateTime.UtcNow.AddSeconds(b.getValue()/4 * (b.getLevel()+1)));
+    observer.update();
     currentlyBuilding = b;
     loadingBar.transform.position = b.getPosition(); ;
     loadingBar.SetActive(true);
@@ -155,12 +161,12 @@ public class BuildingSpawner : MonoBehaviour
   }
 
   public void addBuildingFromServer(Building b){
-    int constructionTimeLeft = (int)(b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
-    if (constructionTimeLeft > 0) {
-      currentlyBuilding = b;
-      loadingBar.transform.position = b.getPosition(); ;
-      loadingBar.SetActive(true);
-    } else {
+    currentlyBuilding = null;
+    if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0) {
+      startConstruction(b);
+    } else if(b.isBuilt() == false){
+      finishBuilding(b);
+    }else{
       GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
       buildingObj.name = b.getName();
       if(b.getName()=="Woodcutter" || b.getName()=="Stonecutter" || b.getName()=="Inn"){

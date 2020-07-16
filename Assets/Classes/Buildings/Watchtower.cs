@@ -13,6 +13,7 @@ public class Watchtower : Building
     value = 400;
     cost = new int[3] { 400, 400, 15 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    built = false;
     attachObserver(observer);
   }
 }

@@ -13,6 +13,7 @@ public class Defence : Building
     value = 240;
     cost = new int[3] { 100, 300, 5 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    built = false;
     attachObserver(observer);
   }
 

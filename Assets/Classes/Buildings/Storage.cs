@@ -16,6 +16,7 @@ public class Storage : Building
     cost = new int[3] { 100, 150, 0 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     storage = 1000*level;
+    built = false;
     attachObserver(observer);
   }
 

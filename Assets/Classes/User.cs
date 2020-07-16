@@ -31,7 +31,7 @@ public class User : Observable
     resources = new int[3] { 500, 500, 100 };
     pearl = 5;
     storage = 500;
-    this.attachObserver(_observer);
+    attachObserver(_observer);
   }
 
   public string getId()
@@ -107,7 +107,6 @@ public class User : Observable
   public void addBounty(int value)
   {
     bounty += value;
-    notifyChange();
   }
 
   public void setStorage(int s){
