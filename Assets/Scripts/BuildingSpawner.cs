@@ -8,7 +8,6 @@ using System.Collections.Generic;
 public class BuildingSpawner : MonoBehaviour
 {
   ControllerScript controller;
-  ObserverScript observer;
   Building currentlyBuilding = null;
   Slider loadingSlider;
   Text loadingText;
@@ -26,7 +25,6 @@ public class BuildingSpawner : MonoBehaviour
   void Start()
   {
     controller = GetComponent<ControllerScript>();
-    observer = GetComponent<ObserverScript>();
     loadingSlider = loadingBar.GetComponent<Slider>();
     loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
     audioSource = GetComponent<AudioSource>();
@@ -73,11 +71,11 @@ public class BuildingSpawner : MonoBehaviour
         headquarter = b;
       }
     }
-    if (headquarter==null && buildingName != "Headquarter" && checkHeadquarter) {
+    if (checkHeadquarter && headquarter==null && buildingName != "Headquarter") {
       ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
       return;
     }
-    if (!newBuilding && headquarter.getLevel()<=building.getLevel() && checkHeadquarter){
+    if (checkHeadquarter && !newBuilding && headquarter!=null && headquarter.getLevel()<=building.getLevel()){
       ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
       newBuilding = true;
       return;
@@ -108,15 +106,15 @@ public class BuildingSpawner : MonoBehaviour
   // Factory method that returns the correct building object
   public Building createBuilding(string name){
     switch(name){
-      case "Inventor": return new Inventor(observer);
-      case "Woodcutter": return new Woodcutter(observer);
-      case "Stonecutter": return new Stonecutter(observer);
-      case "Watchtower": return new Watchtower(observer);
-      case "Headquarter": return new Headquarter(observer);
-      case "Defence": return new Defence(observer);
-      case "Shipyard": return new Shipyard(observer);
-      case "Storage": return new Storage(observer);
-      case "Inn": return new Inn(observer);
+      case "Inventor": return new Inventor();
+      case "Woodcutter": return new Woodcutter();
+      case "Stonecutter": return new Stonecutter();
+      case "Watchtower": return new Watchtower();
+      case "Headquarter": return new Headquarter();
+      case "Defence": return new Defence();
+      case "Shipyard": return new Shipyard();
+      case "Storage": return new Storage();
+      case "Inn": return new Inn();
       default: return null;
     }
   }
@@ -143,7 +141,7 @@ public class BuildingSpawner : MonoBehaviour
   //This starts the construction of a building
   void startConstruction(Building b)
   {
-    observer.update();
+    API.SetUserData();
     currentlyBuilding = b;
     loadingBar.transform.position = b.getPosition(); ;
     loadingBar.SetActive(true);

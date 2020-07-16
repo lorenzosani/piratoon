@@ -7,7 +7,7 @@ public class Inn : Building
 {
   int productionPerHour;
 
-  public Inn(ObserverScript observer){
+  public Inn(){
     prefab = (GameObject)Resources.Load("Prefabs/Inn", typeof(GameObject));
     level = 0;
     name = "Inn";
@@ -17,7 +17,6 @@ public class Inn : Building
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     localStorage = 0;
     built = false;
-    attachObserver(observer);
   }
 
   public override void startFunctionality(ControllerScript controller){
@@ -30,7 +29,7 @@ public class Inn : Building
 
   public override void resetLocalStorage(){
     localStorage = 0;
-    notifyChange();
+    API.SetUserData();
   }
 
   IEnumerator ProduceGold(ControllerScript controller) 
@@ -39,7 +38,7 @@ public class Inn : Building
     {
       if (controller.getUser().getStorageSpaceLeft()[0]-localStorage > 0){
         localStorage += 1;
-        notifyChange();
+        API.SetUserData();
       } 
       yield return new WaitForSeconds((float)3600/(level+1)*1);
     }

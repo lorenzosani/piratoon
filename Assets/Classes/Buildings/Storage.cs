@@ -7,7 +7,7 @@ public class Storage : Building
 {
   int storage;
   
-  public Storage(ObserverScript observer){
+  public Storage(){
     prefab = (GameObject)Resources.Load("Prefabs/Storage", typeof(GameObject));
     level = 0;
     name = "Storage";
@@ -17,11 +17,10 @@ public class Storage : Building
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     storage = 1000*level;
     built = false;
-    attachObserver(observer);
   }
 
   public override void startFunctionality(ControllerScript controller){
     controller.getUser().setStorage(storage);
-    notifyChange();
+    API.SetUserData();
   }
 }

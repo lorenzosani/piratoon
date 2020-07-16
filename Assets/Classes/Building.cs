@@ -7,10 +7,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class Building : Observable
+public class Building
 {
   protected GameObject prefab;
-  protected ObserverScript observer;
   [JsonProperty]
   protected int level;
   [JsonProperty]
@@ -31,7 +30,7 @@ public class Building : Observable
   public void increaseLevel()
   {
     level += 1;
-    notifyChange();
+    API.SetUserData();
   }
 
   public void setLevel(int l)

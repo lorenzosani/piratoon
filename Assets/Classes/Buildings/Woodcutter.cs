@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Woodcutter : Building
 {
-  public Woodcutter(ObserverScript observer){
+  public Woodcutter(){
     prefab = (GameObject)Resources.Load("Prefabs/Woodcutter", typeof(GameObject));
     level = 0;
     name = "Woodcutter";
@@ -15,7 +15,6 @@ public class Woodcutter : Building
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     localStorage = 0;
     built = false;
-    attachObserver(observer);
   }
 
   public override void startFunctionality(ControllerScript controller){
@@ -28,7 +27,7 @@ public class Woodcutter : Building
 
   public override void resetLocalStorage(){
     localStorage = 0;
-    notifyChange();
+    API.SetUserData();
   }
 
   IEnumerator ProduceWood(ControllerScript controller) 
@@ -37,7 +36,7 @@ public class Woodcutter : Building
     {
       if (controller.getUser().getStorageSpaceLeft()[0]-localStorage > 0){
         localStorage += 1;
-        notifyChange();
+        API.SetUserData();
       }
       yield return new WaitForSeconds((float)3600/(level+1)*10);
     }

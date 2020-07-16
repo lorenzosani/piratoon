@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Stonecutter : Building
 {
-  public Stonecutter(ObserverScript observer){
+  public Stonecutter(){
     prefab = (GameObject)Resources.Load("Prefabs/Stonecutter", typeof(GameObject));
     level = 0;
     name = "Stonecutter";
@@ -15,7 +15,6 @@ public class Stonecutter : Building
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     localStorage = 0;
     built = false;
-    attachObserver(observer);
   }
 
   public override void startFunctionality(ControllerScript controller){
@@ -28,7 +27,7 @@ public class Stonecutter : Building
 
   public override void resetLocalStorage(){
     localStorage = 0;
-    notifyChange();
+    API.SetUserData();
   }
 
   IEnumerator ProduceStone(ControllerScript controller) 
@@ -37,7 +36,7 @@ public class Stonecutter : Building
     {
       if (controller.getUser().getStorageSpaceLeft()[0]-localStorage > 0){
         localStorage += 1;
-        notifyChange();
+        API.SetUserData();
       } 
       yield return new WaitForSeconds((float)3600/(level+1)*10);
     }

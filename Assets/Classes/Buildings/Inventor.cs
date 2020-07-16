@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Inventor : Building
 {
-  public Inventor(ObserverScript observer){
+  public Inventor(){
     prefab = (GameObject)Resources.Load("Prefabs/Inventor", typeof(GameObject));
     level = 0;
     name = "Inventor";
@@ -14,6 +14,5 @@ public class Inventor : Building
     cost = new int[3] { 300, 500, 50 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     built = false;
-    attachObserver(observer);
   }
 }

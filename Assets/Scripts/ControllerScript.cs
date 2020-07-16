@@ -10,16 +10,14 @@ using Newtonsoft.Json.Linq;
 public class ControllerScript : MonoBehaviour
 {
   User user;
-  ObserverScript observer;
   BuildingSpawner spawner;
 
   void Awake()
   {
-    observer = GetComponent<ObserverScript>();
     spawner = GetComponent<BuildingSpawner>();
-    user = new User("user14", "x", new Village(Vector3.zero, observer), observer);
-    Authenticate.RegisterScripts(this, observer);
-    Authenticate.Login();
+    user = new User("user16", "x", new Village(Vector3.zero));
+    API.RegisterScripts(this);
+    API.Login();
   }
 
   // Show buildings from json data
@@ -44,7 +42,6 @@ public class ControllerScript : MonoBehaviour
       b.setValue((int) buildingsObject[i]["value"]);
       b.setLocalStorage((int) buildingsObject[i]["localStorage"]);
       b.setBuilt((bool) buildingsObject[i]["built"]);
-      b.attachObserver(observer);
       buildingsList.Add(b);
       spawner.addBuildingFromServer(b);
     }

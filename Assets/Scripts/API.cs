@@ -7,29 +7,59 @@ using PlayFab.ClientModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public static class Authenticate
+public static class API
 {
-  static string userId;
-  static ControllerScript controller;
-  static ObserverScript observer;
+  public static string androidId = string.Empty;
+  public static string iosId = string.Empty;
+  public static string customId = string.Empty;
 
-  public static void RegisterScripts(ControllerScript c, ObserverScript o){
+  static ControllerScript controller;
+
+  public static void RegisterScripts(ControllerScript c){
     controller = c;
-    observer = o;
   }
 
   public static void Login(){
-    var newApiRequest = new LoginWithCustomIDRequest { CustomId = controller.getUser().getId(), CreateAccount = true};
-    PlayFabClientAPI.LoginWithCustomID(newApiRequest, OnLogin, OnPlayFabError);
-    // TODO: add LoginWithAndroidDeviceID, LoginWithIOSDeviceID
+    if (GetDeviceId()){
+      if (!string.IsNullOrEmpty(androidId))
+      {
+        PlayFabClientAPI.LoginWithAndroidDeviceID(
+          new LoginWithAndroidDeviceIDRequest
+          {
+            AndroidDeviceId = androidId,
+            TitleId = PlayFabSettings.TitleId,
+            CreateAccount = true
+          }, 
+          OnLogin, 
+          OnPlayFabError
+        );
+      } else if (!string.IsNullOrEmpty(iosId))
+      {
+        PlayFabClientAPI.LoginWithIOSDeviceID(
+          new LoginWithIOSDeviceIDRequest
+          {
+            DeviceId = iosId,
+            TitleId = PlayFabSettings.TitleId,
+            CreateAccount = true
+          }, 
+          OnLogin,
+          OnPlayFabError
+        );
+      }
+    } else {
+      var newApiRequest = new LoginWithCustomIDRequest {
+        CustomId = controller.getUser().getId(), 
+        CreateAccount = true
+      };
+      PlayFabClientAPI.LoginWithCustomID(newApiRequest, OnLogin, OnPlayFabError);
+    }
   }
 
   public static void OnLogin(LoginResult login)
   {
-    userId = login.PlayFabId;
     // Fetch user data
     PlayFabClientAPI.GetUserData(new GetUserDataRequest() {
-        PlayFabId = userId,
+        PlayFabId = login.PlayFabId,
         Keys = null
     }, result => { 
       // Check if user has already data
@@ -38,8 +68,6 @@ public static class Authenticate
         // If yes, set the local user data to match the remote
         User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
         Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
-        user.attachObserver(observer);
-        village.attachObserver(observer);
         user.setVillage(village);
         controller.setUser(user);
         controller.populateVillage(result.Data["Buildings"].Value);
@@ -80,6 +108,31 @@ public static class Authenticate
     }, result => {
       Debug.Log("Server-side data updated successfully.");
     }, error => OnPlayFabError(error));
+  }
+
+  // Get info about the current operating system
+  public static bool GetDeviceId(bool silent = false) // silent suppresses the error
+  {
+    if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+    {
+#if UNITY_ANDROID
+      //http://answers.unity3d.com/questions/430630/how-can-i-get-android-id-.html
+      AndroidJavaClass clsUnity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+      AndroidJavaObject objActivity = clsUnity.GetStatic<AndroidJavaObject>("currentActivity");
+      AndroidJavaObject objResolver = objActivity.Call<AndroidJavaObject>("getContentResolver");
+      AndroidJavaClass clsSecure = new AndroidJavaClass("android.provider.Settings$Secure");
+      androidId = clsSecure.CallStatic<string>("getString", objResolver, "android_id");
+#endif
+#if UNITY_IPHONE
+      iosId = UnityEngine.iOS.Device.vendorIdentifier;
+#endif
+      return true;
+    }
+    else
+    {
+      customId = controller.getUser().getId();
+      return false;
+    }
   }
 
   // If something goes wrong with the API

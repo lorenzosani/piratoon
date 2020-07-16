@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;using Newtonsoft.Json;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class Village : Observable
+public class Village
 {
   [JsonProperty]
   List<Building> buildings;
@@ -14,13 +14,12 @@ public class Village : Observable
   [JsonProperty]
   int strength;
 
-  public Village(Vector3 _position, ObserverScript _observer)
+  public Village(Vector3 _position)
   {
     buildings = new List<Building>();
     level = 1;
     position = _position;
     strength = 0;
-    attachObserver(_observer);
   }
 
   public void addBuilding(Building building)
@@ -52,13 +51,13 @@ public class Village : Observable
 
   public void increaseStrength(int n){
     strength += n;
-    notifyChange();
+    API.SetUserData();
   }
 
   public void increaseLevel()
   {
     level += 1;
-    notifyChange();
+    API.SetUserData();
   }
 
   public int getLevel()
@@ -69,7 +68,7 @@ public class Village : Observable
   public void setPosition(Vector3 pos)
   {
     position = pos;
-    notifyChange();
+    API.SetUserData();
   }
 
   public Vector3 getPosition()
