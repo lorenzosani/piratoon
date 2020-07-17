@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 using PlayFab;
@@ -14,6 +15,7 @@ public static class API
   public static string customId = string.Empty;
 
   static ControllerScript controller;
+  static string playFabId;
 
   public static void RegisterScripts(ControllerScript c){
     controller = c;
@@ -57,13 +59,11 @@ public static class API
 
   public static void OnLogin(LoginResult login)
   {
+    playFabId = login.PlayFabId;
+    List<string> keys = new List<string> { "User", "Buildings", "Village" };  
     // Fetch user data
-    PlayFabClientAPI.GetUserData(new GetUserDataRequest() {
-        PlayFabId = login.PlayFabId,
-        Keys = null
-    }, result => { 
-      // Check if user has already data
-      if (result.Data != null && result.Data.ContainsKey("User"))
+    GetUserData(keys, result => {
+      if (result != null)
       { 
         // If yes, set the local user data to match the remote
         User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
@@ -71,43 +71,61 @@ public static class API
         user.setVillage(village);
         controller.setUser(user);
         controller.populateVillage(result.Data["Buildings"].Value);
-        Debug.Log("BUILDINGS: "+result.Data["Buildings"].Value);
-        Debug.Log("USER: "+result.Data["User"].Value);
+        Debug.Log("BUILDINGS: "+ result.Data["Buildings"].Value);
+        Debug.Log("USER: "+ result.Data["User"].Value);
       } else {
-        // If no, update server with new default user data
-        SetUserData();
+        Debug.Log("API Error: fetched data is null.");
       }
-    }, OnPlayFabError);
+    });
   }
 
-  public static void SetUserData(){
-    PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
-      Data = new Dictionary<string, string>() {
-        {"Buildings", JsonConvert.SerializeObject(
-          controller.getUser().getVillage().getBuildings(),
-          new JsonSerializerSettings
-          {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-          })
-        },
-        {"Village", JsonConvert.SerializeObject(
-          controller.getUser().getVillage(),
-          new JsonSerializerSettings
-          {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-          })
-        },
-        {"User", JsonConvert.SerializeObject(
-          controller.getUser(),
-          new JsonSerializerSettings
-          {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-          })
-        }
+  public static void SetUserData(string[] keys){
+    Dictionary<string, string> data = new Dictionary<string, string>() {
+      {"Buildings", JsonConvert.SerializeObject(
+        controller.getUser().getVillage().getBuildings(),
+        new JsonSerializerSettings
+        {
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        })
+      },
+      {"Village", JsonConvert.SerializeObject(
+        controller.getUser().getVillage(),
+        new JsonSerializerSettings
+        {
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        })
+      },
+      {"User", JsonConvert.SerializeObject(
+        controller.getUser(),
+        new JsonSerializerSettings
+        {
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        })
       }
+    };
+    Dictionary<string, string> request = new Dictionary<string, string>();
+    foreach(string key in keys)
+    {
+      if (data.ContainsKey(key)){
+        request[key] = data[key];
+      }
+    }
+    PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
+      Data=request
     }, result => {
       Debug.Log("Server-side data updated successfully.");
     }, error => OnPlayFabError(error));
+  }
+
+  public static void GetUserData(List<string> keys, Action<GetUserDataResult> callback){
+    // Fetch user data
+    PlayFabClientAPI.GetUserData(new GetUserDataRequest() {
+      PlayFabId = playFabId,
+      Keys = keys
+    }, result => { 
+      // Check if user has already data
+      callback(result.Data != null && result.Data.ContainsKey("User") ? result : null);
+    }, OnPlayFabError);
   }
 
   // Get info about the current operating system

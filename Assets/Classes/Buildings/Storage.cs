@@ -21,6 +21,5 @@ public class Storage : Building
 
   public override void startFunctionality(ControllerScript controller){
     controller.getUser().setStorage(storage);
-    API.SetUserData();
   }
 }

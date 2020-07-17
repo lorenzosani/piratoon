@@ -29,7 +29,7 @@ public class Inn : Building
 
   public override void resetLocalStorage(){
     localStorage = 0;
-    API.SetUserData();
+    API.SetUserData(new string[]{"Buildings"});
   }
 
   IEnumerator ProduceGold(ControllerScript controller) 
@@ -38,7 +38,7 @@ public class Inn : Building
     {
       if (controller.getUser().getStorageSpaceLeft()[0]-localStorage > 0){
         localStorage += 1;
-        API.SetUserData();
+    API.SetUserData(new string[]{"Buildings"});
       } 
       yield return new WaitForSeconds((float)3600/(level+1)*1);
     }

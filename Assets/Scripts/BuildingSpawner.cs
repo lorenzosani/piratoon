@@ -71,14 +71,16 @@ public class BuildingSpawner : MonoBehaviour
         headquarter = b;
       }
     }
-    if (checkHeadquarter && headquarter==null && buildingName != "Headquarter") {
-      ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
-      return;
-    }
-    if (checkHeadquarter && !newBuilding && headquarter!=null && headquarter.getLevel()<=building.getLevel()){
-      ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
-      newBuilding = true;
-      return;
+    if (buildingName != "Headquarter"){
+      if (checkHeadquarter && headquarter==null) {
+        ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
+        return;
+      }
+      if (checkHeadquarter && !newBuilding && headquarter!=null && headquarter.getLevel()<=building.getLevel()){
+        ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
+        newBuilding = true;
+        return;
+      }
     }
     // If it doesn't exist already, create a new building object
     if (newBuilding) building = createBuilding(buildingName);
@@ -141,7 +143,7 @@ public class BuildingSpawner : MonoBehaviour
   //This starts the construction of a building
   void startConstruction(Building b)
   {
-    API.SetUserData();
+    API.SetUserData(new string[]{"Buildings", "User", "Village"});
     currentlyBuilding = b;
     loadingBar.transform.position = b.getPosition(); ;
     loadingBar.SetActive(true);

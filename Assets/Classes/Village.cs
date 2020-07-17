@@ -51,13 +51,13 @@ public class Village
 
   public void increaseStrength(int n){
     strength += n;
-    API.SetUserData();
+    API.SetUserData(new string[]{"Village"});
   }
 
   public void increaseLevel()
   {
     level += 1;
-    API.SetUserData();
+    API.SetUserData(new string[]{"Village"});
   }
 
   public int getLevel()
@@ -68,7 +68,7 @@ public class Village
   public void setPosition(Vector3 pos)
   {
     position = pos;
-    API.SetUserData();
+    API.SetUserData(new string[]{"Village"});
   }
 
   public Vector3 getPosition()

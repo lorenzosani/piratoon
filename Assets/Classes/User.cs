@@ -44,7 +44,7 @@ public class User
 
   public void increaseLevel(){
     level=level+=1;
-    API.SetUserData();
+    API.SetUserData(new string[]{"User"});
   }
 
   public Village getVillage()
@@ -84,13 +84,13 @@ public class User
     for(int i=0; i<r.Length; i++) {
       resources[i] = (r[i] > storage) ? storage : r[i];
     }
-    API.SetUserData();
+    API.SetUserData(new string[]{"User"});
   }
 
   public void increaseResource(int i, int n)
   {
     resources[i] = (resources[i]+n > storage) ? storage : resources[i] + n;
-    API.SetUserData();
+    API.SetUserData(new string[]{"User"});
   }
 
   public int getPearl()
@@ -110,6 +110,6 @@ public class User
 
   public void setStorage(int s){
     storage = s;
-    API.SetUserData();
+    API.SetUserData(new string[]{"User"});
   }
 }

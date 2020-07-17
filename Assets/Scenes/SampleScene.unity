@@ -5118,7 +5118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 896793641}
   - component: {fileID: 896793640}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Waves
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9004,7 +9004,7 @@ GameObject:
   - component: {fileID: 1545770228}
   - component: {fileID: 1545770230}
   - component: {fileID: 1545770229}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9061,9 +9061,9 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1744036293
+  m_SortingLayer: -1
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 4.9, y: 4.555, z: 0}
   m_MaxChunkCount: 16
@@ -11730,7 +11730,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1927774283}
   - component: {fileID: 1927774284}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Sea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11787,8 +11787,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1744036293
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 5b75a1a95c5066d919bffef8076e6d51, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -12597,7 +12597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2095934301}
   - component: {fileID: 2095934300}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Island
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12640,9 +12640,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1744036293
+  m_SortingLayer: -1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 08cb93d5fc2dcd0f6be8d10036d0a52a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

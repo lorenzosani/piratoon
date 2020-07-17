@@ -18,6 +18,5 @@ public class Defence : Building
 
   public override void startFunctionality(ControllerScript controller){
     controller.getUser().getVillage().increaseStrength(140);
-    API.SetUserData();
   }
 }
