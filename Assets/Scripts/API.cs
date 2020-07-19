@@ -14,11 +14,14 @@ public static class API
   public static string iosId = string.Empty;
   public static string customId = string.Empty;
 
-  static ControllerScript controller;
   static string playFabId;
 
-  public static void RegisterScripts(ControllerScript c){
+  static ControllerScript controller;
+  static UIScript ui;
+  
+  public static void RegisterScripts(ControllerScript c, UIScript u){
     controller = c;
+    ui = u;
   }
 
   public static void Login(){
@@ -58,25 +61,32 @@ public static class API
   }
 
   public static void OnLogin(LoginResult login)
-  {
+  { 
     playFabId = login.PlayFabId;
     List<string> keys = new List<string> { "User", "Buildings", "Village" };  
-    // Fetch user data
-    GetUserData(keys, result => {
-      if (result != null)
-      { 
-        // If yes, set the local user data to match the remote
-        User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
-        Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
-        user.setVillage(village);
-        controller.setUser(user);
-        controller.populateVillage(result.Data["Buildings"].Value);
-        Debug.Log("BUILDINGS: "+ result.Data["Buildings"].Value);
-        Debug.Log("USER: "+ result.Data["User"].Value);
-      } else {
-        Debug.Log("API Error: fetched data is null.");
-      }
-    });
+    if (!login.NewlyCreated) {
+      // Fetch user data
+      GetUserData(keys, result => {
+        if (result != null)
+        { 
+          // If yes, set the local user data to match the remote
+          User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
+          Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
+          user.setVillage(village);
+          controller.setUser(user);
+          controller.populateVillage(result.Data["Buildings"].Value);
+          Debug.Log("BUILDINGS: "+ result.Data["Buildings"].Value);
+          Debug.Log("USER: "+ result.Data["User"].Value);
+          ui.showLoadingScreen(false);
+        } else {
+          Debug.Log("API Error: fetched data is null.");
+        }
+      });
+    } else {
+      // Set default data for a new user
+      SetUserData(keys.ToArray());
+      ui.showLoadingScreen(false);
+    }
   }
 
   public static void SetUserData(string[] keys){
@@ -129,12 +139,11 @@ public static class API
   }
 
   // Get info about the current operating system
-  public static bool GetDeviceId(bool silent = false) // silent suppresses the error
+  public static bool GetDeviceId(bool silent = false)
   {
     if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
     {
 #if UNITY_ANDROID
-      //http://answers.unity3d.com/questions/430630/how-can-i-get-android-id-.html
       AndroidJavaClass clsUnity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
       AndroidJavaObject objActivity = clsUnity.GetStatic<AndroidJavaObject>("currentActivity");
       AndroidJavaObject objResolver = objActivity.Call<AndroidJavaObject>("getContentResolver");

@@ -11,12 +11,14 @@ public class ControllerScript : MonoBehaviour
 {
   User user;
   BuildingSpawner spawner;
+  UIScript ui;
 
   void Awake()
   {
     spawner = GetComponent<BuildingSpawner>();
+    ui = GameObject.Find("Rendered UI").GetComponent<UIScript>();
     user = new User("user16", "x", new Village(Vector3.zero));
-    API.RegisterScripts(this);
+    API.RegisterScripts(this, ui);
     API.Login();
   }
 

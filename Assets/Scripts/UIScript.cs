@@ -12,9 +12,14 @@ public class UIScript : MonoBehaviour
   public Text pearlValue;
   public Slider bountyObject;
   public GameObject messagePopup;
+  public GameObject loadingScreen;
 
   int previousBounty;
   int userLevel;
+
+  void Start(){
+    showLoadingScreen(true);
+  }
 
   void Update()
   {
@@ -63,5 +68,9 @@ public class UIScript : MonoBehaviour
   
   public void playSuccessSound(){
     messagePopup.GetComponent<AudioSource>().Play();
+  }
+
+  public void showLoadingScreen(bool loading){
+    loadingScreen.SetActive(loading);
   }
 }
