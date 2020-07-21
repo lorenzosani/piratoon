@@ -2,13 +2,14 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using PlayFab;
 using PlayFab.ClientModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public static class API
+public static class API 
 {
   public static string androidId = string.Empty;
   public static string iosId = string.Empty;
@@ -36,7 +37,7 @@ public static class API
             CreateAccount = true
           }, 
           OnLogin, 
-          OnPlayFabError
+          e => OnPlayFabError(e, true)
         );
       } else if (!string.IsNullOrEmpty(iosId))
       {
@@ -48,7 +49,7 @@ public static class API
             CreateAccount = true
           }, 
           OnLogin,
-          OnPlayFabError
+          e => OnPlayFabError(e, true)
         );
       }
     } else {
@@ -56,7 +57,7 @@ public static class API
         CustomId = controller.getUser().getId(), 
         CreateAccount = true
       };
-      PlayFabClientAPI.LoginWithCustomID(newApiRequest, OnLogin, OnPlayFabError);
+      PlayFabClientAPI.LoginWithCustomID(newApiRequest, OnLogin, e => OnPlayFabError(e, true));
     }
   }
 
@@ -124,7 +125,7 @@ public static class API
       Data=request
     }, result => {
       Debug.Log("Server-side data updated successfully.");
-    }, error => OnPlayFabError(error));
+    }, e => OnPlayFabError(e));
   }
 
   public static void GetUserData(List<string> keys, Action<GetUserDataResult> callback){
@@ -135,7 +136,7 @@ public static class API
     }, result => { 
       // Check if user has already data
       callback(result.Data != null && result.Data.ContainsKey("User") ? result : null);
-    }, OnPlayFabError);
+    }, e => OnPlayFabError(e));
   }
 
   // Get info about the current operating system
@@ -163,10 +164,16 @@ public static class API
   }
 
   // If something goes wrong with the API
-  public static void OnPlayFabError(PlayFabError error)
+  public static void OnPlayFabError(PlayFabError error, bool login = false)
   {
     Debug.LogWarning("Something went wrong with your API call.");
-    Debug.LogError("Here's some debug information:");
     Debug.LogError(error.GenerateErrorReport());
+    if (!login) ui.showConnectionError(true);
+    // Retry to connect
+    if (login) {
+      controller.Invoke("login", 3.0f); 
+    } else {
+      controller.Invoke("retryConnection", 3.0f); 
+    }
   }
 }

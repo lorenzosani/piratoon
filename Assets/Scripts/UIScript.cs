@@ -13,6 +13,7 @@ public class UIScript : MonoBehaviour
   public Slider bountyObject;
   public GameObject messagePopup;
   public GameObject loadingScreen;
+  public GameObject connectionError;
 
   int previousBounty;
   int userLevel;
@@ -72,5 +73,9 @@ public class UIScript : MonoBehaviour
 
   public void showLoadingScreen(bool loading){
     loadingScreen.SetActive(loading);
+  }
+
+  public void showConnectionError(bool error){
+    connectionError.SetActive(error);
   }
 }

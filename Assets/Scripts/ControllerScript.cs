@@ -13,13 +13,13 @@ public class ControllerScript : MonoBehaviour
   BuildingSpawner spawner;
   UIScript ui;
 
-  void Awake()
+  void Start()
   {
     spawner = GetComponent<BuildingSpawner>();
     ui = GameObject.Find("Rendered UI").GetComponent<UIScript>();
-    user = new User("user16", "x", new Village(Vector3.zero));
+    user = new User("user18", "x", new Village(Vector3.zero));
     API.RegisterScripts(this, ui);
-    API.Login();
+    login();
   }
 
   // Show buildings from json data
@@ -28,6 +28,7 @@ public class ControllerScript : MonoBehaviour
     List<Building> buildingsList = new List<Building>();
 
     JArray buildingsObject = JArray.Parse(buildingsJson);
+    spawner.removeAllBuildings();
     for(int i=0; i<buildingsObject.Count; i++){
       Building b = spawner.createBuilding((string) buildingsObject[i]["name"]);
       b.setLevel((int) buildingsObject[i]["level"]);
@@ -48,6 +49,30 @@ public class ControllerScript : MonoBehaviour
       spawner.addBuildingFromServer(b);
     }
     village.setBuildingsFromList(buildingsList);
+  }
+
+  public void retryConnection(){
+    List<string> keys = new List<string> { "User", "Buildings", "Village" };  
+    API.GetUserData(keys, result => {
+      if (result != null)
+      { 
+        ui.showConnectionError(false);
+        User u = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
+        Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
+        u.setVillage(village);
+        setUser(u);
+        populateVillage(result.Data["Buildings"].Value);
+        Debug.Log("BUILDINGS: "+ result.Data["Buildings"].Value);
+        Debug.Log("USER: "+ result.Data["User"].Value);
+        ui.showLoadingScreen(false);
+      } else {
+        Debug.Log("API Error: fetched data is null.");
+      }
+    });
+  }
+
+  public void login(){
+    API.Login();
   }
 
   //*****************************************************************

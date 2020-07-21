@@ -156,6 +156,7 @@ public class BuildingSpawner : MonoBehaviour
     // Instantiate building on the scene
     GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
     buildingObj.name = b.getName();
+    buildingObj.layer = 9;
     // Implement buildings functionality
     b.startFunctionality(controller);
   }
@@ -169,8 +170,19 @@ public class BuildingSpawner : MonoBehaviour
     }else{
       GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
       buildingObj.name = b.getName();
+      buildingObj.layer = 9;
       if(b.getName()=="Woodcutter" || b.getName()=="Stonecutter" || b.getName()=="Inn"){
         b.startFunctionality(controller);
+      }
+    }
+  }
+
+  public void removeAllBuildings(){
+    loadingBar.SetActive(false);
+    var objects = FindObjectsOfType(typeof(GameObject));
+    foreach (GameObject obj in objects) {
+      if (obj.layer == 9) {
+        Destroy(obj);
       }
     }
   }
