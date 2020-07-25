@@ -15,7 +15,8 @@ public static class API
   public static string iosId = string.Empty;
   public static string customId = string.Empty;
 
-  static string playFabId;
+  static string playFabId = string.Empty;
+  static string playFabUsername = string.Empty;
 
   static ControllerScript controller;
   static UIScript ui;
@@ -161,6 +162,34 @@ public static class API
       customId = controller.getUser().getId();
       return false;
     }
+  }
+
+  // Register a recoverable account with the provided details, for the current player
+  public static void RegisterUser(string username, string email, string password, Action<string,string> callback)
+  {
+    PlayFabClientAPI.AddUsernamePassword(new AddUsernamePasswordRequest() {
+        Email = email,
+        Password = password,
+        Username = username
+      }, result => {
+        Debug.Log("SUCCESS!! Username is " + result.Username);
+        playFabUsername = result.Username;
+        callback("SUCCESS", "");
+      }, error => {
+        if (error.ErrorDetails != null) {
+          List<string> message;
+          if(error.ErrorDetails.TryGetValue("Username", out message)) callback(message[0], "Username");
+          else if(error.ErrorDetails.TryGetValue("Email", out message)) callback(message[0], "Email");
+          else if(error.ErrorDetails.TryGetValue("Password", out message)) callback(message[0], "Password");
+        } else {
+          callback("Oops... Something went wrong with the registration. Please try again", "");
+        }
+      }
+    );
+  }
+
+  public static string GetUsername(){
+    return playFabUsername;
   }
 
   // If something goes wrong with the API

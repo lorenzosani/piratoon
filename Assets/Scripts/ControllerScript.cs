@@ -17,7 +17,7 @@ public class ControllerScript : MonoBehaviour
   {
     spawner = GetComponent<BuildingSpawner>();
     ui = GameObject.Find("Rendered UI").GetComponent<UIScript>();
-    user = new User("user18", "x", new Village(Vector3.zero));
+    user = new User("user24", "x", new Village(Vector3.zero));
     API.RegisterScripts(this, ui);
     login();
   }
