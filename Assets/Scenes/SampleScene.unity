@@ -2225,7 +2225,7 @@ MonoBehaviour:
           m_StringArgument: Defence
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -3038,7 +3038,7 @@ MonoBehaviour:
           m_StringArgument: Headquarter
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -9233,7 +9233,7 @@ MonoBehaviour:
           m_StringArgument: Inventor
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -10484,7 +10484,7 @@ MonoBehaviour:
           m_StringArgument: Inn
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -10966,7 +10966,7 @@ MonoBehaviour:
           m_StringArgument: Watchtower
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -15486,7 +15486,7 @@ MonoBehaviour:
           m_StringArgument: Woodcutter
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -15604,7 +15604,7 @@ MonoBehaviour:
           m_StringArgument: Stonecutter
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -15916,7 +15916,7 @@ MonoBehaviour:
           m_StringArgument: Shipyard
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:
@@ -17279,7 +17279,7 @@ MonoBehaviour:
           m_StringArgument: Storage
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1181605014}
+      - m_Target: {fileID: 1630499859}
         m_MethodName: SetActive
         m_Mode: 6
         m_Arguments:

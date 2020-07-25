@@ -16,4 +16,10 @@ HEADQUARTERS_FIRST = Don't rush!\n\nLet's build headquarters first.
 UPGRADE_HEADQUARTERS = In order to upgrade this building, you need to upgrade your Headquarters first!
 NOT_RESOURCES = Oops, it looks like you don't have enough resources to build this.
 BOUNTY_LEVELUP = Woohooa!\n\nYou have reached bounty level 
-
+REGISTRATION = Fill in your details and become a pirate!
+REG_USERNAME = Please enter a funny username!
+REG_EMAIL = Please enter your email address
+REG_PASSWORD = Please enter a super secret password!
+REG_REPEAT = Please please please repeat your password!
+REG_MATCH = The passwords don't match!
+REG_WRONG = Oops... Something went wrong with the registration. Please try again

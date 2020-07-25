@@ -21,8 +21,9 @@ public class AuthenticationScript : MonoBehaviour
   string password = null;
   string repeatPassword = null;
 
-  void Awake()
+  void Start()
   {
+    description.text = Language.Field["REGISTRATION"];
     if (!isEmpty(API.GetUsername())) {
       notLoggedInPage.SetActive(false);
       registrationPage.SetActive(false);
@@ -71,7 +72,7 @@ public class AuthenticationScript : MonoBehaviour
   }
 
   void clearErrors(){
-    description.text = "Fill in your details and become a pirate!";
+    description.text = Language.Field["REGISTRATION"];
     description.color = Color.white;
     Outline usernameOutline = usernameField.GetComponent<Outline>();
     Outline emailOutline = emailField.GetComponent<Outline>();
@@ -85,23 +86,23 @@ public class AuthenticationScript : MonoBehaviour
 
   bool fieldsAreValid(){
     if (isEmpty(username)) {
-      setError("Please enter a funny username!", usernameField);
+      setError(Language.Field["REG_USERNAME"], usernameField);
       return false;
     }
     if (isEmpty(email)) {
-      setError("Please enter your email address", emailField);
+      setError(Language.Field["REG_EMAIL"], emailField);
       return false;
     }
     if (isEmpty(password)) {
-      setError("Please enter a super secret password!", passwordField);
+      setError(Language.Field["REG_PASSWORD"], passwordField);
       return false;
     }
     if (isEmpty(repeatPassword)) {
-      setError("Please please please repeat your password!", repeatPasswordField);
+      setError(Language.Field["REG_REPEAT"], repeatPasswordField);
       return false;
     }
     if (password != repeatPassword) {
-      setError("The passwords don't match!", repeatPasswordField);
+      setError(Language.Field["REG_MATCH"], repeatPasswordField);
       return false;
     }
     return true;

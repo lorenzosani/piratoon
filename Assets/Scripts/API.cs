@@ -182,7 +182,7 @@ public static class API
           else if(error.ErrorDetails.TryGetValue("Email", out message)) callback(message[0], "Email");
           else if(error.ErrorDetails.TryGetValue("Password", out message)) callback(message[0], "Password");
         } else {
-          callback("Oops... Something went wrong with the registration. Please try again", "");
+          callback(Language.Field["REG_WRONG"], "");
         }
       }
     );
