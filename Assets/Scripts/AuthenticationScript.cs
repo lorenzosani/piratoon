@@ -24,7 +24,7 @@ public class AuthenticationScript : MonoBehaviour
   void Start()
   {
     description.text = Language.Field["REGISTRATION"];
-    if (!isEmpty(API.GetUsername())) {
+    if (API.IsRegistered() && !isEmpty(API.GetStoredPlayerId())) {
       notLoggedInPage.SetActive(false);
       registrationPage.SetActive(false);
       onLoginPage.SetActive(true);

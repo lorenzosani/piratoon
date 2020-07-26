@@ -9,17 +9,31 @@ using Newtonsoft.Json.Linq;
 
 public class ControllerScript : MonoBehaviour
 {
+  public bool rememberLoginDetails = true;
+
   User user;
   BuildingSpawner spawner;
   UIScript ui;
 
-  void Start()
+  void Awake()
   {
     spawner = GetComponent<BuildingSpawner>();
     ui = GameObject.Find("Rendered UI").GetComponent<UIScript>();
-    user = new User("user24", "x", new Village(Vector3.zero));
+    user = new User("user", "x", new Village(Vector3.zero));
     API.RegisterScripts(this, ui);
     login();
+  }
+
+  // Attempts to login a player using either stored or device details
+  public void login(){
+    string storedId = API.GetStoredPlayerId();
+    if (!isEmpty(storedId) && rememberLoginDetails){
+      API.StoredLogin(storedId);
+    } else {
+      API.StorePlayerId("");
+      API.StoreRegistered(false);
+      API.AnonymousLogin();
+    }
   }
 
   // Show buildings from json data
@@ -62,17 +76,11 @@ public class ControllerScript : MonoBehaviour
         u.setVillage(village);
         setUser(u);
         populateVillage(result.Data["Buildings"].Value);
-        Debug.Log("BUILDINGS: "+ result.Data["Buildings"].Value);
-        Debug.Log("USER: "+ result.Data["User"].Value);
         ui.showLoadingScreen(false);
       } else {
         Debug.Log("API Error: fetched data is null.");
       }
     });
-  }
-
-  public void login(){
-    API.Login();
   }
 
   //*****************************************************************
@@ -86,5 +94,12 @@ public class ControllerScript : MonoBehaviour
   public void setUser(User u)
   {
     user = u;
+  }
+
+  //*****************************************************************
+  // HELPER methods
+  //*****************************************************************
+  bool isEmpty(string value){
+    return value == "" || value == " " || value == null;
   }
 }

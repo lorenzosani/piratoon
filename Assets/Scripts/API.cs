@@ -26,7 +26,54 @@ public static class API
     ui = u;
   }
 
-  public static void Login(){
+  // Register a recoverable account with the provided details, for the current player
+  public static void RegisterUser(string username, string email, string password, Action<string,string> callback)
+  {
+    PlayFabClientAPI.AddUsernamePassword(new AddUsernamePasswordRequest() {
+        Email = email,
+        Password = password,
+        Username = username
+      }, result => {
+        playFabUsername = result.Username;
+        if (GetStoredPlayerId() == "") {
+          Debug.Log("linking new custom id");
+          string guid = Guid.NewGuid().ToString();
+          PlayFabClientAPI.LinkCustomID(new LinkCustomIDRequest() {
+              CustomId = guid
+            }, r => {
+              StorePlayerId(guid);
+              callback("SUCCESS", "");
+            }, e => {
+              OnPlayFabError(e);
+            }
+          );
+        } else {
+          StoreRegistered(true);
+          callback("SUCCESS", "");
+        }
+      }, error => {
+        if (error.ErrorDetails != null) {
+          List<string> message;
+          if(error.ErrorDetails.TryGetValue("Username", out message)) callback(message[0], "Username");
+          else if(error.ErrorDetails.TryGetValue("Email", out message)) callback(message[0], "Email");
+          else if(error.ErrorDetails.TryGetValue("Password", out message)) callback(message[0], "Password");
+        } else {
+          Debug.Log(error);
+          callback(Language.Field["REG_ALREADY"], "");
+        }
+      }
+    );
+  }
+
+  public static void StoredLogin(string storedId){
+  Debug.Log("login with id " + storedId);
+    PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
+      CustomId = storedId, 
+      CreateAccount = true
+    }, OnLogin, e => OnPlayFabError(e, true));
+  }
+
+  public static void AnonymousLogin(){
     if (GetDeviceId()){
       if (!string.IsNullOrEmpty(androidId))
       {
@@ -54,17 +101,14 @@ public static class API
         );
       }
     } else {
-      var newApiRequest = new LoginWithCustomIDRequest {
-        CustomId = controller.getUser().getId(), 
-        CreateAccount = true
-      };
-      PlayFabClientAPI.LoginWithCustomID(newApiRequest, OnLogin, e => OnPlayFabError(e, true));
+      string guid = Guid.NewGuid().ToString();
+      StorePlayerId(guid);
+      StoredLogin(guid);
     }
   }
 
   public static void OnLogin(LoginResult login)
   { 
-    playFabId = login.PlayFabId;
     List<string> keys = new List<string> { "User", "Buildings", "Village" };  
     if (!login.NewlyCreated) {
       // Fetch user data
@@ -77,8 +121,6 @@ public static class API
           user.setVillage(village);
           controller.setUser(user);
           controller.populateVillage(result.Data["Buildings"].Value);
-          Debug.Log("BUILDINGS: "+ result.Data["Buildings"].Value);
-          Debug.Log("USER: "+ result.Data["User"].Value);
           ui.showLoadingScreen(false);
         } else {
           Debug.Log("API Error: fetched data is null.");
@@ -164,28 +206,20 @@ public static class API
     }
   }
 
-  // Register a recoverable account with the provided details, for the current player
-  public static void RegisterUser(string username, string email, string password, Action<string,string> callback)
-  {
-    PlayFabClientAPI.AddUsernamePassword(new AddUsernamePasswordRequest() {
-        Email = email,
-        Password = password,
-        Username = username
-      }, result => {
-        Debug.Log("SUCCESS!! Username is " + result.Username);
-        playFabUsername = result.Username;
-        callback("SUCCESS", "");
-      }, error => {
-        if (error.ErrorDetails != null) {
-          List<string> message;
-          if(error.ErrorDetails.TryGetValue("Username", out message)) callback(message[0], "Username");
-          else if(error.ErrorDetails.TryGetValue("Email", out message)) callback(message[0], "Email");
-          else if(error.ErrorDetails.TryGetValue("Password", out message)) callback(message[0], "Password");
-        } else {
-          callback(Language.Field["REG_WRONG"], "");
-        }
-      }
-    );
+  public static string GetStoredPlayerId(){
+    return PlayerPrefs.GetString("PlayerId", "");
+  }
+
+  public static void StorePlayerId(string id){
+    PlayerPrefs.SetString("PlayerId", id);
+  }
+
+  public static bool IsRegistered(){
+    return PlayerPrefs.GetInt("Registered", 0) > 0;
+  }
+
+  public static void StoreRegistered(bool registered){
+    PlayerPrefs.SetInt("Registered", registered ? 1 : 0);
   }
 
   public static string GetUsername(){
