@@ -3802,7 +3802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ui: {fileID: 16704399}
   loadingBar: {fileID: 1593286348}
-  checkHeadquarter: 0
+  checkHeadquarter: 1
 --- !u!82 &432649549
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4763,7 +4763,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDistanceForTap: 40
   maxDurationForTap: 0.4
-  useMouse: 1
+  useMouse: 0
   mouseScrollSpeed: 2
   controlCamera: 1
   cam: {fileID: 519420031}

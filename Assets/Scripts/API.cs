@@ -74,37 +74,9 @@ public static class API
   }
 
   public static void AnonymousLogin(){
-    if (GetDeviceId()){
-      if (!string.IsNullOrEmpty(androidId))
-      {
-        PlayFabClientAPI.LoginWithAndroidDeviceID(
-          new LoginWithAndroidDeviceIDRequest
-          {
-            AndroidDeviceId = androidId,
-            TitleId = PlayFabSettings.TitleId,
-            CreateAccount = true
-          }, 
-          OnLogin, 
-          e => OnPlayFabError(e, true)
-        );
-      } else if (!string.IsNullOrEmpty(iosId))
-      {
-        PlayFabClientAPI.LoginWithIOSDeviceID(
-          new LoginWithIOSDeviceIDRequest
-          {
-            DeviceId = iosId,
-            TitleId = PlayFabSettings.TitleId,
-            CreateAccount = true
-          }, 
-          OnLogin,
-          e => OnPlayFabError(e, true)
-        );
-      }
-    } else {
-      string guid = Guid.NewGuid().ToString();
-      StorePlayerId(guid);
-      StoredLogin(guid);
-    }
+    string guid = Guid.NewGuid().ToString();
+    StorePlayerId(guid);
+    StoredLogin(guid);
   }
 
   public static void OnLogin(LoginResult login)
@@ -180,30 +152,6 @@ public static class API
       // Check if user has already data
       callback(result.Data != null && result.Data.ContainsKey("User") ? result : null);
     }, e => OnPlayFabError(e));
-  }
-
-  // Get info about the current operating system
-  public static bool GetDeviceId(bool silent = false)
-  {
-    if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-    {
-#if UNITY_ANDROID
-      AndroidJavaClass clsUnity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-      AndroidJavaObject objActivity = clsUnity.GetStatic<AndroidJavaObject>("currentActivity");
-      AndroidJavaObject objResolver = objActivity.Call<AndroidJavaObject>("getContentResolver");
-      AndroidJavaClass clsSecure = new AndroidJavaClass("android.provider.Settings$Secure");
-      androidId = clsSecure.CallStatic<string>("getString", objResolver, "android_id");
-#endif
-#if UNITY_IPHONE
-      iosId = UnityEngine.iOS.Device.vendorIdentifier;
-#endif
-      return true;
-    }
-    else
-    {
-      customId = controller.getUser().getId();
-      return false;
-    }
   }
 
   public static string GetStoredPlayerId(){
