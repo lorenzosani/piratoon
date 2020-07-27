@@ -23,3 +23,5 @@ REG_PASSWORD = Please enter a super secret password!
 REG_REPEAT = Please please please repeat your password!
 REG_MATCH = The passwords don't match!
 REG_ALREADY = You already have registered this account, please login!
+LOGIN_ERROR = Oops... Something went wrong with your login, please try again.
+REG_USERLENGTH = Username should be between 3 and 13 characters

@@ -76,7 +76,7 @@ public class ControllerScript : MonoBehaviour
         u.setVillage(village);
         setUser(u);
         populateVillage(result.Data["Buildings"].Value);
-        ui.showLoadingScreen(false);
+        ui.hideLoadingScreen();
       } else {
         Debug.Log("API Error: fetched data is null.");
       }

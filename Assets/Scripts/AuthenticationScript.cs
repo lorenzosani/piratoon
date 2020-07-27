@@ -6,14 +6,20 @@ using System.Collections.Generic;
 public class AuthenticationScript : MonoBehaviour
 {
   public Text description;
+  public Text loginDescription;
   public GameObject usernameField;
   public GameObject emailField;
   public GameObject passwordField;
   public GameObject repeatPasswordField;
+  public GameObject loginUsernameField;
+  public GameObject loginPasswordField;
   public GameObject registerButton;
-  public GameObject spinner;
+  public GameObject loginButton;
+  public GameObject registrationSpinner;
+  public GameObject loginSpinner;
   public GameObject notLoggedInPage;
   public GameObject registrationPage;
+  public GameObject loginPage;
   public GameObject onLoginPage;
 
   string username = null;
@@ -27,12 +33,30 @@ public class AuthenticationScript : MonoBehaviour
     if (API.IsRegistered() && !isEmpty(API.GetStoredPlayerId())) {
       notLoggedInPage.SetActive(false);
       registrationPage.SetActive(false);
+      loginPage.SetActive(false);
       onLoginPage.SetActive(true);
     } else {
       onLoginPage.SetActive(false);
       registrationPage.SetActive(false);
+      loginPage.SetActive(false);
       notLoggedInPage.SetActive(true);
     }
+  }
+
+  public void register(){
+    clearErrors();
+    if (!fieldsAreValid(true,true,true,true)) return;
+    registerButton.SetActive(false);
+    registrationSpinner.SetActive(true);
+    API.RegisterUser(username, email, password, (message, field) => registrationResult(message, field));
+  }
+
+  public void login(){
+    clearErrors();
+    if (!fieldsAreValid(true,false,true,false)) return;
+    loginButton.SetActive(false);
+    loginSpinner.SetActive(true);
+    API.UsernameLogin(username, password, message => loginResult(message));
   }
 
   public void setUsername(string u){
@@ -51,21 +75,14 @@ public class AuthenticationScript : MonoBehaviour
     repeatPassword = r;
   }
 
-  public void register(){
-    clearErrors();
-    if (!fieldsAreValid()) return;
-    registerButton.SetActive(false);
-    spinner.SetActive(true);
-    API.RegisterUser(username, email, password, (message, field) => registrationResult(message, field));
-  }
-
-  void setError(string message, GameObject field=null){
-    description.text = message;
+  void setError(string message, GameObject field=null, bool login=false){
+    Text descr = login ? loginDescription : description;
+    descr.text = message;
     Color red = Color.red;
     red.r = 1.0f;
     red.g = 0.66f;
     red.b = 0.66f;
-    description.color = red;
+    descr.color = red;
     if (!field) return;
     Outline outline = field.GetComponent<Outline>();
     outline.enabled = true;
@@ -84,24 +101,28 @@ public class AuthenticationScript : MonoBehaviour
     repeatPasswordOutline.enabled = false;
   }
 
-  bool fieldsAreValid(){
-    if (isEmpty(username)) {
+  bool fieldsAreValid(bool u, bool e, bool p, bool r){
+    if (u && isEmpty(username)) {
       setError(Language.Field["REG_USERNAME"], usernameField);
       return false;
     }
-    if (isEmpty(email)) {
+    if (u && (username.Length<3 || username.Length>13)){
+      setError(Language.Field["REG_USERLENGTH"], usernameField);
+      return false;
+    }
+    if (e && isEmpty(email)) {
       setError(Language.Field["REG_EMAIL"], emailField);
       return false;
     }
-    if (isEmpty(password)) {
+    if (p && isEmpty(password)) {
       setError(Language.Field["REG_PASSWORD"], passwordField);
       return false;
     }
-    if (isEmpty(repeatPassword)) {
+    if (r && isEmpty(repeatPassword)) {
       setError(Language.Field["REG_REPEAT"], repeatPasswordField);
       return false;
     }
-    if (password != repeatPassword) {
+    if (p && r && password != repeatPassword) {
       setError(Language.Field["REG_MATCH"], repeatPasswordField);
       return false;
     }
@@ -109,7 +130,7 @@ public class AuthenticationScript : MonoBehaviour
   }
 
   void registrationResult(string message, string inputField){
-    spinner.SetActive(false);
+    registrationSpinner.SetActive(false);
     registerButton.SetActive(true);
     if (message == "SUCCESS") {
       registrationPage.SetActive(false);
@@ -125,9 +146,21 @@ public class AuthenticationScript : MonoBehaviour
     }
   }
 
+  void loginResult(string message){
+    loginSpinner.SetActive(false);
+    loginButton.SetActive(true);
+    if (message == "SUCCESS") {
+      loginPage.SetActive(false);
+      populateAccountInfo();
+      onLoginPage.SetActive(true);
+    } else {
+      setError(message, null, true);
+    }
+  }
+
   void populateAccountInfo(){
     Text onLoginText = onLoginPage.GetComponentInChildren(typeof(Text), true) as Text;
-    onLoginText.text = "Hello " + API.GetUsername() + "!\nYou are now officially a pirate!";
+    onLoginText.text = "Hello " + API.GetUsername() + "!";
   }
 
   bool isEmpty(string value){

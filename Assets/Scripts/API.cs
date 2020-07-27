@@ -16,7 +16,7 @@ public static class API
   public static string customId = string.Empty;
 
   static string playFabId = string.Empty;
-  static string playFabUsername = string.Empty;
+  static string sessionTicket = string.Empty;
 
   static ControllerScript controller;
   static UIScript ui;
@@ -34,14 +34,14 @@ public static class API
         Password = password,
         Username = username
       }, result => {
-        playFabUsername = result.Username;
+        StoreUsername(result.Username);
         if (GetStoredPlayerId() == "") {
-          Debug.Log("linking new custom id");
           string guid = Guid.NewGuid().ToString();
           PlayFabClientAPI.LinkCustomID(new LinkCustomIDRequest() {
               CustomId = guid
             }, r => {
               StorePlayerId(guid);
+              StoreUsername(username);
               callback("SUCCESS", "");
             }, e => {
               OnPlayFabError(e);
@@ -65,8 +65,35 @@ public static class API
     );
   }
 
+  public static void UsernameLogin(string username, string password, Action<string> callback=null){
+    PlayFabClientAPI.LoginWithPlayFab(new LoginWithPlayFabRequest() {
+      Username = username,
+      TitleId = "E206C",
+      Password = password
+    }, result => {
+      OnLogin(result);
+      PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
+        StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
+        StoreUsername(r.AccountInfo.Username);
+      }, e => {
+        OnPlayFabError(e);
+      });
+      StoreRegistered(true);
+      callback("SUCCESS");
+    }, error => {
+      if (error.ErrorDetails != null) {
+        List<string> message;
+        if(error.ErrorDetails.TryGetValue("Password", out message)) callback(message[0]);
+      } else if (error.ToString().Contains(":")){
+        callback(error.ToString().Substring(error.ToString().LastIndexOf(':')+1));
+      } else {
+        Debug.Log(error);
+        callback(Language.Field["LOGIN_ERROR"]);
+      }
+    });
+  }
+
   public static void StoredLogin(string storedId){
-  Debug.Log("login with id " + storedId);
     PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
       CustomId = storedId, 
       CreateAccount = true
@@ -81,7 +108,10 @@ public static class API
 
   public static void OnLogin(LoginResult login)
   { 
-    List<string> keys = new List<string> { "User", "Buildings", "Village" };  
+    ui.showLoadingScreen();
+    playFabId = login.PlayFabId;
+    sessionTicket = login.SessionTicket;
+    List<string> keys = new List<string> { "User", "Buildings", "Village" };
     if (!login.NewlyCreated) {
       // Fetch user data
       GetUserData(keys, result => {
@@ -93,7 +123,9 @@ public static class API
           user.setVillage(village);
           controller.setUser(user);
           controller.populateVillage(result.Data["Buildings"].Value);
-          ui.showLoadingScreen(false);
+          ui.updateAccountMenu();
+          ui.hideAccountMenu();
+          ui.Invoke("hideLoadingScreen", 2.0f);
         } else {
           Debug.Log("API Error: fetched data is null.");
         }
@@ -101,7 +133,7 @@ public static class API
     } else {
       // Set default data for a new user
       SetUserData(keys.ToArray());
-      ui.showLoadingScreen(false);
+      ui.Invoke("hideLoadingScreen", 2.0f);
     }
   }
 
@@ -170,8 +202,12 @@ public static class API
     PlayerPrefs.SetInt("Registered", registered ? 1 : 0);
   }
 
+  public static void StoreUsername(string username){
+    PlayerPrefs.SetString("Username", username);
+  }
+
   public static string GetUsername(){
-    return playFabUsername;
+    return PlayerPrefs.GetString("Username", "");
   }
 
   // If something goes wrong with the API

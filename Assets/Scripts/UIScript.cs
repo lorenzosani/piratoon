@@ -14,12 +14,18 @@ public class UIScript : MonoBehaviour
   public GameObject messagePopup;
   public GameObject loadingScreen;
   public GameObject connectionError;
+  public GameObject accountMenu;
+  public Text accountMenuUsername;
+  public Text accountMenuLevel;
+  public Text accountMenuBounty;
+  public Text accountMenuStorage;
 
   int previousBounty;
   int userLevel;
 
   void Start(){
-    showLoadingScreen(true);
+    showLoadingScreen();
+    InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
   }
 
   void Update()
@@ -71,11 +77,27 @@ public class UIScript : MonoBehaviour
     messagePopup.GetComponent<AudioSource>().Play();
   }
 
-  public void showLoadingScreen(bool loading){
-    loadingScreen.SetActive(loading);
+  public void showLoadingScreen(){
+    loadingScreen.SetActive(true);
+  }
+
+  public void hideLoadingScreen(){
+    loadingScreen.SetActive(false);
+  }
+
+  public void hideAccountMenu(){
+    accountMenu.SetActive(false);
   }
 
   public void showConnectionError(bool error){
     connectionError.SetActive(error);
+  }
+
+  public void updateAccountMenu(){
+    User user = controller.getUser();
+    accountMenuUsername.text = API.GetUsername();
+    accountMenuLevel.text = user.getLevel().ToString();
+    accountMenuBounty.text = user.getBounty().ToString();
+    accountMenuStorage.text = user.getStorage().ToString();
   }
 }
