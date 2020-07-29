@@ -401,19 +401,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26903593a866dd076bc7bbd9a072f5c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 432649546}
   woodValue: {fileID: 961697742}
   stoneValue: {fileID: 849039591}
   goldValue: {fileID: 1658675095}
   pearlValue: {fileID: 65571065}
   bountyObject: {fileID: 399054098}
-  messagePopup: {fileID: 1340627651}
   loadingScreen: {fileID: 162130593}
   connectionError: {fileID: 410109257}
+  buildingsButton: {fileID: 749374061}
+  mapButton: {fileID: 444154878}
+  accountButton: {fileID: 1343067936}
+  messagePopup: {fileID: 1340627651}
   accountMenu: {fileID: 824244075}
+  accountMenuTitle: {fileID: 376211267}
+  notRegisteredText: {fileID: 1524153905}
   accountMenuUsername: {fileID: 710974524}
+  levelText: {fileID: 1680562854}
   accountMenuLevel: {fileID: 792988321}
+  bountyText: {fileID: 695282370}
   accountMenuBounty: {fileID: 863379400}
+  storageText: {fileID: 1155067468}
   accountMenuStorage: {fileID: 2122831335}
 --- !u!82 &16704400
 AudioSource:
@@ -5234,7 +5241,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 835445109}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5338,6 +5345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d155ce60052481fb93cc18748c9b3bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingsMenuTitle: {fileID: 543368063}
 --- !u!1 &571061859
 GameObject:
   m_ObjectHideFlags: 0
@@ -6353,7 +6361,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.34
-  m_Text: 'Bounty:'
+  m_Text: B
 --- !u!222 &695282371
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7431,9 +7439,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 203172940}
-  - {fileID: 543368062}
   - {fileID: 1270251408}
   - {fileID: 1071016681}
+  - {fileID: 543368062}
   m_Father: {fileID: 16704395}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9469,7 +9477,7 @@ RectTransform:
   m_Children:
   - {fileID: 265947301}
   m_Father: {fileID: 835445109}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10060,7 +10068,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.34
-  m_Text: 'Storage:'
+  m_Text: S
 --- !u!222 &1155067469
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11053,7 +11061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1266981622
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11194,7 +11202,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 835445109}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -12768,9 +12776,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.3
-  m_Text: 'Oops!
-
-    Can''t connect to the game'
+  m_Text: Connection Error
 --- !u!222 &1372504860
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14168,7 +14174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1525873207
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16052,7 +16058,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.34
-  m_Text: 'Level:'
+  m_Text: L
 --- !u!222 &1680562855
 CanvasRenderer:
   m_ObjectHideFlags: 0

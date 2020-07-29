@@ -5,26 +5,54 @@ using System.Collections.Generic;
 
 public class UIScript : MonoBehaviour
 {
-  public ControllerScript controller;
+  [Header("Resources and Bounty")]
   public Text woodValue;
   public Text stoneValue;
   public Text goldValue;
   public Text pearlValue;
   public Slider bountyObject;
-  public GameObject messagePopup;
+
+  [Header("Loading and Connection")]
   public GameObject loadingScreen;
   public GameObject connectionError;
+
+  [Header("Buttons")]
+  public Text buildingsButton;
+  public Text mapButton;
+  public Text accountButton;
+
+  [Header("Message Popup")]
+  public GameObject messagePopup;
+
+  [Header("Account page")]
   public GameObject accountMenu;
+  public Text accountMenuTitle;
+  public Text notRegisteredText;
   public Text accountMenuUsername;
+  public Text levelText;
   public Text accountMenuLevel;
+  public Text bountyText;
   public Text accountMenuBounty;
+  public Text storageText;
   public Text accountMenuStorage;
 
   int previousBounty;
   int userLevel;
+  ControllerScript controller;
 
   void Start(){
+    controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     showLoadingScreen();
+    // Populate all texts in the device language
+    buildingsButton.text = Language.Field["BUILDINGS"];
+    mapButton.text = Language.Field["MAP"];
+    accountButton.text = Language.Field["ACCOUNT"];
+    accountMenuTitle.text = Language.Field["ACCOUNT"];
+    notRegisteredText.text = Language.Field["NOT_REGISTERED"];
+    levelText.text = Language.Field["LEVEL"]+":";
+    bountyText.text = Language.Field["BOUNTY"]+":";
+    storageText.text = Language.Field["STORAGE"]+":";
+    connectionError.GetComponentInChildren<Text>().text = "Oops!\n"+ Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
   }
 

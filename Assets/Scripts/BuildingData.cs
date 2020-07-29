@@ -5,10 +5,12 @@ using System.Collections;
 
 public class BuildingData : MonoBehaviour
 {
+  public Text buildingsMenuTitle;
   ControllerScript controller;
 
   void Start(){
     GameObject gameController = GameObject.Find("GameController");
+    buildingsMenuTitle.text = Language.Field["BUILDINGS"];
     controller = gameController.GetComponent<ControllerScript>();
     InvokeRepeating("populateBuildingsMenu", 0.0f, 3.0f);
   }
