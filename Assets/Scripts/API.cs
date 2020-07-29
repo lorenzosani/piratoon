@@ -125,6 +125,7 @@ public static class API
           controller.populateVillage(result.Data["Buildings"].Value);
           ui.updateAccountMenu();
           ui.hideAccountMenu();
+          ui.showButtons();
           ui.Invoke("hideLoadingScreen", 2.0f);
         } else {
           Debug.Log("API Error: fetched data is null.");
@@ -190,12 +191,12 @@ public static class API
     return PlayerPrefs.GetString("PlayerId", "");
   }
 
-  public static void StorePlayerId(string id){
-    PlayerPrefs.SetString("PlayerId", id);
-  }
-
   public static bool IsRegistered(){
     return PlayerPrefs.GetInt("Registered", 0) > 0;
+  }
+
+  public static void StorePlayerId(string id){
+    PlayerPrefs.SetString("PlayerId", id);
   }
 
   public static void StoreRegistered(bool registered){

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections.Generic;
 
@@ -58,6 +59,13 @@ public class AuthenticationScript : MonoBehaviour
     loginButton.SetActive(false);
     loginSpinner.SetActive(true);
     API.UsernameLogin(username, password, message => loginResult(message));
+  }
+
+  public void logout(){
+    API.StorePlayerId("");
+    API.StoreRegistered(false);
+    API.StoreUsername("");
+    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
   }
 
   public void setUsername(string u){

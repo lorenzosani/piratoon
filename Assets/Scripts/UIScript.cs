@@ -17,6 +17,7 @@ public class UIScript : MonoBehaviour
   public GameObject connectionError;
 
   [Header("Buttons")]
+  public GameObject buttons;
   public Text buildingsButton;
   public Text mapButton;
   public Text accountButton;
@@ -119,6 +120,10 @@ public class UIScript : MonoBehaviour
 
   public void showConnectionError(bool error){
     connectionError.SetActive(error);
+  }
+
+  public void showButtons(bool show=true){
+    buttons.SetActive(show);
   }
 
   public void updateAccountMenu(){
