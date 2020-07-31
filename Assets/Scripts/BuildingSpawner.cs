@@ -4,6 +4,8 @@ using System;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class BuildingSpawner : MonoBehaviour
 {
@@ -13,8 +15,9 @@ public class BuildingSpawner : MonoBehaviour
   Text loadingText;
   AudioSource audioSource;
   bool newBuilding;
+  UIScript ui;
 
-  public UIScript ui;
+  public FloatingObjectsScript floatScript;
   public GameObject loadingBar;
   public bool checkHeadquarter;
 
@@ -25,6 +28,8 @@ public class BuildingSpawner : MonoBehaviour
   void Start()
   {
     controller = GetComponent<ControllerScript>();
+    ui = controller.getUI();
+    floatScript = GameObject.Find("FloatingObjects").GetComponent<FloatingObjectsScript>();
     loadingSlider = loadingBar.GetComponent<Slider>();
     loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
     audioSource = GetComponent<AudioSource>();
@@ -104,6 +109,45 @@ public class BuildingSpawner : MonoBehaviour
   //*****************************************************************
   // Helper methods
   //*****************************************************************
+
+  // Show buildings from json data
+  public void populateVillage(string buildingsJson){
+    Village village = controller.getUser().getVillage();
+    List<Building> buildingsList = new List<Building>();
+
+    JArray buildingsObject = JArray.Parse(buildingsJson);
+    removeAllBuildings();
+    for(int i=0; i<buildingsObject.Count; i++){
+      Building b = createBuilding((string) buildingsObject[i]["name"]);
+      b.setLevel((int) buildingsObject[i]["level"]);
+      b.setPosition(
+        new Vector3(
+          (float)buildingsObject[i]["position"]["x"],
+          (float)buildingsObject[i]["position"]["y"],
+          (float)buildingsObject[i]["position"]["z"]
+        )
+      );
+      string t = (string) buildingsObject[i]["completionTime"];
+      t = t.Replace("T", " ").Replace("Z", "");
+      b.setCompletionTime(DateTime.ParseExact(t, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+      b.setValue((int) buildingsObject[i]["value"]);
+      b.setLocalStorage((int) buildingsObject[i]["localStorage"]);
+      b.setBuilt((bool) buildingsObject[i]["built"]);
+      buildingsList.Add(b);
+      addBuildingFromServer(b);
+    }
+    village.setBuildingsFromList(buildingsList);
+  }
+
+  // Shows spawned floating objects
+  public void populateFloatingObjects(){
+    FloatingObject[] floatingObjects = controller.getUser().getVillage().getFloatingObjects();
+    for (int i=0; i<floatingObjects.Length; i++) {
+      if (DateTime.Compare(floatingObjects[i].getTime(), DateTime.Now) < 0) {
+        floatScript.spawn(floatingObjects[i]);
+      }
+    }
+  }
 
   // Factory method that returns the correct building object
   public Building createBuilding(string name){

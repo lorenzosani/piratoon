@@ -19,11 +19,11 @@ public static class API
   static string sessionTicket = string.Empty;
 
   static ControllerScript controller;
-  static UIScript ui;
+  static BuildingSpawner spawner;
   
-  public static void RegisterScripts(ControllerScript c, UIScript u){
+  public static void RegisterScripts(ControllerScript c, BuildingSpawner s){
     controller = c;
-    ui = u;
+    spawner = s;
   }
 
   // Register a recoverable account with the provided details, for the current player
@@ -108,7 +108,7 @@ public static class API
 
   public static void OnLogin(LoginResult login)
   { 
-    ui.showLoadingScreen();
+    controller.getUI().showLoadingScreen();
     playFabId = login.PlayFabId;
     sessionTicket = login.SessionTicket;
     List<string> keys = new List<string> { "User", "Buildings", "Village" };
@@ -122,11 +122,12 @@ public static class API
           Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
           user.setVillage(village);
           controller.setUser(user);
-          controller.populateVillage(result.Data["Buildings"].Value);
-          ui.updateAccountMenu();
-          ui.hideAccountMenu();
-          ui.showButtons();
-          ui.Invoke("hideLoadingScreen", 2.0f);
+          spawner.populateVillage(result.Data["Buildings"].Value);
+          spawner.populateFloatingObjects();
+          controller.getUI().updateAccountMenu();
+          controller.getUI().hideAccountMenu();
+          controller.getUI().showButtons();
+          controller.getUI().Invoke("hideLoadingScreen", 2.0f);
         } else {
           Debug.Log("API Error: fetched data is null.");
         }
@@ -134,7 +135,7 @@ public static class API
     } else {
       // Set default data for a new user
       SetUserData(keys.ToArray());
-      ui.Invoke("hideLoadingScreen", 2.0f);
+      controller.getUI().Invoke("hideLoadingScreen", 2.0f);
     }
   }
 
@@ -183,7 +184,7 @@ public static class API
       Keys = keys
     }, result => { 
       // Check if user has already data
-      callback(result.Data != null && result.Data.ContainsKey("User") ? result : null);
+      callback(result.Data != null ? result : null);
     }, e => OnPlayFabError(e));
   }
 
@@ -216,7 +217,7 @@ public static class API
   {
     Debug.LogWarning("Something went wrong with your API call.");
     Debug.LogError(error.GenerateErrorReport());
-    if (!login) ui.showConnectionError(true);
+    if (!login) controller.getUI().showConnectionError(true);
     // Retry to connect
     if (login) {
       controller.Invoke("login", 3.0f); 
