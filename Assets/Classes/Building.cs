@@ -23,7 +23,7 @@ public class Building
   [JsonProperty]
   protected int[] cost;
   [JsonProperty]
-  protected int localStorage;
+  protected DateTime lastCollected;
   [JsonProperty]
   protected bool built;
 
@@ -97,12 +97,12 @@ public class Building
     return completionTime;
   }
 
-  public void setLocalStorage(int s){
-    localStorage = s;
+  public void setLastCollected(DateTime l){
+    lastCollected = l;
   }
 
   public virtual int getLocalStorage(){
-    return -1;
+    return 0;
   }
 
   public void setBuilt(bool v){

@@ -128,10 +128,11 @@ public class BuildingSpawner : MonoBehaviour
         )
       );
       string t = (string) buildingsObject[i]["completionTime"];
+      string l = (string) buildingsObject[i]["lastCollected"];
       t = t.Replace("T", " ").Replace("Z", "");
       b.setCompletionTime(DateTime.ParseExact(t, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
       b.setValue((int) buildingsObject[i]["value"]);
-      b.setLocalStorage((int) buildingsObject[i]["localStorage"]);
+      b.setLastCollected(DateTime.ParseExact(l, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
       b.setBuilt((bool) buildingsObject[i]["built"]);
       buildingsList.Add(b);
       addBuildingFromServer(b);
@@ -201,8 +202,6 @@ public class BuildingSpawner : MonoBehaviour
     GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
     buildingObj.name = b.getName();
     buildingObj.layer = 9;
-    // Implement buildings functionality
-    b.startFunctionality(controller);
   }
 
   public void addBuildingFromServer(Building b){
@@ -216,7 +215,9 @@ public class BuildingSpawner : MonoBehaviour
       buildingObj.name = b.getName();
       buildingObj.layer = 9;
       if(b.getName()=="Woodcutter" || b.getName()=="Stonecutter" || b.getName()=="Inn"){
-        b.startFunctionality(controller);
+        if (b.getLocalStorage() > 0) {
+          GetComponent<ResourceCollector>().showTooltip(b.getName());
+        }
       }
     }
   }

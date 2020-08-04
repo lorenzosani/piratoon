@@ -19,32 +19,33 @@ public class BuildingData : MonoBehaviour
     Village village = controller.getUser().getVillage();
     // Go through each building in the menu
     foreach (Transform child in transform){
+      string buildingName = child.name.Substring(0, child.name.Length-4);
       // Populate building name in the correct language
       Text title = child.Find("Title").GetComponent<Text>();
-      title.text = Language.Field[child.name.ToUpper()];
+      title.text = Language.Field[buildingName.ToUpper()];
       // Inventor and Watchtower are unlocked only after headquarters are upgraded
-      if (child.name == "Inventor" || child.name == "Watchtower"){
+      if (buildingName == "Inventor" || buildingName == "Watchtower"){
         Building headquarter = village.getBuildingInfo("Headquarter");
         // Lock buildings
-        if((headquarter == null || headquarter.getLevel()<5) && child.name == "Inventor") {
+        if((headquarter == null || headquarter.getLevel()<5) && buildingName == "Inventor") {
           lockBuilding(child, 5);
           continue;
         }
-        if((headquarter == null || headquarter.getLevel()<3) && child.name == "Watchtower"){
+        if((headquarter == null || headquarter.getLevel()<3) && buildingName == "Watchtower"){
           lockBuilding(child, 3);
           continue;
         } 
         // Unlock buildings
-        if(headquarter != null && headquarter.getLevel()==5 && child.name == "Inventor") unlockBuilding(child);
-        if(headquarter != null && headquarter.getLevel()==3 && child.name == "Watchtower") unlockBuilding(child);
+        if(headquarter != null && headquarter.getLevel()==5 && buildingName == "Inventor") unlockBuilding(child);
+        if(headquarter != null && headquarter.getLevel()==3 && buildingName == "Watchtower") unlockBuilding(child);
       }
       // All other buildings are unlocked from the start
-      Building building = village.getBuildingInfo(child.name);
+      Building building = village.getBuildingInfo(buildingName);
       bool beenBuilt = true;
       if(building == null){
         // If building hasn't been built yet, get default info
         beenBuilt = false;
-        building = createBuilding(child.name);
+        building = createBuilding(buildingName);
       }
       int level = !beenBuilt ? level = 1 : building.getLevel()+1;
       int[] cost = !beenBuilt ? building.getBaseCost() : building.getCost();

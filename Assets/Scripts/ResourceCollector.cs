@@ -2,51 +2,56 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class ResourceCollector : MonoBehaviour{
-
-  public ControllerScript controller;
-  public string buildingName;
-
-  Building building;
-  int resourcePosition;
-  bool tooltipIsShown;  
-
+public class ResourceCollector : MonoBehaviour
+{
+  ControllerScript controller;
+  string[] productionBuildings = new string[3] {"Woodcutter", "Stonecutter", "Inn"};
+  string[] tooltipNames = new string[3] {"TooltipWood", "TooltipStone", "TooltipGold"};
+  bool[] shownTooltips = new bool[3] {false, false, false};
+  
   void Awake(){
-    tooltipIsShown = false;
-    InvokeRepeating("checkLocalResources", 3.0f, 3.0f);
-    gameObject.SetActive(false);
+    controller = GetComponent<ControllerScript>();
+    InvokeRepeating("checkLocalResources", 0.0f, 3.0f);
   }
 
   void checkLocalResources(){
-    building = controller.getUser().getVillage().getBuildingInfo(buildingName);
-    if (building!=null && building.getLocalStorage()>0 && !tooltipIsShown) {
-      showTooltip();
+    for(int i=0; i<productionBuildings.Length; i++){
+      Building building = controller.getUser().getVillage().getBuildingInfo(productionBuildings[i]);
+      if (building!=null && building.getLocalStorage()>0 && !shownTooltips[i]) {
+        showTooltip(productionBuildings[i]);
+      }
     }
   }
 
-  void showTooltip() {
+  public void showTooltip(string buildingName) {
+    int resourceCode = -1;
     switch (buildingName){
       case "Woodcutter": 
-        resourcePosition = 0;
+        resourceCode = 0;
         break;
       case "Stonecutter": 
-        resourcePosition = 1;
+        resourceCode = 1;
         break;
       case "Inn": 
-        resourcePosition = 2;
+        resourceCode = 2;
         break;
       default: Debug.Log(gameObject.name + ": This building does not produce resources");
         break;
     }
-    transform.position = new Vector3(building.getPosition().x, building.getPosition().y+1, building.getPosition().z);
-    gameObject.SetActive(true);
-    tooltipIsShown = true;
+    if (resourceCode < 0) return;
+    Building building = controller.getUser().getVillage().getBuildingInfo(buildingName);
+    GameObject tooltip = GameObject.Find(tooltipNames[resourceCode]);
+    tooltip.transform.position = new Vector3(building.getPosition().x, building.getPosition().y+1, building.getPosition().z);
+    tooltip.SetActive(true);
+    shownTooltips[resourceCode] = true;
   }
 
-  public void collectResources(){
-    controller.getUser().increaseResource(resourcePosition, building.getLocalStorage());
+  public void collectResources(int resourceCode){
+    Building building = controller.getUser().getVillage().getBuildingInfo(productionBuildings[resourceCode]);
+    GameObject tooltip = GameObject.Find(tooltipNames[resourceCode]);
+    controller.getUser().increaseResource(resourceCode, building.getLocalStorage());
     building.resetLocalStorage();
-    gameObject.SetActive(false);
-    tooltipIsShown = false;
+    tooltip.SetActive(false);
+    shownTooltips[resourceCode] = false;
   }
 }
