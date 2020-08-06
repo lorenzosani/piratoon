@@ -51,7 +51,7 @@ public class FloatingObjectsScript : MonoBehaviour {
     int[] spaceLeft = controller.getUser().getStorageSpaceLeft();
     for(int i=0; i<3; i++){
       if (resources[i] > 0){
-        if (spaceLeft[i] < resources[i]) { 
+        if (spaceLeft[i] == 0) { 
           controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]); 
         } else {
           controller.getUser().increaseResource(i, resources[i]);

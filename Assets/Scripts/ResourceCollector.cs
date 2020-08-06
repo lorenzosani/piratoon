@@ -49,7 +49,13 @@ public class ResourceCollector : MonoBehaviour
   public void collectResources(int resourceCode){
     Building building = controller.getUser().getVillage().getBuildingInfo(productionBuildings[resourceCode]);
     GameObject tooltip = GameObject.Find(tooltipNames[resourceCode]);
-    controller.getUser().increaseResource(resourceCode, building.getLocalStorage());
+    int storageSpaceLeft = controller.getUser().getStorageSpaceLeft()[resourceCode];
+    int newResources = building.getLocalStorage();
+    if (storageSpaceLeft == 0) {
+      controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]);
+      return;
+    }
+    controller.getUser().increaseResource(resourceCode, newResources);
     building.resetLocalStorage();
     tooltip.SetActive(false);
     shownTooltips[resourceCode] = false;
