@@ -22,6 +22,7 @@ public class AuthenticationScript : MonoBehaviour
   public GameObject registrationPage;
   public GameObject loginPage;
   public GameObject onLoginPage;
+  public GameObject recoveryPage;
 
   string username = null;
   string email = null;
@@ -32,16 +33,22 @@ public class AuthenticationScript : MonoBehaviour
   {
     description.text = Language.Field["REGISTRATION"];
     loginDescription.text = Language.Field["LOGIN"];
+    resetAccountMenu();
+  }
+
+  public void resetAccountMenu(){
     if (API.IsRegistered() && !isEmpty(API.GetStoredPlayerId())) {
       notLoggedInPage.SetActive(false);
       registrationPage.SetActive(false);
       loginPage.SetActive(false);
       onLoginPage.SetActive(true);
+      recoveryPage.SetActive(false);
     } else {
       onLoginPage.SetActive(false);
       registrationPage.SetActive(false);
       loginPage.SetActive(false);
       notLoggedInPage.SetActive(true);
+      recoveryPage.SetActive(false);
     }
   }
 
@@ -66,6 +73,14 @@ public class AuthenticationScript : MonoBehaviour
     API.StoreRegistered(false);
     API.StoreUsername("");
     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+  }
+
+  public void recoverPassword() {
+    if (email == null) {
+      GetComponent<ControllerScript>().getUI().setEmailRecoveryText(Language.Field["REG_EMAIL"]);
+      return;
+    }
+    API.SendPasswordRecoveryEmail(email);
   }
 
   public void setUsername(string u){

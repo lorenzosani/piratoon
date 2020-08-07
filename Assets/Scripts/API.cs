@@ -34,23 +34,29 @@ public static class API
         Password = password,
         Username = username
       }, result => {
-        StoreUsername(result.Username);
-        if (GetStoredPlayerId() == "") {
-          string guid = Guid.NewGuid().ToString();
-          PlayFabClientAPI.LinkCustomID(new LinkCustomIDRequest() {
-              CustomId = guid
-            }, r => {
-              StorePlayerId(guid);
-              StoreUsername(username);
-              callback("SUCCESS", "");
-            }, e => {
-              OnPlayFabError(e);
-            }
-          );
-        } else {
-          StoreRegistered(true);
-          callback("SUCCESS", "");
-        }
+        PlayFabClientAPI.AddOrUpdateContactEmail( new AddOrUpdateContactEmailRequest() {
+          EmailAddress = email
+        }, res => {
+          StoreUsername(result.Username);
+          if (GetStoredPlayerId() == "") {
+            string guid = Guid.NewGuid().ToString();
+            PlayFabClientAPI.LinkCustomID(new LinkCustomIDRequest() {
+                CustomId = guid
+              }, r => {
+                StorePlayerId(guid);
+                StoreUsername(username);
+                callback("SUCCESS", "");
+              }, e => {
+                OnPlayFabError(e);
+              }
+            );
+          } else {
+            StoreRegistered(true);
+            callback("SUCCESS", "");
+          }
+        }, err => {
+          OnPlayFabError(err);
+        });
       }, error => {
         if (error.ErrorDetails != null) {
           List<string> message;
@@ -188,6 +194,20 @@ public static class API
     }, e => OnPlayFabError(e));
   }
 
+  public static void SendPasswordRecoveryEmail(string emailAddress)
+  {
+    PlayFabServerAPI.SendCustomAccountRecoveryEmail(new PlayFab.ServerModels.SendCustomAccountRecoveryEmailRequest
+    {
+      Email = emailAddress,
+      EmailTemplateId = "B93733D3FBBC95CD"
+    }, result => {
+      controller.getUI().setEmailRecoveryText(Language.Field["EMAIL_SENT"]);
+    }, e => { 
+      controller.getUI().setEmailRecoveryText(Language.Field["EMAIL_ERROR"]);
+      Debug.LogError(e.GenerateErrorReport()); 
+    });
+  }
+
   public static string GetStoredPlayerId(){
     return PlayerPrefs.GetString("PlayerId", "");
   }
@@ -224,5 +244,11 @@ public static class API
     } else {
       controller.Invoke("retryConnection", 3.0f); 
     }
+  }
+
+  public static void EmailRecoveryError(PlayFabError error){
+    // Show an error message 
+    Debug.LogWarning("Something went wrong with sending the email.");
+    Debug.LogError(error.GenerateErrorReport());
   }
 }

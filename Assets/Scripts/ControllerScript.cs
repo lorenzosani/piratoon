@@ -14,6 +14,8 @@ public class ControllerScript : MonoBehaviour
   BuildingSpawner spawner;
   UIScript ui;
 
+  string email;
+
   void Awake()
   {
     spawner = GetComponent<BuildingSpawner>();

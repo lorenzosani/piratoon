@@ -36,6 +36,13 @@ public class UIScript : MonoBehaviour
   public Text accountMenuBounty;
   public Text storageText;
   public Text accountMenuStorage;
+  public Text passwordRecoveryButton;
+  public Text passwordRecoveryText;
+  public Text sendEmailButton;
+  public Text notLoggedRegisterButton;
+  public Text notLoggedLoginButton;
+  public Text registrationRegisterButton;
+  public Text loginFormLoginButton;
 
   int previousBounty;
   int userLevel;
@@ -53,6 +60,13 @@ public class UIScript : MonoBehaviour
     levelText.text = Language.Field["LEVEL"]+":";
     bountyText.text = Language.Field["BOUNTY"]+":";
     storageText.text = Language.Field["STORAGE"]+":";
+    passwordRecoveryButton.text = Language.Field["FORGOT_PASSWORD"];
+    passwordRecoveryText.text = Language.Field["RECOVER_PASSWORD"];
+    sendEmailButton.text = Language.Field["SEND"].ToUpper();
+    notLoggedRegisterButton.text = Language.Field["REGISTER"].ToUpper();
+    notLoggedLoginButton.text = Language.Field["LOGIN_BTN"].ToUpper();
+    registrationRegisterButton.text = Language.Field["REGISTER"].ToUpper();
+    loginFormLoginButton.text = Language.Field["LOGIN_BTN"].ToUpper();
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n"+ Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
   }
@@ -132,5 +146,9 @@ public class UIScript : MonoBehaviour
     accountMenuLevel.text = user.getLevel().ToString();
     accountMenuBounty.text = user.getBounty().ToString();
     accountMenuStorage.text = user.getStorage().ToString();
+  }
+
+  public void setEmailRecoveryText(string message) {
+    passwordRecoveryText.text = message;
   }
 }
