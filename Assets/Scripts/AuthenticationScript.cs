@@ -76,10 +76,6 @@ public class AuthenticationScript : MonoBehaviour
   }
 
   public void recoverPassword() {
-    if (email == null) {
-      GetComponent<ControllerScript>().getUI().setEmailRecoveryText(Language.Field["REG_EMAIL"]);
-      return;
-    }
     API.SendPasswordRecoveryEmail(email);
   }
 

@@ -196,14 +196,18 @@ public static class API
 
   public static void SendPasswordRecoveryEmail(string emailAddress)
   {
+    if (emailAddress == null) {
+      controller.getUI().emailRecoveryError(Language.Field["REG_EMAIL"]);
+      return;
+    }
     PlayFabServerAPI.SendCustomAccountRecoveryEmail(new PlayFab.ServerModels.SendCustomAccountRecoveryEmailRequest
     {
       Email = emailAddress,
       EmailTemplateId = "B93733D3FBBC95CD"
     }, result => {
-      controller.getUI().setEmailRecoveryText(Language.Field["EMAIL_SENT"]);
+      controller.getUI().emailRecoverySuccess(Language.Field["EMAIL_SENT"]);
     }, e => { 
-      controller.getUI().setEmailRecoveryText(Language.Field["EMAIL_ERROR"]);
+      controller.getUI().emailRecoveryError(e.ErrorMessage);
       Debug.LogError(e.GenerateErrorReport()); 
     });
   }

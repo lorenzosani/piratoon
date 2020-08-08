@@ -27,6 +27,7 @@ public class UIScript : MonoBehaviour
 
   [Header("Account page")]
   public GameObject accountMenu;
+  public GameObject defaultMenuScreen;
   public Text accountMenuTitle;
   public Text notRegisteredText;
   public Text accountMenuUsername;
@@ -148,7 +149,35 @@ public class UIScript : MonoBehaviour
     accountMenuStorage.text = user.getStorage().ToString();
   }
 
-  public void setEmailRecoveryText(string message) {
+  public void emailRecoveryError(string message) {
+    GameObject recoveryScreen = GameObject.Find("PasswordRecovery");
+    foreach (Transform child in recoveryScreen.transform) {
+      if (child.name == "Spinner") {
+        child.gameObject.SetActive(false);
+      } else if (child.name == "Send") {
+        child.gameObject.SetActive(true);
+      } else if (child.name == "Input") {
+        Outline outline = child.GetComponent<Outline>();
+        outline.enabled = true;
+      }
+    }
     passwordRecoveryText.text = message;
+  }
+
+  public void emailRecoverySuccess(string message) {
+    GameObject recoveryScreen = GameObject.Find("PasswordRecovery");
+    foreach (Transform child in recoveryScreen.transform) {
+      if (child.name == "Spinner") {
+        child.gameObject.SetActive(false);
+      } else if (child.name == "Send") {
+        child.gameObject.SetActive(true);
+      }
+    }
+    recoveryScreen.SetActive(false);
+    defaultMenuScreen.SetActive(true);
+    accountMenu.SetActive(false);
+    buttons.SetActive(true);
+    passwordRecoveryText.text = Language.Field["RECOVER_PASSWORD"];
+    showPopupMessage(message);
   }
 }
