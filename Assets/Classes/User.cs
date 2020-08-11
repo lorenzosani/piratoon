@@ -106,6 +106,7 @@ public class User
   public void addBounty(int value)
   {
     bounty += value;
+    API.SetUserData(new string[]{"User"});
   }
 
   public void setStorage(int s){
