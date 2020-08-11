@@ -8,6 +8,7 @@ public class AuthenticationScript : MonoBehaviour
 {
   public Text description;
   public Text loginDescription;
+  public GameObject accountMenu;
   public GameObject usernameField;
   public GameObject emailField;
   public GameObject passwordField;
@@ -185,5 +186,14 @@ public class AuthenticationScript : MonoBehaviour
 
   bool isEmpty(string value){
     return value == "" || value == " " || value == null;
+  }
+
+  public void showLogin(){
+    accountMenu.SetActive(true);
+    notLoggedInPage.SetActive(false);
+    registrationPage.SetActive(false);
+    loginPage.SetActive(true);
+    onLoginPage.SetActive(false);
+    recoveryPage.SetActive(false);
   }
 }

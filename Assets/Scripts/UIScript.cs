@@ -14,6 +14,8 @@ public class UIScript : MonoBehaviour
 
   [Header("Loading and Connection")]
   public GameObject loadingScreen;
+  public GameObject loadingSpinner;
+  public GameObject loadingButtons;
   public GameObject connectionError;
 
   [Header("Buttons")]
@@ -27,6 +29,7 @@ public class UIScript : MonoBehaviour
 
   [Header("Account page")]
   public GameObject accountMenu;
+  public GameObject accountMenuClose;
   public GameObject defaultMenuScreen;
   public Text accountMenuTitle;
   public Text notRegisteredText;
@@ -126,6 +129,7 @@ public class UIScript : MonoBehaviour
   }
 
   public void hideLoadingScreen(){
+    accountMenuClose.SetActive(true);
     loadingScreen.SetActive(false);
   }
 
@@ -179,5 +183,10 @@ public class UIScript : MonoBehaviour
     buttons.SetActive(true);
     passwordRecoveryText.text = Language.Field["RECOVER_PASSWORD"];
     showPopupMessage(message);
+  }
+
+  public void showNewGameOrLogin() {
+    loadingSpinner.SetActive(false);
+    loadingButtons.SetActive(true);
   }
 }

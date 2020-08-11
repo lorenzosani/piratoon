@@ -30,11 +30,19 @@ public class ControllerScript : MonoBehaviour
     string storedId = API.GetStoredPlayerId();
     if (!isEmpty(storedId) && rememberLoginDetails){
       API.StoredLogin(storedId);
+    } else if (PlayerPrefs.GetInt("FirstAccess", 1) == 0) {
+      ui.showNewGameOrLogin();
     } else {
-      API.StorePlayerId("");
-      API.StoreRegistered(false);
-      API.AnonymousLogin();
+      anonymousLogin();
+      PlayerPrefs.SetInt("FirstAccess", 0);
     }
+  }
+
+  public void anonymousLogin() {
+    API.StoreUsername("");
+    API.StorePlayerId("");
+    API.StoreRegistered(false);
+    API.AnonymousLogin();
   }
 
   public void retryConnection(){
