@@ -179,7 +179,6 @@ public class UIScript : MonoBehaviour
     }
     recoveryScreen.SetActive(false);
     defaultMenuScreen.SetActive(true);
-    accountMenu.SetActive(false);
     buttons.SetActive(true);
     passwordRecoveryText.text = Language.Field["RECOVER_PASSWORD"];
     showPopupMessage(message);

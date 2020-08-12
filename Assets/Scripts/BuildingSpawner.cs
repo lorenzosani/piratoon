@@ -206,6 +206,7 @@ public class BuildingSpawner : MonoBehaviour
 
   public void addBuildingFromServer(Building b){
     currentlyBuilding = null;
+    b.setPosition(b.getPrefab().transform.position);
     if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0) {
       startConstruction(b);
     } else if(b.isBuilt() == false){
@@ -246,7 +247,6 @@ public class BuildingSpawner : MonoBehaviour
     controller.getUser().setResources(remainingResources);
     return true;
   }
-
 
   public void playBuildingSound(){
     audioSource.Play();
