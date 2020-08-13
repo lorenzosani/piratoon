@@ -28,9 +28,9 @@ public class User
     village = _village;
     serverId = _serverId;
     bounty = 0;
-    resources = new int[3] { 500, 500, 100 };
+    resources = new int[3] { 500, 700, 100 };
     pearl = 5;
-    storage = 500;
+    storage = 700;
   }
 
   public string getId()

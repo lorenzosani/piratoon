@@ -41,6 +41,9 @@ TagManager:
   - name: Island
     uniqueID: 1744036293
     locked: 0
+  - name: Buildings
+    uniqueID: 1560950671
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

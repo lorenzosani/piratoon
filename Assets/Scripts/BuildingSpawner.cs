@@ -42,7 +42,7 @@ public class BuildingSpawner : MonoBehaviour
     {
       int totalTime = currentlyBuilding.getFutureValue()/4;
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
-      if (timeLeft == 0)
+      if (timeLeft <= 0)
       {
         finishBuilding(currentlyBuilding);
       }

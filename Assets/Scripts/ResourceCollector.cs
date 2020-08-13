@@ -41,7 +41,7 @@ public class ResourceCollector : MonoBehaviour
     if (resourceCode < 0) return;
     Building building = controller.getUser().getVillage().getBuildingInfo(buildingName);
     GameObject tooltip = GameObject.Find(tooltipNames[resourceCode]);
-    tooltip.transform.position = new Vector3(building.getPosition().x, building.getPosition().y+1, building.getPosition().z);
+    tooltip.transform.position = new Vector3(building.getPosition().x, resourceCode == 1 ? building.getPosition().y+2 : building.getPosition().y+1, building.getPosition().z);
     tooltip.SetActive(true);
     shownTooltips[resourceCode] = true;
   }
