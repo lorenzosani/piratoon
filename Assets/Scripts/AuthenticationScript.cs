@@ -63,10 +63,14 @@ public class AuthenticationScript : MonoBehaviour
 
   public void login(){
     clearErrors();
-    if (!fieldsAreValid(true,false,true,false)) return;
+    if (!fieldsAreValid(false,false,true,false)) return;
     loginButton.SetActive(false);
     loginSpinner.SetActive(true);
-    API.UsernameLogin(username, password, message => loginResult(message));
+    if (username.IndexOf("@") >= 0 && username.IndexOf(".") >= 0) {
+      API.EmailLogin(username, password, message => loginResult(message));
+    } else {
+      API.UsernameLogin(username, password, message => loginResult(message));
+    }
   }
 
   public void logout(){

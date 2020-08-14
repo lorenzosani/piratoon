@@ -89,6 +89,36 @@ public static class API
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
+        if(error.ErrorDetails.TryGetValue("Password", out message) || error.ErrorDetails.TryGetValue("Username", out message)) {
+           callback(message[0]);
+        }
+      } else if (error.ToString().Contains(":")){
+        callback(error.ToString().Substring(error.ToString().LastIndexOf(':')+1));
+      } else {
+        Debug.Log(error);
+        callback(Language.Field["LOGIN_ERROR"]);
+      }
+    });
+  }
+
+  public static void EmailLogin(string email, string password, Action<string> callback=null){
+    PlayFabClientAPI.LoginWithEmailAddress(new LoginWithEmailAddressRequest() {
+      Email = email,
+      TitleId = "E206C",
+      Password = password
+    }, result => {
+      OnLogin(result);
+      PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
+        StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
+        StoreUsername(r.AccountInfo.Username);
+      }, e => {
+        OnPlayFabError(e);
+      });
+      StoreRegistered(true);
+      callback("SUCCESS");
+    }, error => {
+      if (error.ErrorDetails != null) {
+        List<string> message;
         if(error.ErrorDetails.TryGetValue("Password", out message)) callback(message[0]);
       } else if (error.ToString().Contains(":")){
         callback(error.ToString().Substring(error.ToString().LastIndexOf(':')+1));
