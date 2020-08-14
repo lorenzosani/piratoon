@@ -77,15 +77,15 @@ public static class API
       TitleId = "E206C",
       Password = password
     }, result => {
-      OnLogin(result);
       PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
         StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
         StoreUsername(r.AccountInfo.Username);
+        StoreRegistered(true);
+        OnLogin(result);
+        callback("SUCCESS");
       }, e => {
         OnPlayFabError(e);
       });
-      StoreRegistered(true);
-      callback("SUCCESS");
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
@@ -107,15 +107,15 @@ public static class API
       TitleId = "E206C",
       Password = password
     }, result => {
-      OnLogin(result);
       PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
         StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
         StoreUsername(r.AccountInfo.Username);
+        StoreRegistered(true);
+        OnLogin(result);
+        callback("SUCCESS");
       }, e => {
         OnPlayFabError(e);
       });
-      StoreRegistered(true);
-      callback("SUCCESS");
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
@@ -160,10 +160,7 @@ public static class API
           controller.setUser(user);
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
-          controller.getUI().updateAccountMenu();
-          controller.getUI().hideAccountMenu();
-          controller.getUI().showButtons();
-          controller.getUI().Invoke("hideLoadingScreen", 2.0f);
+          controller.getUI().onLogin();
         } else {
           Debug.Log("API Error: fetched data is null.");
         }
@@ -171,7 +168,7 @@ public static class API
     } else {
       // Set default data for a new user
       SetUserData(keys.ToArray());
-      controller.getUI().Invoke("hideLoadingScreen", 2.0f);
+      controller.getUI().Invoke("hideLoadingScreen", 0.5f);
     }
   }
 

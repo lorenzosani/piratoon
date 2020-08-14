@@ -73,6 +73,7 @@ public class UIScript : MonoBehaviour
     loginFormLoginButton.text = Language.Field["LOGIN_BTN"].ToUpper();
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n"+ Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
+    setUsername();
   }
 
   void Update()
@@ -147,7 +148,6 @@ public class UIScript : MonoBehaviour
 
   public void updateAccountMenu(){
     User user = controller.getUser();
-    accountMenuUsername.text = API.GetUsername();
     accountMenuLevel.text = user.getLevel().ToString();
     accountMenuBounty.text = user.getBounty().ToString();
     accountMenuStorage.text = user.getStorage().ToString();
@@ -187,5 +187,17 @@ public class UIScript : MonoBehaviour
   public void showNewGameOrLogin() {
     loadingSpinner.SetActive(false);
     loadingButtons.SetActive(true);
+  }
+
+  public void setUsername(){
+    accountMenuUsername.text = API.GetUsername();
+  }
+
+  public void onLogin(){
+    updateAccountMenu();
+    hideAccountMenu();
+    showButtons();
+    setUsername();
+    Invoke("hideLoadingScreen", 0.5f);
   }
 }
