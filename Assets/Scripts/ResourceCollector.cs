@@ -11,7 +11,7 @@ public class ResourceCollector : MonoBehaviour
   
   void Awake(){
     controller = GetComponent<ControllerScript>();
-    InvokeRepeating("checkLocalResources", 0.0f, 3.0f);
+    InvokeRepeating("checkLocalResources", 0.0f, 5.0f);
   }
 
   void checkLocalResources(){

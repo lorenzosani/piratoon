@@ -20,7 +20,7 @@ public class Inn : Building
   public override int getLocalStorage(){
     int frequency = (int) 7200/(level+1);
     int timePassed = (int) (DateTime.UtcNow - lastCollected).TotalSeconds;
-    return (int) Math.Floor((double) timePassed/frequency);
+    return Math.Min(level*100, (int) Math.Floor((double) timePassed/frequency));
   }
 
   public override void resetLocalStorage(){
