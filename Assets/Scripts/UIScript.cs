@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class UIScript : MonoBehaviour
 {
   [Header("Resources and Bounty")]
+  public GameObject hud;
   public Text woodValue;
   public Text stoneValue;
   public Text goldValue;
@@ -196,6 +197,7 @@ public class UIScript : MonoBehaviour
   public void onLogin(){
     updateAccountMenu();
     hideAccountMenu();
+    hud.SetActive(true);
     showButtons();
     setUsername();
     Invoke("hideLoadingScreen", 0.5f);

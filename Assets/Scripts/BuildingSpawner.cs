@@ -174,6 +174,7 @@ public class BuildingSpawner : MonoBehaviour
     controller.getUser().addBounty(b.getValue());
     // Spawn the building on the scene
     if (newBuilding) spawn(b);
+    b.startFunctionality(controller);
     // Reset global variables
     currentlyBuilding = null;
     newBuilding = true;
