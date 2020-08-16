@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
@@ -61,6 +62,10 @@ public class ControllerScript : MonoBehaviour
         Debug.Log("API Error: fetched data is null.");
       }
     });
+  }
+
+  public void loadScene(string sceneName){
+    SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
   }
 
   //*****************************************************************
