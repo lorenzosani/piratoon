@@ -9,6 +9,8 @@ public class User
   [JsonProperty]
   string id;
   [JsonProperty]
+  string username;
+  [JsonProperty]
   int level;
   [JsonProperty]
   string serverId;
@@ -24,6 +26,7 @@ public class User
   public User(string _id, string _serverId, Village _village)
   {
     id = _id;
+    username = null;
     level = 1;
     village = _village;
     serverId = _serverId;
@@ -40,6 +43,15 @@ public class User
 
   public int getLevel(){
     return level;
+  }
+
+  public void setUsername(string u){
+    username = u;
+    API.SetUserData(new string[]{"User"});
+  }
+
+  public string getUsername(){
+    return username;
   }
 
   public void increaseLevel(){
@@ -106,7 +118,7 @@ public class User
   public void addBounty(int value)
   {
     bounty += value;
-    API.SetUserData(new string[]{"User"});
+    API.UpdateBounty(bounty);
   }
 
   public void setStorage(int s){

@@ -44,7 +44,7 @@ public static class API
                 CustomId = guid
               }, r => {
                 StorePlayerId(guid);
-                StoreUsername(username);
+                StoreUsername(username);   
                 callback("SUCCESS", "");
               }, e => {
                 OnPlayFabError(e);
@@ -53,7 +53,12 @@ public static class API
           } else {
             StoreRegistered(true);
             callback("SUCCESS", "");
-          }
+          }    
+          PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest() {
+            DisplayName = username
+          }, a => { 
+            controller.getUser().setUsername(a.DisplayName);
+          }, b => OnPlayFabError(b));
         }, err => {
           OnPlayFabError(err);
         });
@@ -161,6 +166,7 @@ public static class API
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
           controller.getUI().onLogin();
+          if (IsRegistered()) UpdateBounty(controller.getUser().getBounty());
         } else {
           Debug.Log("API Error: fetched data is null.");
         }
@@ -219,6 +225,25 @@ public static class API
       // Check if user has already data
       callback(result.Data != null ? result : null);
     }, e => OnPlayFabError(e));
+  }
+
+  public static void UpdateBounty(int value){
+    PlayFabClientAPI.UpdatePlayerStatistics( new UpdatePlayerStatisticsRequest {
+      Statistics = new List<StatisticUpdate> { new StatisticUpdate { StatisticName = "bounty", Value = value } }
+    },
+    result => { SetUserData(new string[]{"User"}); },
+    error => { OnPlayFabError(error); });
+  }
+
+  public static void GetLeaderboard(){
+     PlayFabClientAPI.GetLeaderboard( new GetLeaderboardRequest {
+      StartPosition = 0,
+      StatisticName = "bounty"
+    },
+    result => {
+      // Do something with the leaderboard
+    },
+    error => { OnPlayFabError(error); });
   }
 
   public static void SendPasswordRecoveryEmail(string emailAddress)
