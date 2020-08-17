@@ -156,7 +156,7 @@ public static class API
     if (!login.NewlyCreated) {
       // Fetch user data
       GetUserData(keys, result => {
-        if (result != null)
+        if (result != null && result.Data["User"].Value != "{}")
         { 
           // If yes, set the local user data to match the remote
           User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
@@ -166,9 +166,17 @@ public static class API
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
           controller.getUI().onLogin();
-          if (IsRegistered()) UpdateBounty(controller.getUser().getBounty());
+          GetLeaderboard(r => controller.setLeaderboard(r));
+          if (IsRegistered()) { 
+            UpdateBounty(controller.getUser().getBounty());
+          }
         } else {
-          Debug.Log("API Error: fetched data is null.");
+          if(result.Data["User"].Value != ""){
+            SetUserData(keys.ToArray());
+            controller.getUI().Invoke("hideLoadingScreen", 0.5f);
+          } else {
+            Debug.Log("API Error: fetched data is null.");
+          }
         }
       });
     } else {
@@ -235,13 +243,14 @@ public static class API
     error => { OnPlayFabError(error); });
   }
 
-  public static void GetLeaderboard(){
-     PlayFabClientAPI.GetLeaderboard( new GetLeaderboardRequest {
+  public static void GetLeaderboard(Action<List<PlayerLeaderboardEntry>> callback){
+    PlayFabClientAPI.GetLeaderboard( new GetLeaderboardRequest {
       StartPosition = 0,
+      MaxResultsCount = 100,
       StatisticName = "bounty"
     },
     result => {
-      // Do something with the leaderboard
+      callback(result.Leaderboard);
     },
     error => { OnPlayFabError(error); });
   }

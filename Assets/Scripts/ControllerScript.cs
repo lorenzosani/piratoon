@@ -16,6 +16,7 @@ public class ControllerScript : MonoBehaviour
   UIScript ui;
 
   string email;
+  List<PlayerLeaderboardEntry> leaderboard = null;
 
   void Awake()
   {
@@ -83,6 +84,15 @@ public class ControllerScript : MonoBehaviour
 
   public UIScript getUI(){
     return ui;
+  }
+
+  public void setLeaderboard(List<PlayerLeaderboardEntry> l){
+    leaderboard = l;
+    ui.populateLeaderboard(leaderboard);
+  }
+
+  public List<PlayerLeaderboardEntry> getLeaderboard(){
+    return leaderboard;
   }
 
   //*****************************************************************
