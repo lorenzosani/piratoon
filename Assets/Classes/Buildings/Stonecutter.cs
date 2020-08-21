@@ -18,7 +18,7 @@ public class Stonecutter : Building
   }
 
   public override int getLocalStorage(){
-    int frequency = (int) 3600/((level+1)*4);
+    int frequency = (int) 3600/((level+1)*5);
     int timePassed = (int) (DateTime.UtcNow - lastCollected).TotalSeconds;
     return Math.Min(level*100, (int) Math.Floor((double) timePassed/frequency));
   }

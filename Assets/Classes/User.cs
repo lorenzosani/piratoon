@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using Newtonsoft.Json;
 
@@ -27,7 +28,7 @@ public class User
   {
     id = _id;
     username = null;
-    level = 1;
+    level = ((int) Math.Floor((decimal) bounty/200))+1;
     village = _village;
     serverId = _serverId;
     bounty = 0;
@@ -54,8 +55,8 @@ public class User
     return username;
   }
 
-  public void increaseLevel(){
-    level=level+=1;
+  public void increaseLevel(int l=-1){
+    level = l<0 ? level+=1 : l;
     API.SetUserData(new string[]{"User"});
   }
 

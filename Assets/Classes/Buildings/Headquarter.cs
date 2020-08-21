@@ -10,7 +10,7 @@ public class Headquarter : Building
     level = 0;
     name = "Headquarter";
     position = prefab.transform.position;
-    value = 200;
+    value = 150;
     cost = new int[3] { 200, 250, 10 };
     completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
     built = false;
