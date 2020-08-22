@@ -156,7 +156,7 @@ public static class API
     if (!login.NewlyCreated) {
       // Fetch user data
       GetUserData(keys, result => {
-        if (result != null && result.Data["User"].Value != "{}")
+        if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}")
         { 
           // If yes, set the local user data to match the remote
           User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);

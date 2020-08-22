@@ -3632,7 +3632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConformX: 1
+  ConformX: 0
   ConformY: 1
   Logging: 0
 --- !u!222 &319485798
@@ -8845,7 +8845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConformX: 1
+  ConformX: 0
   ConformY: 1
   Logging: 0
 --- !u!1 &836513171
@@ -15830,7 +15830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConformX: 1
+  ConformX: 0
   ConformY: 1
   Logging: 0
 --- !u!114 &1374591287
@@ -16815,7 +16815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConformX: 1
+  ConformX: 0
   ConformY: 1
   Logging: 0
 --- !u!114 &1466143520

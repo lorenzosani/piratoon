@@ -30,13 +30,14 @@ public class ControllerScript : MonoBehaviour
   // Attempts to login a player using either stored or device details
   public void login(){
     string storedId = API.GetStoredPlayerId();
-    if (!isEmpty(storedId) && rememberLoginDetails){
-      API.StoredLogin(storedId);
-    } else if (PlayerPrefs.GetInt("FirstAccess", 1) == 0) {
-      ui.showNewGameOrLogin();
-    } else {
+    if (PlayerPrefs.GetInt("FirstAccess", 1) == 1) {
       anonymousLogin();
       PlayerPrefs.SetInt("FirstAccess", 0);
+    }
+    else if (!isEmpty(storedId) && rememberLoginDetails){
+      API.StoredLogin(storedId);
+    } else {
+      ui.showNewGameOrLogin();
     }
   }
 
