@@ -189,11 +189,12 @@ public class BuildingSpawner : MonoBehaviour
   //This starts the construction of a building
   void startConstruction(Building b)
   {
-    API.SetUserData(new string[]{"Buildings", "User", "Village"});
     currentlyBuilding = b;
-    loadingBar.transform.position = b.getPosition(); ;
+    b.setBuilt(false);
+    loadingBar.transform.position = b.getPosition();
     loadingBar.SetActive(true);
     playBuildingSound();
+    API.SetUserData(new string[]{"Buildings", "User", "Village"});
   }
 
   //This instantiates the building on the scene and implements its functionality

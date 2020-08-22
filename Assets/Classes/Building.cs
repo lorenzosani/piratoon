@@ -30,7 +30,7 @@ public class Building
   public void increaseLevel()
   {
     level += 1;
-    API.SetUserData(new string[]{"Buildings"});
+    API.SetUserData(new string[]{"Buildings", "Village"});
   }
 
   public void setLevel(int l)
