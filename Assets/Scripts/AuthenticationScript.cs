@@ -103,11 +103,7 @@ public class AuthenticationScript : MonoBehaviour
   void setError(string message, GameObject field=null, bool login=false){
     Text descr = login ? loginDescription : description;
     descr.text = message;
-    Color red = Color.red;
-    red.r = 1.0f;
-    red.g = 0.66f;
-    red.b = 0.66f;
-    descr.color = red;
+    descr.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
     if (!field) return;
     Outline outline = field.GetComponent<Outline>();
     outline.enabled = true;

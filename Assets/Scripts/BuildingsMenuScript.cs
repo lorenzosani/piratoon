@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 
-public class BuildingData : MonoBehaviour
+public class BuildingsMenuScript : MonoBehaviour
 {
   public Text buildingsMenuTitle;
   ControllerScript controller;
@@ -12,7 +12,7 @@ public class BuildingData : MonoBehaviour
     GameObject gameController = GameObject.Find("GameController");
     buildingsMenuTitle.text = Language.Field["BUILDINGS"];
     controller = gameController.GetComponent<ControllerScript>();
-    InvokeRepeating("populateBuildingsMenu", 0.0f, 3.0f);
+    InvokeRepeating("populateBuildingsMenu", 0.0f, 2.0f);
   }
 
   public void populateBuildingsMenu() {
@@ -71,18 +71,28 @@ public class BuildingData : MonoBehaviour
   }
 
   void populateBuilding(Transform child, int level, int[] cost){
+    string[] resourcesNames = new string[3] {"Wood", "Stone", "Gold"};
+    int[] resOwned = controller.getUser().getResources();
+    bool canAfford = true;
+
     // Get the UI objects
     GameObject levelObject = child.Find("Level").gameObject;
     Transform resorucesObject = child.Find("Resources");
-    GameObject woodObject = resorucesObject.Find("Wood").gameObject;
-    GameObject stoneObject = resorucesObject.Find("Stone").gameObject;
-    GameObject goldObject = resorucesObject.Find("Gold").gameObject;
+    GameObject levelUpObject = child.Find("LevelUp").gameObject;
     // Set building level
     levelObject.GetComponent<Text>().text = Language.Field["LEVEL_SHORT"]+" "+level.ToString();
+    // Check if the user can afford the building
+    if (cost[0]>resOwned[0] || cost[1]>resOwned[1] || cost[2]>resOwned[2]) canAfford = false;
     // Set building cost
-    woodObject.GetComponent<Text>().text = cost[0].ToString();
-    stoneObject.GetComponent<Text>().text = cost[1].ToString();
-    goldObject.GetComponent<Text>().text = cost[2].ToString();
+    for (int i=0; i<3; i++) {
+      Text textObj = resorucesObject.Find(resourcesNames[i]).gameObject.GetComponent<Text>();
+      textObj.text = cost[i].ToString();
+      if (!canAfford) {
+        textObj.color = new Color(1.0f,0.66f,0.66f,1.0f);  
+      }
+    }
+    // Show level up icon
+    if (level > 1) levelUpObject.SetActive(true);
   }
 
   void lockBuilding(Transform building, int level){
