@@ -87,9 +87,8 @@ public class ControllerScript : MonoBehaviour
     return ui;
   }
 
-  public void setLeaderboard(List<PlayerLeaderboardEntry> l){
-    leaderboard = l;
-    ui.populateLeaderboard(leaderboard);
+  public void setLeaderboard(List<PlayerLeaderboardEntry> llb, string type){
+    ui.populateLeaderboard(llb, type);
   }
 
   public List<PlayerLeaderboardEntry> getLeaderboard(){

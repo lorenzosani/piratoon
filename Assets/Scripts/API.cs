@@ -166,10 +166,8 @@ public static class API
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
           controller.getUI().onLogin();
-          GetLeaderboard(r => controller.setLeaderboard(r));
-          if (IsRegistered()) { 
-            UpdateBounty(controller.getUser().getBounty());
-          }
+          GetLeaderboard((leaderboard, type) => controller.setLeaderboard(leaderboard, type));
+          UpdateBounty(controller.getUser().getBounty());
         } else {
           if(result.Data["User"].Value != ""){
             SetUserData(keys.ToArray());
@@ -236,21 +234,33 @@ public static class API
   }
 
   public static void UpdateBounty(int value){
-    PlayFabClientAPI.UpdatePlayerStatistics( new UpdatePlayerStatisticsRequest {
-      Statistics = new List<StatisticUpdate> { new StatisticUpdate { StatisticName = "bounty", Value = value } }
-    },
-    result => { SetUserData(new string[]{"User"}); },
-    error => { OnPlayFabError(error); });
+    if(IsRegistered()){
+      PlayFabClientAPI.UpdatePlayerStatistics( new UpdatePlayerStatisticsRequest {
+        Statistics = new List<StatisticUpdate> { new StatisticUpdate { StatisticName = "bounty", Value = value } }
+      },
+      result => { SetUserData(new string[]{"User"}); },
+      error => { OnPlayFabError(error); });
+    } 
   }
 
-  public static void GetLeaderboard(Action<List<PlayerLeaderboardEntry>> callback){
-    PlayFabClientAPI.GetLeaderboard( new GetLeaderboardRequest {
-      StartPosition = 0,
-      MaxResultsCount = 100,
+  public static void GetLeaderboard(Action<List<PlayerLeaderboardEntry>, string> callback){
+    // Get the leaderboard around the user
+    PlayFabClientAPI.GetLeaderboardAroundPlayer( new GetLeaderboardAroundPlayerRequest {
+      MaxResultsCount = 20,
       StatisticName = "bounty"
     },
     result => {
-      callback(result.Leaderboard);
+      callback(result.Leaderboard, "local");
+    },
+    error => { OnPlayFabError(error); });
+    // Get the top positions of the leaderboard
+    PlayFabClientAPI.GetLeaderboard( new GetLeaderboardRequest {
+      StartPosition = 0,
+      MaxResultsCount = 20,
+      StatisticName = "bounty"
+    },
+    result => {
+      callback(result.Leaderboard, "absolute");
     },
     error => { OnPlayFabError(error); });
   }

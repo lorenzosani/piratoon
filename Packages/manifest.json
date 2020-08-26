@@ -3,9 +3,12 @@
     {
       "name": "Packages from jillejr",
       "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity/",
-      "scopes": [
-        "jillejr"
-      ]
+      "scopes": ["jillejr"]
+    },
+    {
+      "name": "npmjs",
+      "url": "https://registry.npmjs.org/",
+      "scopes": ["com.unity.uiextensions"]
     }
   ],
   "dependencies": {
@@ -50,7 +53,8 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.unity.uiextensions": "2.2.1"
   },
   "lock": {
     "com.unity.2d.tilemap.extras": {

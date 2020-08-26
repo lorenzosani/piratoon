@@ -51,7 +51,8 @@ public class UIScript : MonoBehaviour
   public Text loginFormLoginButton;
 
   [Header("Leaderboard page")]
-  public GameObject leaderboardParentObject;
+  public GameObject localLeaderboard;
+  public GameObject absoluteLeaderboard;
   public GameObject leaderboardEntryPrefab;
 
   ControllerScript controller;
@@ -188,28 +189,32 @@ public class UIScript : MonoBehaviour
     Invoke("hideLoadingScreen", 0.5f);
   }
 
-  public void populateLeaderboard(List<PlayerLeaderboardEntry> leaderboard){
-    float ENTRY_HEIGHT = 60.0f;
+  public void populateLeaderboard(List<PlayerLeaderboardEntry> leaderboard, string type){
+    float ENTRY_HEIGHT = 55.0f;
     RectTransform DEFAULT_RECT = leaderboardEntryPrefab.GetComponent<RectTransform>();
     // Go through leaderboard list
     for (int i=0; i<leaderboard.Count; i++) {
-      // For each entry create a new LeaderboardEntry GameObject
-      GameObject entry = Instantiate(leaderboardEntryPrefab, leaderboardParentObject.transform);
-      // Set its top margin based on the position
-      RectTransform transf = entry.GetComponent<RectTransform>();
-      Vector3 position = transf.anchoredPosition;
-      position.y = -(ENTRY_HEIGHT*i) - 45;
-      transf.anchoredPosition = position;
-      // Set all the info from the list entry
-      foreach (Transform child in entry.transform)
-      {
-        child.GetComponent<Text>().text = (
-          child.name == "Position"
-          ? (leaderboard[i].Position + 1).ToString() : child.name == "Username"
-          ? leaderboard[i].DisplayName : leaderboard[i].StatValue.ToString()
-        );
-      }
+    // For each entry create a new UI object
+    GameObject entry = Instantiate(
+      leaderboardEntryPrefab,
+      type == "local" ? localLeaderboard.transform : absoluteLeaderboard.transform
+    );
+    // Set its top margin based on the position
+    RectTransform transf = entry.GetComponent<RectTransform>();
+    Vector3 position = transf.anchoredPosition;
+    position.y = -(ENTRY_HEIGHT*i) - 45;
+    transf.anchoredPosition = position;
+    // Set all the info from the list entry
+
+    foreach (Transform child in entry.transform)
+    {
+      child.GetComponent<Text>().text = (
+        child.name == "Position"
+        ? (leaderboard[i].Position + 1).ToString() : child.name == "Username"
+        ? leaderboard[i].DisplayName : leaderboard[i].StatValue.ToString()
+      );
     }
-    // TODO: Remember to add internationalisation to this menu
+  }
+  // TODO: Remember to add internationalisation to this menu
   }
 }
