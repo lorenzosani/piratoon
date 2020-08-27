@@ -4,43 +4,54 @@ using System;
 using System.Collections.Generic;
 
 public class Bounty : MonoBehaviour {
-  int BOUNTY_LEVEL_STEP=200;
+  int previousBounty = -1;
+  int previousLevel = -1;
 
-  int previousBounty;
   int userLevel;
+  int currentLevelEnd;
+  int currentLevelLength;
 
-  public ControllerScript controller; 
-  public UI ui; 
+  ControllerScript controller; 
+  UI ui;
+
   public Slider bountyObject;
 
   void Start(){
-    previousBounty = controller.getUser().getBounty();
-    bountyObject.maxValue = BOUNTY_LEVEL_STEP;
-    bountyObject.value = getProgressBarValue(previousBounty);
+    controller = GetComponent<ControllerScript>();
+    ui = controller.getUI();
   }
 
   void Update(){
+    int bounty = controller.getUser().getBounty();
+    userLevel = controller.getUser().getLevel();
+    currentLevelEnd = (userLevel+1)*userLevel*50;
+    currentLevelLength = userLevel*100;
     // Update bounty progress on UI
-    updateBountyUI(controller.getUser().getBounty());
+    if (bounty != previousBounty) updateBountyUI(bounty);
   }
 
   void updateBountyUI(int value){
-    if (value == previousBounty) return;
-    if (value >= controller.getUser().getLevel()*BOUNTY_LEVEL_STEP) {
-      controller.getUser().increaseLevel(getLevel(value));
-      ui.showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + controller.getUser().getLevel() + "!");
-      ui.playSuccessSound();
+    if (value >= currentLevelEnd) {
+      controller.getUser().increaseLevel(getNewLevel(value));
+      if (previousLevel > 0) {
+        ui.showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + userLevel + "!");
+        ui.playSuccessSound();
+      }
     }
-    bountyObject.value = getProgressBarValue(value);
+    bountyObject.maxValue = currentLevelLength;
+    bountyObject.value = currentLevelLength-(currentLevelEnd-value);
     bountyObject.transform.GetComponentInChildren<Text>().text = ui.formatNumber(value);
     previousBounty = value;
+    previousLevel = controller.getUser().getLevel();
   }
 
-  int getLevel(int bounty){
-    return ((int) Math.Floor((decimal) bounty/BOUNTY_LEVEL_STEP))+1;
-  }
-
-  int getProgressBarValue(int bounty) {
-    return bounty-(BOUNTY_LEVEL_STEP*(getLevel(bounty)-1));
+  int getNewLevel(int bounty){
+    int level = 0;
+    int levelBounty = 0;
+    while (bounty < levelBounty){
+      level+=1;
+      levelBounty = (level+1)*(level/2)*100;
+    }
+    return level;
   }
 }

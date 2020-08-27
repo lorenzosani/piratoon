@@ -28,7 +28,7 @@ public class User
   {
     id = _id;
     username = null;
-    level = ((int) Math.Floor((decimal) bounty/200))+1;
+    level = 1;
     village = _village;
     serverId = _serverId;
     bounty = 0;
@@ -46,6 +46,11 @@ public class User
     return level;
   }
 
+  public void increaseLevel(int l=-1){
+    level = l<0 ? level+=1 : l;
+    API.SetUserData(new string[]{"User"});
+  }
+
   public void setUsername(string u){
     username = u;
     API.SetUserData(new string[]{"User"});
@@ -53,11 +58,6 @@ public class User
 
   public string getUsername(){
     return username;
-  }
-
-  public void increaseLevel(int l=-1){
-    level = l<0 ? level+=1 : l;
-    API.SetUserData(new string[]{"User"});
   }
 
   public Village getVillage()
