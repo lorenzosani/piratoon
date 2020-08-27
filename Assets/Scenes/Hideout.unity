@@ -196,7 +196,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2542567}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153ebb88120466126b8834cfbf8a44d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3824b078af3b88c97933e3dfd0372002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 300
@@ -313,9 +313,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 835445109}
   - {fileID: 319485796}
   - {fileID: 1630499860}
+  - {fileID: 835445109}
   - {fileID: 824244078}
   - {fileID: 1374591285}
   - {fileID: 162130594}
@@ -398,7 +398,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 16704394}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26903593a866dd076bc7bbd9a072f5c9, type: 3}
+  m_Script: {fileID: 11500000, guid: 28a63200e064bd126bc0deb567cabd5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hud: {fileID: 319485795}
@@ -806,7 +806,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 51486830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 945144d7dfde4c9d381585f9e31f2e15, type: 3}
+  m_Script: {fileID: 11500000, guid: cdcbb8241f7d2dd0f962058f74cdff9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &57136090
@@ -3738,7 +3738,7 @@ RectTransform:
   - {fileID: 1870111037}
   - {fileID: 911769831}
   m_Father: {fileID: 16704395}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -3754,7 +3754,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 319485795}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
+  m_Script: {fileID: 11500000, guid: d8135a7ed7d1231b18a0a1aae8304cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ConformX: 0
@@ -4136,7 +4136,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Leaderboard
+  m_Text: Rankings
 --- !u!222 &344397192
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5319,10 +5319,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 432649545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 717ea1c1ca38954a38aa5f7e289a0134, type: 3}
+  m_Script: {fileID: 11500000, guid: 26985b9290d3efeb39f1d8d99d3c0f7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatScript: {fileID: 0}
+  floatScript: {fileID: 51486832}
   loadingBar: {fileID: 1593286348}
   checkHeadquarter: 1
 --- !u!82 &432649549
@@ -5430,7 +5430,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 432649545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4a76d73a8a416d7cb55aaa141ef4ae3, type: 3}
+  m_Script: {fileID: 11500000, guid: 822e676b9800000fda6d1da35f3e588a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   description: {fileID: 824638924}
@@ -5460,7 +5460,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 432649545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c3316d2f74bc47a9abf7981a8a1ca73, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b8d72ecfabcc7b62a0928f81e61d2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &432649552
@@ -5472,7 +5472,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 432649545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b23c5e4132eeba9faba9388bed20deb, type: 3}
+  m_Script: {fileID: 11500000, guid: a1f441ad03de5b830a56f78d3d071a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 432649546}
@@ -6165,7 +6165,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 503374504}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153ebb88120466126b8834cfbf8a44d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3824b078af3b88c97933e3dfd0372002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 300
@@ -6444,12 +6444,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f596c7e9811f049cc97dc6f56d01eba2, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d230cdf5f95e0428a276a82aa6ff0b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxDistanceForTap: 40
   maxDurationForTap: 0.4
-  useMouse: 0
+  useMouse: 1
   mouseScrollSpeed: 2
   controlCamera: 1
   cam: {fileID: 519420031}
@@ -6881,7 +6881,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 557595796}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bf4c16dadba45d92972d056da95243a, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a11d0c07cf6df9bcb789b9ad1072269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buildingsMenuTitle: {fileID: 543368063}
@@ -9336,7 +9336,7 @@ RectTransform:
   - {fileID: 543368062}
   - {fileID: 1270251408}
   m_Father: {fileID: 16704395}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9388,7 +9388,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 835445108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
+  m_Script: {fileID: 11500000, guid: d8135a7ed7d1231b18a0a1aae8304cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ConformX: 0
@@ -16667,7 +16667,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1374591284}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
+  m_Script: {fileID: 11500000, guid: d8135a7ed7d1231b18a0a1aae8304cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ConformX: 0
@@ -17391,7 +17391,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1429182638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153ebb88120466126b8834cfbf8a44d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3824b078af3b88c97933e3dfd0372002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 300
@@ -17651,7 +17651,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1466143517}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c97afc556caea1c44969477eb7ddec74, type: 3}
+  m_Script: {fileID: 11500000, guid: d8135a7ed7d1231b18a0a1aae8304cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ConformX: 0
@@ -21056,7 +21056,7 @@ RectTransform:
   - {fileID: 156094007}
   - {fileID: 1497681101}
   m_Father: {fileID: 16704395}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -21693,7 +21693,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1671634998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153ebb88120466126b8834cfbf8a44d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3824b078af3b88c97933e3dfd0372002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 300
@@ -24813,7 +24813,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1933591118}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153ebb88120466126b8834cfbf8a44d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3824b078af3b88c97933e3dfd0372002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: 300

@@ -12,16 +12,16 @@ public class ControllerScript : MonoBehaviour
   public bool rememberLoginDetails = true;
 
   User user;
-  BuildingSpawner spawner;
-  UIScript ui;
+  Buildings spawner;
+  UI ui;
 
   string email;
   List<PlayerLeaderboardEntry> leaderboard = null;
 
   void Awake()
   {
-    spawner = GetComponent<BuildingSpawner>();
-    ui = GameObject.Find("Rendered UI").GetComponent<UIScript>();
+    spawner = GetComponent<Buildings>();
+    ui = GameObject.Find("Rendered UI").GetComponent<UI>();
     user = new User("user", "x", new Village(Vector3.zero));
     API.RegisterScripts(this, spawner);
     login();
@@ -83,7 +83,7 @@ public class ControllerScript : MonoBehaviour
     user = u;
   }
 
-  public UIScript getUI(){
+  public UI getUI(){
     return ui;
   }
 
