@@ -13,13 +13,13 @@ public class Village
   [JsonProperty]
   int level;
   [JsonProperty]
-  Vector3 position;
+  int position;
   [JsonProperty]
   int strength;
   [JsonProperty]
   FloatingObject[] floatingObjects;
 
-  public Village(Vector3 _position)
+  public Village(int _position)
   {
     buildings = new List<Building>();
     level = 1;
@@ -71,13 +71,13 @@ public class Village
     return level;
   }
 
-  public void setPosition(Vector3 pos)
+  public void setPosition(int pos)
   {
     position = pos;
     API.SetUserData(new string[]{"Village"});
   }
 
-  public Vector3 getPosition()
+  public int getPosition()
   {
     return position;
   }

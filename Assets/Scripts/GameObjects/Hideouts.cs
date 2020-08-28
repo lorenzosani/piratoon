@@ -41,12 +41,4 @@ public class Hideouts : MonoBehaviour
     { 32, new Vector3(24.68f, 12.99f, 0f) },
     { 33, new Vector3(15.74f, 12.29f, 0f) },
   };
-
-  void Start(){
-    foreach (Transform child in transform){
-      char[] arr = { '(', ')'};
-      int childNumber = Int32.Parse(child.name.Split(' ')[1].Trim(arr));
-      Debug.Log("{ " + childNumber + ", new Vector3(" + child.position.x + "f, "+ child.position.y + "f, "+ child.position.z + "f) },");
-    }
-  }
 }
