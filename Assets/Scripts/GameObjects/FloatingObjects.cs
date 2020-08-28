@@ -43,9 +43,9 @@ public class FloatingObjects : MonoBehaviour {
     if (id < 4) { 
       resources = new int[3] {10, 0, 0};
     } else if (id < 6) {
-      resources = new int[3] {30, 0, 0};
+      resources = new int[3] {20, 20, 0};
     } else {
-      resources = new int[3] {40, 0, 5};
+      resources = new int[3] {30, 30, 5};
     }
     // Give the collected resources to the user
     int[] spaceLeft = controller.getUser().getStorageSpaceLeft();

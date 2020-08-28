@@ -37,11 +37,6 @@ public class User
     storage = 700;
   }
 
-  public void setId(string i){
-    id = i;
-    API.SetUserData(new string[]{"User"});
-  }
-
   public string getId()
   {
     return id;
