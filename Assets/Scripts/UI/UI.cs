@@ -50,10 +50,19 @@ public class UI : MonoBehaviour
   public Text registrationRegisterButton;
   public Text loginFormLoginButton;
 
-  [Header("Leaderboard page")]
+  [Header("Leaderboard menu")]
   public GameObject localLeaderboard;
   public GameObject absoluteLeaderboard;
   public GameObject leaderboardEntryPrefab;
+  public Text leaderboardTitle;
+  public Text localLeaderboardTitle;
+  public Text absLeaderboardTitle;
+  public Text localLeadPos;
+  public Text absLeadPos;
+  public Text localLeadUsername;
+  public Text absLeadUsername;
+  public Text localLeadBounty;
+  public Text absLeadBounty;
 
   ControllerScript controller;
 
@@ -77,6 +86,15 @@ public class UI : MonoBehaviour
     notLoggedLoginButton.text = Language.Field["LOGIN_BTN"].ToUpper();
     registrationRegisterButton.text = Language.Field["REGISTER"].ToUpper();
     loginFormLoginButton.text = Language.Field["LOGIN_BTN"].ToUpper();
+    leaderboardTitle.text = Language.Field["LEADERBOARD"];
+    localLeaderboardTitle.text = Language.Field["YOUR_POS"];
+    absLeaderboardTitle.text = Language.Field["TOP_PLAYERS"];
+    localLeadPos.text = Language.Field["SHORT_POSITION"];
+    absLeadPos.text = Language.Field["SHORT_POSITION"];
+    localLeadUsername.text = Language.Field["USERNAME"];
+    absLeadUsername.text = Language.Field["USERNAME"];
+    localLeadBounty.text = Language.Field["BOUNTY"];
+    absLeadBounty.text = Language.Field["BOUNTY"];
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n"+ Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
     setUsername();
