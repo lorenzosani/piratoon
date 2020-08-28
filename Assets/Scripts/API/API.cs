@@ -38,22 +38,8 @@ public static class API
           EmailAddress = email
         }, res => {
           StoreUsername(result.Username);
-          if (GetStoredPlayerId() == "") {
-            string guid = Guid.NewGuid().ToString();
-            PlayFabClientAPI.LinkCustomID(new LinkCustomIDRequest() {
-                CustomId = guid
-              }, r => {
-                StorePlayerId(guid);
-                StoreUsername(username);   
-                callback("SUCCESS", "");
-              }, e => {
-                OnPlayFabError(e);
-              }
-            );
-          } else {
-            StoreRegistered(true);
-            callback("SUCCESS", "");
-          }    
+          StoreRegistered(true);
+          callback("SUCCESS", "");
           PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest() {
             DisplayName = username
           }, a => { 
@@ -142,7 +128,7 @@ public static class API
   }
 
   public static void AnonymousLogin(){
-    string guid = Guid.NewGuid().ToString();
+    string guid = controller.getUser().getId();
     StorePlayerId(guid);
     StoredLogin(guid);
   }

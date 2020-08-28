@@ -22,7 +22,7 @@ public class ControllerScript : MonoBehaviour
   {
     spawner = GetComponent<Buildings>();
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
-    user = new User("user", "x", new Village(Vector3.zero));
+    user = new User(Guid.NewGuid().ToString(), "x", new Village(0));
     API.RegisterScripts(this, spawner);
     login();
   }
@@ -34,7 +34,7 @@ public class ControllerScript : MonoBehaviour
       anonymousLogin();
       PlayerPrefs.SetInt("FirstAccess", 0);
     }
-    else if (!isEmpty(storedId) && rememberLoginDetails){
+    else if (!isEmpty(storedId) && storedId != "user" && rememberLoginDetails){
       API.StoredLogin(storedId);
     } else {
       ui.showNewGameOrLogin();
