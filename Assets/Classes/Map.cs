@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 [JsonObject(MemberSerialization.OptIn)]
@@ -26,5 +27,9 @@ public class Map
 
   public void addPlayer(int position, string playerId){
     playersPositions[position] = playerId;
+  }
+
+  public void removePlayer(int position){
+    playersPositions.Remove(position);
   }
 }
