@@ -140,15 +140,19 @@ public static class API
     sessionTicket = login.SessionTicket;
     List<string> keys = new List<string> { "User", "Buildings", "Village" };
     if (!login.NewlyCreated) {
-      // Fetch user data
       GetUserData(keys, result => {
+        // Check if data received is valid
         if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}")
         { 
-          // If yes, set the local user data to match the remote
+          // If yes, de-serialize the data
           User user = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
           Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
+          List<Building> buildings = JsonConvert.DeserializeObject<List<Building>>((string) result.Data["Buildings"].Value);
+          // Populate the objects with the retrieved data
+          village.setBuildingsFromList(buildings);
           user.setVillage(village);
           controller.setUser(user);
+          // Show the village
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
           controller.getUI().onLogin();

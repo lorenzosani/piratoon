@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 [JsonObject(MemberSerialization.OptIn)]
 public class Village
 {
-  [JsonProperty]
   List<Building> buildings;
   [JsonProperty]
   int level;

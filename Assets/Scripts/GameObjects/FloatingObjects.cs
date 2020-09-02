@@ -41,11 +41,6 @@ public class FloatingObjects : MonoBehaviour {
     }
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     InvokeRepeating("checkIfSpawn", 10.0f, 30.0f);
-    string result = "";
-    foreach (Transform child in transform) {
-      result += "new Vector3(" + child.position.x + "f, " + child.position.y + "f, 0),\n";
-    }
-    Debug.Log(result);
   }
 
   // Check if there any floating objects ready to be spawned
