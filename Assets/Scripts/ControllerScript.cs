@@ -22,7 +22,7 @@ public class ControllerScript : MonoBehaviour
   {
     spawner = GetComponent<Buildings>();
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
-    user = new User(Guid.NewGuid().ToString(), "x", new Village(0));
+    user = new User(Guid.NewGuid().ToString(), new Village(0));
     API.RegisterScripts(this, spawner);
     login();
   }
@@ -31,21 +31,21 @@ public class ControllerScript : MonoBehaviour
   public void login(){
     string storedId = API.GetStoredPlayerId();
     if (PlayerPrefs.GetInt("FirstAccess", 1) == 1) {
-      anonymousLogin();
+      newPlayerLogin();
       PlayerPrefs.SetInt("FirstAccess", 0);
     }
-    else if (!isEmpty(storedId) && storedId != "user" && rememberLoginDetails){
-      API.StoredLogin(storedId);
+    else if (!isEmpty(storedId) && rememberLoginDetails){
+      API.Login(storedId);
     } else {
       ui.showNewGameOrLogin();
     }
   }
 
-  public void anonymousLogin() {
+  public void newPlayerLogin() {
     API.StoreUsername("");
-    API.StorePlayerId("");
     API.StoreRegistered(false);
-    API.AnonymousLogin();
+    API.StorePlayerId(controller.getUser().getId());
+    API.NewPlayerLogin();
   }
 
   public void retryConnection(){

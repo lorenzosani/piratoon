@@ -16,7 +16,10 @@ public static class API
   public static string customId = string.Empty;
 
   static string playFabId = string.Empty;
+  static string entityId = string.Empty;
+  static string entityType = string.Empty;
   static string sessionTicket = string.Empty;
+  static int positionOnMap = null;
 
   static ControllerScript controller;
   static Buildings spawner;
@@ -120,23 +123,27 @@ public static class API
     });
   }
 
-  public static void StoredLogin(string storedId){
+  public static void Login(string userId){
     PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
-      CustomId = storedId, 
+      CustomId = userId, 
       CreateAccount = true
     }, OnLogin, e => OnPlayFabError(e, true));
   }
 
-  public static void AnonymousLogin(){
-    string guid = controller.getUser().getId();
-    StorePlayerId(guid);
-    StoredLogin(guid);
+  public static void NewPlayerLogin(){
+    Login(controller.getUser().getId());
+  }
+
+  public static void AddUserToWorld(){
+    //TODO
   }
 
   public static void OnLogin(LoginResult login)
   { 
     controller.getUI().showLoadingScreen();
     playFabId = login.PlayFabId;
+    entityId = login.EntityToken.Entity.Id;
+    entityType = login.EntityToken.Entity.Type;
     sessionTicket = login.SessionTicket;
     List<string> keys = new List<string> { "User", "Buildings", "Village" };
     if (!login.NewlyCreated) {
@@ -297,7 +304,9 @@ public static class API
     return PlayerPrefs.GetString("Username", "");
   }
 
-  // If something goes wrong with the API
+  //API Errors handlers
+
+  // If something goes wrong with the API in general
   public static void OnPlayFabError(PlayFabError error, bool login = false)
   {
     Debug.LogWarning("Something went wrong with your API call.");
@@ -311,8 +320,9 @@ public static class API
     }
   }
 
+
+  // If something goes wrong with sending a password recovery email
   public static void EmailRecoveryError(PlayFabError error){
-    // Show an error message 
     Debug.LogWarning("Something went wrong with sending the email.");
     Debug.LogError(error.GenerateErrorReport());
   }
