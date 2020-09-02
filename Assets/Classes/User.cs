@@ -14,7 +14,7 @@ public class User
   [JsonProperty]
   int level;
   [JsonProperty]
-  string serverId;
+  string mapId;
   [JsonProperty]
   int bounty;
   [JsonProperty]
@@ -24,13 +24,13 @@ public class User
   [JsonProperty]
   int storage;
 
-  public User(string _id, string _serverId, Village _village)
+  public User(string _id, Village _village)
   {
     id = _id;
     username = null;
     level = 1;
     village = _village;
-    serverId = _serverId;
+    mapId = null;
     bounty = 0;
     resources = new int[3] { 500, 700, 100 };
     pearl = 5;
@@ -70,9 +70,14 @@ public class User
     village = v;
   }
 
-  public string getServerId()
+  public string getMapId()
   {
     return serverId;
+  }
+    
+  public string setMapId(string id)
+  {
+    mapId = id;
   }
 
   public int[] getResources()
