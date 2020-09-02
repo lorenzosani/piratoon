@@ -44,7 +44,7 @@ public class ControllerScript : MonoBehaviour
   public void newPlayerLogin() {
     API.StoreUsername("");
     API.StoreRegistered(false);
-    API.StorePlayerId(controller.getUser().getId());
+    API.StorePlayerId(user.getId());
     API.NewPlayerLogin();
   }
 

@@ -19,7 +19,6 @@ public static class API
   static string entityId = string.Empty;
   static string entityType = string.Empty;
   static string sessionTicket = string.Empty;
-  static int positionOnMap = null;
 
   static ControllerScript controller;
   static Buildings spawner;
