@@ -46,7 +46,11 @@ public class ControllerScript : MonoBehaviour {
   }
 
   public void retryConnection() {
-    List<string> keys = new List<string> { "User", "Buildings", "Village" };
+    List<string> keys = new List<string> {
+      "User",
+      "Buildings",
+      "Village"
+    };
     API.GetUserData(keys, result => {
       if (result != null) {
         ui.showConnectionError(false);
@@ -63,6 +67,10 @@ public class ControllerScript : MonoBehaviour {
   }
 
   public void loadScene(string sceneName) {
+    if (sceneName == "Map" && user.getMapId() == null) {
+      ui.showPopupMessage(Language.Field["MAP_REGISTER"]);
+      return;
+    }
     SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
   }
 

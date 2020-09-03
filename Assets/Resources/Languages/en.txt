@@ -46,3 +46,4 @@ YOUR_POS = Your position
 SHORT_POSITION = Pos.
 USERNAME = Username
 TOP_PLAYERS = Top players
+MAP_REGISTER = Let's register an account first, so other players will know who you are!
