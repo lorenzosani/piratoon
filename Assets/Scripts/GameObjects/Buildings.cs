@@ -1,14 +1,13 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System;
-using System.Globalization;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class Buildings : MonoBehaviour
-{
+public class Buildings : MonoBehaviour {
   ControllerScript controller;
   Building currentlyBuilding = null;
   Slider loadingSlider;
@@ -25,25 +24,21 @@ public class Buildings : MonoBehaviour
   // START and UPDATE methods
   //*****************************************************************
 
-  void Start()
-  {
+  void Start() {
     controller = GetComponent<ControllerScript>();
     ui = controller.getUI();
     floatScript = GameObject.Find("FloatingObjects").GetComponent<FloatingObjects>();
     loadingSlider = loadingBar.GetComponent<Slider>();
-    loadingText = loadingBar.GetComponentInChildren(typeof(Text), true) as Text;
+    loadingText = loadingBar.GetComponentInChildren(typeof(Text), true)as Text;
     audioSource = GetComponent<AudioSource>();
     newBuilding = true;
   }
 
-  void Update()
-  {
-    if (currentlyBuilding != null)
-    {
-      int totalTime = currentlyBuilding.getFutureValue()/4;
+  void Update() {
+    if (currentlyBuilding != null) {
+      int totalTime = currentlyBuilding.getFutureValue() / 4;
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
-      if (timeLeft <= 0)
-      {
+      if (timeLeft <= 0) {
         finishBuilding(currentlyBuilding);
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
@@ -54,53 +49,48 @@ public class Buildings : MonoBehaviour
   //*****************************************************************
   // PUBLIC: Call this with the name of the building you want to build
   //*****************************************************************
-  public void main(string buildingName)
-  {
+  public void main(string buildingName) {
     Building building = null;
     Building headquarter = null;
     // Check if something is already being built
-    if (currentlyBuilding != null)
-    {
+    if (currentlyBuilding != null) {
       ui.showPopupMessage(Language.Field["DUPLICATE_BUILDING"]);
       return;
     }
     // Check if the building and headquarters have already been built
-    foreach (Building b in controller.getUser().getVillage().getBuildings())
-    {
-      if (b.getName() == buildingName)
-      {
+    foreach (Building b in controller.getUser().getVillage().getBuildings()) {
+      if (b.getName() == buildingName) {
         building = b;
         newBuilding = false;
       }
-      if (b.getName() == "Headquarter"){
+      if (b.getName() == "Headquarter") {
         headquarter = b;
       }
     }
-    if (buildingName != "Headquarter"){
-      if (checkHeadquarter && headquarter==null) {
+    if (buildingName != "Headquarter") {
+      if (checkHeadquarter && headquarter == null) {
         ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
         return;
       }
-      if (checkHeadquarter && !newBuilding && headquarter!=null && headquarter.getLevel()<=building.getLevel()){
+      if (checkHeadquarter && !newBuilding && headquarter != null && headquarter.getLevel() <= building.getLevel()) {
         ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
         newBuilding = true;
         return;
       }
     }
     // If it doesn't exist already, create a new building object
-    if (newBuilding) building = createBuilding(buildingName);
+    if (newBuilding)building = createBuilding(buildingName);
     // Check if user can afford the building, if yes pay
-    if (!canAfford(building))
-    {
+    if (!canAfford(building)) {
       ui.showPopupMessage(Language.Field["NOT_RESOURCES"]);
       newBuilding = true;
       return;
     }
     // Register the new building with the controller
-    if (newBuilding){
+    if (newBuilding) {
       controller.getUser().getVillage().addBuilding(building);
     } else {
-      building.setCompletionTime(DateTime.UtcNow.AddSeconds(building.getValue()/4 * (building.getLevel()+1)));
+      building.setCompletionTime(DateTime.UtcNow.AddSeconds(building.getValue() / 4 * (building.getLevel() + 1)));
     }
     // Spawn building
     startConstruction(building);
@@ -111,15 +101,15 @@ public class Buildings : MonoBehaviour
   //*****************************************************************
 
   // Show buildings from json data
-  public void populateVillage(string buildingsJson){
+  public void populateVillage(string buildingsJson) {
     Village village = controller.getUser().getVillage();
     List<Building> buildingsList = new List<Building>();
 
     JArray buildingsObject = JArray.Parse(buildingsJson);
     removeAllBuildings();
-    for(int i=0; i<buildingsObject.Count; i++){
-      Building b = createBuilding((string) buildingsObject[i]["name"]);
-      b.setLevel((int) buildingsObject[i]["level"]);
+    for (int i = 0; i < buildingsObject.Count; i++) {
+      Building b = createBuilding((string)buildingsObject[i]["name"]);
+      b.setLevel((int)buildingsObject[i]["level"]);
       b.setPosition(
         new Vector3(
           (float)buildingsObject[i]["position"]["x"],
@@ -127,13 +117,13 @@ public class Buildings : MonoBehaviour
           (float)buildingsObject[i]["position"]["z"]
         )
       );
-      string t = (string) buildingsObject[i]["completionTime"];
-      string l = (string) buildingsObject[i]["lastCollected"];
+      string t = (string)buildingsObject[i]["completionTime"];
+      string l = (string)buildingsObject[i]["lastCollected"];
       t = t.Replace("T", " ").Replace("Z", "");
       b.setCompletionTime(DateTime.ParseExact(t, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-      b.setValue((int) buildingsObject[i]["value"]);
+      b.setValue((int)buildingsObject[i]["value"]);
       b.setLastCollected(DateTime.ParseExact(l, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-      b.setBuilt((bool) buildingsObject[i]["built"]);
+      b.setBuilt((bool)buildingsObject[i]["built"]);
       buildingsList.Add(b);
       addBuildingFromServer(b);
     }
@@ -141,9 +131,9 @@ public class Buildings : MonoBehaviour
   }
 
   // Shows spawned floating objects
-  public void populateFloatingObjects(){
+  public void populateFloatingObjects() {
     FloatingObject[] floatingObjects = controller.getUser().getVillage().getFloatingObjects();
-    for (int i=0; i<floatingObjects.Length; i++) {
+    for (int i = 0; i < floatingObjects.Length; i++) {
       if (DateTime.Compare(floatingObjects[i].getTime(), DateTime.Now) < 0) {
         floatScript.spawn(floatingObjects[i]);
       }
@@ -151,29 +141,39 @@ public class Buildings : MonoBehaviour
   }
 
   // Factory method that returns the correct building object
-  public Building createBuilding(string name){
-    switch(name){
-      case "Inventor": return new Inventor();
-      case "Woodcutter": return new Woodcutter();
-      case "Stonecutter": return new Stonecutter();
-      case "Watchtower": return new Watchtower();
-      case "Headquarter": return new Headquarter();
-      case "Defence": return new Defence();
-      case "Shipyard": return new Shipyard();
-      case "Storage": return new Storage();
-      case "Inn": return new Inn();
-      default: return null;
+  public Building createBuilding(string name) {
+    switch (name) {
+      case "Inventor":
+        return new Inventor();
+      case "Woodcutter":
+        return new Woodcutter();
+      case "Stonecutter":
+        return new Stonecutter();
+      case "Watchtower":
+        return new Watchtower();
+      case "Headquarter":
+        return new Headquarter();
+      case "Defence":
+        return new Defence();
+      case "Shipyard":
+        return new Shipyard();
+      case "Storage":
+        return new Storage();
+      case "Inn":
+        return new Inn();
+      default:
+        return null;
     }
   }
 
-  void finishBuilding(Building b){
+  void finishBuilding(Building b) {
     loadingBar.SetActive(false);
     b.setBuilt(true);
     b.increaseLevel();
     // Add building's value to user's bounty
     controller.getUser().addBounty(b.getValue());
     // Spawn the building on the scene
-    if (newBuilding) spawn(b);
+    if (newBuilding)spawn(b);
     b.startFunctionality(controller);
     // Reset global variables
     currentlyBuilding = null;
@@ -181,43 +181,44 @@ public class Buildings : MonoBehaviour
   }
 
   //This fetches the prefab of the building to be shown
-  GameObject getPrefab(string buildingName)
-  {
+  GameObject getPrefab(string buildingName) {
     return (GameObject)Resources.Load("Prefabs/" + new CultureInfo("en-US", false).TextInfo.ToTitleCase(buildingName), typeof(GameObject));
   }
 
   //This starts the construction of a building
-  void startConstruction(Building b)
-  {
+  void startConstruction(Building b) {
     currentlyBuilding = b;
     b.setBuilt(false);
     loadingBar.transform.position = b.getPosition();
     loadingBar.SetActive(true);
     playBuildingSound();
-    API.SetUserData(new string[]{"Buildings", "User", "Village"});
+    API.SetUserData(new string[] {
+      "Buildings",
+      "User",
+      "Village"
+    });
   }
 
   //This instantiates the building on the scene and implements its functionality
-  void spawn(Building b)
-  {
+  void spawn(Building b) {
     // Instantiate building on the scene
     GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
     buildingObj.name = b.getName();
     buildingObj.layer = 9;
   }
 
-  public void addBuildingFromServer(Building b){
+  public void addBuildingFromServer(Building b) {
     currentlyBuilding = null;
     b.setPosition(b.getPrefab().transform.position);
     if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0) {
       startConstruction(b);
-    } else if(b.isBuilt() == false){
+    } else if (b.isBuilt() == false) {
       finishBuilding(b);
-    }else{
+    } else {
       GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
       buildingObj.name = b.getName();
       buildingObj.layer = 9;
-      if(b.getName()=="Woodcutter" || b.getName()=="Stonecutter" || b.getName()=="Inn"){
+      if (b.getName() == "Woodcutter" || b.getName() == "Stonecutter" || b.getName() == "Inn") {
         if (b.getLocalStorage() > 0) {
           GetComponent<UserResources>().showTooltip(b.getName());
         }
@@ -225,7 +226,7 @@ public class Buildings : MonoBehaviour
     }
   }
 
-  public void removeAllBuildings(){
+  public void removeAllBuildings() {
     loadingBar.SetActive(false);
     var objects = FindObjectsOfType(typeof(GameObject));
     foreach (GameObject obj in objects) {
@@ -236,21 +237,19 @@ public class Buildings : MonoBehaviour
   }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price
-  bool canAfford(Building b)
-  {
+  bool canAfford(Building b) {
     int[] resources = controller.getUser().getResources();
     int[] cost = b.getCost();
     int[] remainingResources = new int[3];
-    for (int i = 0; i < resources.Length; i++)
-    {
+    for (int i = 0; i < resources.Length; i++) {
       remainingResources[i] = resources[i] - cost[i];
-      if (remainingResources[i] < 0) return false;
+      if (remainingResources[i] < 0)return false;
     }
     controller.getUser().setResources(remainingResources);
     return true;
   }
 
-  public void playBuildingSound(){
+  public void playBuildingSound() {
     audioSource.Play();
   }
 }

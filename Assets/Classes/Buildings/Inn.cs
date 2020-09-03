@@ -1,30 +1,35 @@
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Inn : Building
-{
-  public Inn(){
+public class Inn : Building {
+  public Inn() {
     prefab = (GameObject)Resources.Load("Prefabs/Inn", typeof(GameObject));
     level = 0;
     name = "Inn";
     position = prefab.transform.position;
     value = 200;
-    cost = new int[3] { 200, 250, 20 };
-    completionTime = DateTime.UtcNow.AddSeconds(value/4 * (level+1));
+    cost = new int[3] {
+      200,
+      250,
+      20
+    };
+    completionTime = DateTime.UtcNow.AddSeconds(value / 4 * (level + 1));
     lastCollected = DateTime.UtcNow;
     built = false;
   }
 
-  public override int getLocalStorage(){
-    int frequency = (int) 7200/(level+1);
-    int timePassed = (int) (DateTime.UtcNow - lastCollected).TotalSeconds;
-    return Math.Min(level*100, (int) Math.Floor((double) timePassed/frequency));
+  public override int getLocalStorage() {
+    int frequency = (int)7200 / (level + 1);
+    int timePassed = (int)(DateTime.UtcNow - lastCollected).TotalSeconds;
+    return Math.Min(level * 100, (int)Math.Floor((double)timePassed / frequency));
   }
 
-  public override void resetLocalStorage(){
+  public override void resetLocalStorage() {
     lastCollected = DateTime.UtcNow;
-    API.SetUserData(new string[]{"Buildings"});
+    API.SetUserData(new string[] {
+      "Buildings"
+    });
   }
 }

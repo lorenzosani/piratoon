@@ -1,14 +1,13 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class BuildingsMenu : MonoBehaviour
-{
+public class BuildingsMenu : MonoBehaviour {
   public Text buildingsMenuTitle;
   ControllerScript controller;
 
-  void Start(){
+  void Start() {
     GameObject gameController = GameObject.Find("GameController");
     buildingsMenuTitle.text = Language.Field["BUILDINGS"];
     controller = gameController.GetComponent<ControllerScript>();
@@ -18,36 +17,36 @@ public class BuildingsMenu : MonoBehaviour
   public void populateBuildingsMenu() {
     Village village = controller.getUser().getVillage();
     // Go through each building in the menu
-    foreach (Transform child in transform){
-      string buildingName = child.name.Substring(0, child.name.Length-4);
+    foreach (Transform child in transform) {
+      string buildingName = child.name.Substring(0, child.name.Length - 4);
       // Populate building name in the correct language
       Text title = child.Find("Title").GetComponent<Text>();
       title.text = Language.Field[buildingName.ToUpper()];
       // Inventor and Watchtower are unlocked only after headquarters are upgraded
-      if (buildingName == "Inventor" || buildingName == "Watchtower"){
+      if (buildingName == "Inventor" || buildingName == "Watchtower") {
         Building headquarter = village.getBuildingInfo("Headquarter");
         // Lock buildings
-        if((headquarter == null || headquarter.getLevel()<5) && buildingName == "Inventor") {
+        if ((headquarter == null || headquarter.getLevel() < 5) && buildingName == "Inventor") {
           lockBuilding(child, 5);
           continue;
         }
-        if((headquarter == null || headquarter.getLevel()<3) && buildingName == "Watchtower"){
+        if ((headquarter == null || headquarter.getLevel() < 3) && buildingName == "Watchtower") {
           lockBuilding(child, 3);
           continue;
-        } 
+        }
         // Unlock buildings
-        if(headquarter != null && headquarter.getLevel()==5 && buildingName == "Inventor") unlockBuilding(child);
-        if(headquarter != null && headquarter.getLevel()==3 && buildingName == "Watchtower") unlockBuilding(child);
+        if (headquarter != null && headquarter.getLevel() == 5 && buildingName == "Inventor")unlockBuilding(child);
+        if (headquarter != null && headquarter.getLevel() == 3 && buildingName == "Watchtower")unlockBuilding(child);
       }
       // All other buildings are unlocked from the start
       Building building = village.getBuildingInfo(buildingName);
       bool beenBuilt = true;
-      if(building == null){
+      if (building == null) {
         // If building hasn't been built yet, get default info
         beenBuilt = false;
         building = createBuilding(buildingName);
       }
-      int level = !beenBuilt ? level = 1 : building.getLevel()+1;
+      int level = !beenBuilt ? level = 1 : building.getLevel() + 1;
       int[] cost = !beenBuilt ? building.getBaseCost() : building.getCost();
       // Show info for the current building
       populateBuilding(child, level, cost);
@@ -55,23 +54,33 @@ public class BuildingsMenu : MonoBehaviour
   }
 
   // Factory method that returns the correct building object
-  Building createBuilding(string name){
-    switch(name){
-      case "Inventor": return new Inventor();
-      case "Woodcutter": return new Woodcutter();
-      case "Stonecutter": return new Stonecutter();
-      case "Watchtower": return new Watchtower();
-      case "Headquarter": return new Headquarter();
-      case "Defence": return new Defence();
-      case "Shipyard": return new Shipyard();
-      case "Storage": return new Storage();
-      case "Inn": return new Inn();
-      default: return null;
+  Building createBuilding(string name) {
+    switch (name) {
+      case "Inventor":
+        return new Inventor();
+      case "Woodcutter":
+        return new Woodcutter();
+      case "Stonecutter":
+        return new Stonecutter();
+      case "Watchtower":
+        return new Watchtower();
+      case "Headquarter":
+        return new Headquarter();
+      case "Defence":
+        return new Defence();
+      case "Shipyard":
+        return new Shipyard();
+      case "Storage":
+        return new Storage();
+      case "Inn":
+        return new Inn();
+      default:
+        return null;
     }
   }
 
-  void populateBuilding(Transform child, int level, int[] cost){
-    string[] resourcesNames = new string[3] {"Wood", "Stone", "Gold"};
+  void populateBuilding(Transform child, int level, int[] cost) {
+    string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
     int[] resOwned = controller.getUser().getResources();
     bool canAfford = true;
 
@@ -80,22 +89,22 @@ public class BuildingsMenu : MonoBehaviour
     Transform resorucesObject = child.Find("Resources");
     GameObject levelUpObject = child.Find("LevelUp").gameObject;
     // Set building level
-    levelObject.GetComponent<Text>().text = Language.Field["LEVEL_SHORT"]+" "+level.ToString();
+    levelObject.GetComponent<Text>().text = Language.Field["LEVEL_SHORT"] + " " + level.ToString();
     // Check if the user can afford the building
-    if (cost[0]>resOwned[0] || cost[1]>resOwned[1] || cost[2]>resOwned[2]) canAfford = false;
+    if (cost[0] > resOwned[0] || cost[1] > resOwned[1] || cost[2] > resOwned[2])canAfford = false;
     // Set building cost
-    for (int i=0; i<3; i++) {
+    for (int i = 0; i < 3; i++) {
       Text textObj = resorucesObject.Find(resourcesNames[i]).gameObject.GetComponent<Text>();
       textObj.text = cost[i].ToString();
       if (!canAfford) {
-        textObj.color = new Color(1.0f,0.66f,0.66f,1.0f);  
+        textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
       }
     }
     // Show level up icon
-    if (level > 1) levelUpObject.SetActive(true);
+    if (level > 1)levelUpObject.SetActive(true);
   }
 
-  void lockBuilding(Transform building, int level){
+  void lockBuilding(Transform building, int level) {
     // Get child objects
     Button btn = building.GetComponent<Button>();
     Color titleColor = building.Find("Title").GetComponent<Text>().color;
@@ -109,7 +118,7 @@ public class BuildingsMenu : MonoBehaviour
     resources.SetActive(false);
   }
 
-  void unlockBuilding(Transform building){
+  void unlockBuilding(Transform building) {
     // Get child objects
     Button btn = building.GetComponent<Button>();
     Color titleColor = building.Find("Title").GetComponent<Text>().color;

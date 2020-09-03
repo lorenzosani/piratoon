@@ -1,11 +1,10 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using PlayFab.ClientModels;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class UI : MonoBehaviour
-{
+public class UI : MonoBehaviour {
   [Header("Resources and Bounty")]
   public GameObject hud;
   public Text woodValue;
@@ -66,7 +65,7 @@ public class UI : MonoBehaviour
 
   ControllerScript controller;
 
-  void Start(){
+  void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
 
     showLoadingScreen();
@@ -76,9 +75,9 @@ public class UI : MonoBehaviour
     accountButton.text = Language.Field["ACCOUNT"];
     accountMenuTitle.text = Language.Field["ACCOUNT"];
     notRegisteredText.text = Language.Field["NOT_REGISTERED"];
-    levelText.text = Language.Field["LEVEL"]+":";
-    bountyText.text = Language.Field["BOUNTY"]+":";
-    storageText.text = Language.Field["STORAGE"]+":";
+    levelText.text = Language.Field["LEVEL"] + ":";
+    bountyText.text = Language.Field["BOUNTY"] + ":";
+    storageText.text = Language.Field["STORAGE"] + ":";
     passwordRecoveryButton.text = Language.Field["FORGOT_PASSWORD"];
     passwordRecoveryText.text = Language.Field["RECOVER_PASSWORD"];
     sendEmailButton.text = Language.Field["SEND"].ToUpper();
@@ -95,13 +94,12 @@ public class UI : MonoBehaviour
     absLeadUsername.text = Language.Field["USERNAME"];
     localLeadBounty.text = Language.Field["BOUNTY"];
     absLeadBounty.text = Language.Field["BOUNTY"];
-    connectionError.GetComponentInChildren<Text>().text = "Oops!\n"+ Language.Field["CONNECTION"];
+    connectionError.GetComponentInChildren<Text>().text = "Oops!\n" + Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
     setUsername();
   }
 
-  void Update()
-  {
+  void Update() {
     // Update resources on UI
     int[] resources = controller.getUser().getResources();
     woodValue.text = resources[0].ToString();
@@ -110,48 +108,47 @@ public class UI : MonoBehaviour
     pearlValue.text = controller.getUser().getPearl().ToString();
   }
 
-  public void showPopupMessage(string message)
-  {
-    Text messageText = messagePopup.GetComponentInChildren(typeof(Text), true) as Text;
+  public void showPopupMessage(string message) {
+    Text messageText = messagePopup.GetComponentInChildren(typeof(Text), true)as Text;
     messageText.text = message;
     messagePopup.SetActive(true);
   }
 
-  public string formatNumber(int number){
+  public string formatNumber(int number) {
     string stringNumber = number.ToString();
-    if (number < 1000) return stringNumber;
-    if (number < 10000) return stringNumber[0] + (stringNumber[1]=='0' ? "" : "."+stringNumber[1])+"K";
-    if (number < 100000) return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
-    if (number < 1000000) return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
+    if (number < 1000)return stringNumber;
+    if (number < 10000)return stringNumber[0] + (stringNumber[1] == '0' ? "" : "." + stringNumber[1]) + "K";
+    if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
+    if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
     return stringNumber;
   }
-  
-  public void playSuccessSound(){
+
+  public void playSuccessSound() {
     messagePopup.GetComponent<AudioSource>().Play();
   }
 
-  public void showLoadingScreen(){
+  public void showLoadingScreen() {
     loadingScreen.SetActive(true);
   }
 
-  public void hideLoadingScreen(){
+  public void hideLoadingScreen() {
     accountMenuClose.SetActive(true);
     loadingScreen.SetActive(false);
   }
 
-  public void hideAccountMenu(){
+  public void hideAccountMenu() {
     accountMenu.SetActive(false);
   }
 
-  public void showConnectionError(bool error){
+  public void showConnectionError(bool error) {
     connectionError.SetActive(error);
   }
 
-  public void showButtons(bool show=true){
+  public void showButtons(bool show = true) {
     buttons.SetActive(show);
   }
 
-  public void updateAccountMenu(){
+  public void updateAccountMenu() {
     User user = controller.getUser();
     accountMenuLevel.text = user.getLevel().ToString();
     accountMenuBounty.text = user.getBounty().ToString();
@@ -194,11 +191,11 @@ public class UI : MonoBehaviour
     loadingButtons.SetActive(true);
   }
 
-  public void setUsername(){
+  public void setUsername() {
     accountMenuUsername.text = API.GetUsername();
   }
 
-  public void onLogin(){
+  public void onLogin() {
     updateAccountMenu();
     hideAccountMenu();
     hud.SetActive(true);
@@ -207,32 +204,31 @@ public class UI : MonoBehaviour
     Invoke("hideLoadingScreen", 0.5f);
   }
 
-  public void populateLeaderboard(List<PlayerLeaderboardEntry> leaderboard, string type){
+  public void populateLeaderboard(List<PlayerLeaderboardEntry> leaderboard, string type) {
     float ENTRY_HEIGHT = 55.0f;
     RectTransform DEFAULT_RECT = leaderboardEntryPrefab.GetComponent<RectTransform>();
     // Go through leaderboard list
-    for (int i=0; i<leaderboard.Count; i++) {
-    // For each entry create a new UI object
-    GameObject entry = Instantiate(
-      leaderboardEntryPrefab,
-      type == "local" ? localLeaderboard.transform : absoluteLeaderboard.transform
-    );
-    // Set its top margin based on the position
-    RectTransform transf = entry.GetComponent<RectTransform>();
-    Vector3 position = transf.anchoredPosition;
-    position.y = -(ENTRY_HEIGHT*i) - 45;
-    transf.anchoredPosition = position;
-    // Set all the info from the list entry
-
-    foreach (Transform child in entry.transform)
-    {
-      child.GetComponent<Text>().text = (
-        child.name == "Position"
-        ? (leaderboard[i].Position + 1).ToString() : child.name == "Username"
-        ? leaderboard[i].DisplayName : leaderboard[i].StatValue.ToString()
+    for (int i = 0; i < leaderboard.Count; i++) {
+      // For each entry create a new UI object
+      GameObject entry = Instantiate(
+        leaderboardEntryPrefab,
+        type == "local" ? localLeaderboard.transform : absoluteLeaderboard.transform
       );
+      // Set its top margin based on the position
+      RectTransform transf = entry.GetComponent<RectTransform>();
+      Vector3 position = transf.anchoredPosition;
+      position.y = -(ENTRY_HEIGHT * i) - 45;
+      transf.anchoredPosition = position;
+      // Set all the info from the list entry
+
+      foreach (Transform child in entry.transform) {
+        child.GetComponent<Text>().text = (
+          child.name == "Position"
+          ? (leaderboard[i].Position + 1).ToString() : child.name == "Username"
+          ? leaderboard[i].DisplayName : leaderboard[i].StatValue.ToString()
+        );
+      }
     }
-  }
-  // TODO: Remember to add internationalisation to this menu
+    // TODO: Remember to add internationalisation to this menu
   }
 }

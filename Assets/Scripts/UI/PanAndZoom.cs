@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary> A modular and easily customisable Unity MonoBehaviour for handling swipe and pinch motions on mobile. </summary>
@@ -87,7 +87,7 @@ public class PanAndZoom : MonoBehaviour {
 
                 isTouching = true;
 
-                if (onStartTouch != null) onStartTouch(Input.mousePosition);
+                if (onStartTouch != null)onStartTouch(Input.mousePosition);
             }
         }
 
@@ -103,11 +103,11 @@ public class PanAndZoom : MonoBehaviour {
         if (Input.GetMouseButtonUp(0) && isTouching) {
 
             if (Time.time - touch0StartTime <= maxDurationForTap
-               && Vector2.Distance(Input.mousePosition, touch0StartPosition) <= maxDistanceForTap) {
+                && Vector2.Distance(Input.mousePosition, touch0StartPosition) <= maxDistanceForTap) {
                 OnClick(Input.mousePosition);
             }
 
-            if (onEndTouch != null) onEndTouch(Input.mousePosition);
+            if (onEndTouch != null)onEndTouch(Input.mousePosition);
             isTouching = false;
             cameraControlEnabled = true;
         }
@@ -124,7 +124,8 @@ public class PanAndZoom : MonoBehaviour {
             Touch touch = Input.touches[0];
 
             switch (touch.phase) {
-                case TouchPhase.Began: {
+                case TouchPhase.Began:
+                    {
                         if (ignoreUI || !IsPointerOverUIObject()) {
                             touch0StartPosition = touch.position;
                             touch0StartTime = Time.time;
@@ -132,12 +133,13 @@ public class PanAndZoom : MonoBehaviour {
 
                             isTouching = true;
 
-                            if (onStartTouch != null) onStartTouch(touch0StartPosition);
+                            if (onStartTouch != null)onStartTouch(touch0StartPosition);
                         }
 
                         break;
                     }
-                case TouchPhase.Moved: {
+                case TouchPhase.Moved:
+                    {
                         touch0LastPosition = touch.position;
 
                         if (touch.deltaPosition != Vector2.zero && isTouching) {
@@ -145,14 +147,15 @@ public class PanAndZoom : MonoBehaviour {
                         }
                         break;
                     }
-                case TouchPhase.Ended: {
+                case TouchPhase.Ended:
+                    {
                         if (Time.time - touch0StartTime <= maxDurationForTap
                             && Vector2.Distance(touch.position, touch0StartPosition) <= maxDistanceForTap
                             && isTouching) {
                             OnClick(touch.position);
                         }
 
-                        if (onEndTouch != null) onEndTouch(touch.position);
+                        if (onEndTouch != null)onEndTouch(touch.position);
                         isTouching = false;
                         cameraControlEnabled = true;
                         break;
@@ -165,7 +168,7 @@ public class PanAndZoom : MonoBehaviour {
             Touch touch0 = Input.touches[0];
             Touch touch1 = Input.touches[1];
 
-            if (touch0.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Ended) return;
+            if (touch0.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Ended)return;
 
             isTouching = true;
 
@@ -178,7 +181,7 @@ public class PanAndZoom : MonoBehaviour {
             }
         } else {
             if (isTouching) {
-                if (onEndTouch != null) onEndTouch(touch0LastPosition);
+                if (onEndTouch != null)onEndTouch(touch0LastPosition);
                 isTouching = false;
             }
 
@@ -197,7 +200,7 @@ public class PanAndZoom : MonoBehaviour {
         }
 
         if (controlCamera && cameraControlEnabled) {
-            if (cam == null) cam = Camera.main;
+            if (cam == null)cam = Camera.main;
 
             cam.transform.position -= (cam.ScreenToWorldPoint(deltaPosition) - cam.ScreenToWorldPoint(Vector2.zero));
         }
@@ -208,13 +211,13 @@ public class PanAndZoom : MonoBehaviour {
         }
 
         if (controlCamera && cameraControlEnabled) {
-            if (cam == null) cam = Camera.main;
+            if (cam == null)cam = Camera.main;
 
             if (cam.orthographic) {
                 var currentPinchPosition = cam.ScreenToWorldPoint(center);
 
                 cam.orthographicSize = Mathf.Max(4.0f, cam.orthographicSize * oldDistance / newDistance);
-                
+
                 var newPinchPosition = cam.ScreenToWorldPoint(center);
 
                 cam.transform.position -= newPinchPosition - currentPinchPosition;
@@ -227,7 +230,7 @@ public class PanAndZoom : MonoBehaviour {
     /// <summary> Checks if the the current input is over canvas UI </summary>
     public bool IsPointerOverUIObject() {
 
-        if (EventSystem.current == null) return false;
+        if (EventSystem.current == null)return false;
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         List<RaycastResult> results = new List<RaycastResult>();
@@ -241,7 +244,7 @@ public class PanAndZoom : MonoBehaviour {
     }
 
     void CameraInBounds() {
-        if(controlCamera && useBounds && cam != null && cam.orthographic) {
+        if (controlCamera && useBounds && cam != null && cam.orthographic) {
             cam.orthographicSize = Mathf.Min(cam.orthographicSize, ((boundMaxY - boundMinY) / 2) - 0.001f);
             cam.orthographicSize = Mathf.Min(cam.orthographicSize, (Screen.height * (boundMaxX - boundMinX) / (2 * Screen.width)) - 0.001f);
 

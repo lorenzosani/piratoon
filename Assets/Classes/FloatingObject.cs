@@ -1,11 +1,10 @@
-using UnityEngine;
 using System;
 using System.Collections;
 using Newtonsoft.Json;
+using UnityEngine;
 
 [JsonObject(MemberSerialization.OptIn)]
-public class FloatingObject
-{
+public class FloatingObject {
   [JsonProperty]
   protected int id;
   [JsonProperty]
@@ -13,21 +12,21 @@ public class FloatingObject
   [JsonProperty]
   protected Vector3 position;
 
-  public FloatingObject(int _id, DateTime _time, Vector3 _position){
+  public FloatingObject(int _id, DateTime _time, Vector3 _position) {
     id = _id;
     time = _time;
     position = _position;
   }
 
-  public int getId(){
+  public int getId() {
     return id;
   }
 
-  public DateTime getTime(){
+  public DateTime getTime() {
     return time;
   }
 
-  public Vector3 getPosition(){
+  public Vector3 getPosition() {
     return position;
   }
 }

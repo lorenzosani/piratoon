@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Bounty : MonoBehaviour {
   int previousBounty = -1;
@@ -11,26 +11,26 @@ public class Bounty : MonoBehaviour {
   int currentLevelEnd;
   int currentLevelLength;
 
-  ControllerScript controller; 
+  ControllerScript controller;
   UI ui;
 
   public Slider bountyObject;
 
-  void Start(){
+  void Start() {
     controller = GetComponent<ControllerScript>();
     ui = controller.getUI();
   }
 
-  void Update(){
+  void Update() {
     int bounty = controller.getUser().getBounty();
     userLevel = controller.getUser().getLevel();
-    currentLevelEnd = (userLevel+1)*userLevel*50;
-    currentLevelLength = userLevel*100;
+    currentLevelEnd = (userLevel + 1) * userLevel * 50;
+    currentLevelLength = userLevel * 100;
     // Update bounty progress on UI
-    if (bounty != previousBounty) updateBountyUI(bounty);
+    if (bounty != previousBounty)updateBountyUI(bounty);
   }
 
-  void updateBountyUI(int value){
+  void updateBountyUI(int value) {
     if (value >= currentLevelEnd) {
       controller.getUser().increaseLevel(getNewLevel(value));
       if (previousLevel > 0) {
@@ -39,18 +39,18 @@ public class Bounty : MonoBehaviour {
       }
     }
     bountyObject.maxValue = currentLevelLength;
-    bountyObject.value = currentLevelLength-(currentLevelEnd-value);
+    bountyObject.value = currentLevelLength - (currentLevelEnd - value);
     bountyObject.transform.GetComponentInChildren<Text>().text = ui.formatNumber(value);
     previousBounty = value;
     previousLevel = controller.getUser().getLevel();
   }
 
-  int getNewLevel(int bounty){
+  int getNewLevel(int bounty) {
     int level = 0;
     int levelBounty = 0;
-    while (bounty < levelBounty){
-      level+=1;
-      levelBounty = (level+1)*(level/2)*100;
+    while (bounty < levelBounty) {
+      level += 1;
+      levelBounty = (level + 1) * (level / 2) * 100;
     }
     return level;
   }

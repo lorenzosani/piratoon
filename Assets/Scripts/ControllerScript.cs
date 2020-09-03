@@ -1,14 +1,13 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
+using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.ClientModels;
-using Newtonsoft.Json;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class ControllerScript : MonoBehaviour
-{
+public class ControllerScript : MonoBehaviour {
   public bool rememberLoginDetails = true;
 
   User user;
@@ -18,8 +17,7 @@ public class ControllerScript : MonoBehaviour
   string email;
   List<PlayerLeaderboardEntry> leaderboard = null;
 
-  void Awake()
-  {
+  void Awake() {
     spawner = GetComponent<Buildings>();
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
     user = new User(Guid.NewGuid().ToString(), new Village(0));
@@ -28,13 +26,12 @@ public class ControllerScript : MonoBehaviour
   }
 
   // Attempts to login a player using either stored or device details
-  public void login(){
+  public void login() {
     string storedId = API.GetStoredPlayerId();
     if (PlayerPrefs.GetInt("FirstAccess", 1) == 1) {
       newPlayerLogin();
       PlayerPrefs.SetInt("FirstAccess", 0);
-    }
-    else if (!isEmpty(storedId) && rememberLoginDetails){
+    } else if (!isEmpty(storedId) && rememberLoginDetails) {
       API.Login(storedId);
     } else {
       ui.showNewGameOrLogin();
@@ -48,14 +45,13 @@ public class ControllerScript : MonoBehaviour
     API.NewPlayerLogin();
   }
 
-  public void retryConnection(){
-    List<string> keys = new List<string> { "User", "Buildings", "Village" };  
+  public void retryConnection() {
+    List<string> keys = new List<string> { "User", "Buildings", "Village" };
     API.GetUserData(keys, result => {
-      if (result != null)
-      { 
+      if (result != null) {
         ui.showConnectionError(false);
-        User u = JsonConvert.DeserializeObject<User>((string) result.Data["User"].Value);
-        Village village = JsonConvert.DeserializeObject<Village>((string) result.Data["Village"].Value);
+        User u = JsonConvert.DeserializeObject<User>((string)result.Data["User"].Value);
+        Village village = JsonConvert.DeserializeObject<Village>((string)result.Data["Village"].Value);
         u.setVillage(village);
         setUser(u);
         spawner.populateVillage(result.Data["Buildings"].Value);
@@ -66,39 +62,37 @@ public class ControllerScript : MonoBehaviour
     });
   }
 
-  public void loadScene(string sceneName){
+  public void loadScene(string sceneName) {
     SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
   }
 
   //*****************************************************************
   // GETTERS and SETTERS methods
   //*****************************************************************
-  public User getUser()
-  {
+  public User getUser() {
     return user;
   }
 
-  public void setUser(User u)
-  {
+  public void setUser(User u) {
     user = u;
   }
 
-  public UI getUI(){
+  public UI getUI() {
     return ui;
   }
 
-  public void setLeaderboard(List<PlayerLeaderboardEntry> llb, string type){
+  public void setLeaderboard(List<PlayerLeaderboardEntry> llb, string type) {
     ui.populateLeaderboard(llb, type);
   }
 
-  public List<PlayerLeaderboardEntry> getLeaderboard(){
+  public List<PlayerLeaderboardEntry> getLeaderboard() {
     return leaderboard;
   }
 
   //*****************************************************************
   // HELPER methods
   //*****************************************************************
-  bool isEmpty(string value){
+  bool isEmpty(string value) {
     return value == "" || value == " " || value == null;
   }
 }

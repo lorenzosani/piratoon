@@ -1,7 +1,7 @@
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Globalization;
+using UnityEngine;
 
 public class FloatingObjects : MonoBehaviour {
 
@@ -34,9 +34,9 @@ public class FloatingObjects : MonoBehaviour {
     new Vector3(-1.96f, -6.11f, 0)
   };
 
-  void Start(){
+  void Start() {
     floatingGameObjects = new GameObject[transform.childCount];
-    for(int i=0; i<transform.childCount;i++){
+    for (int i = 0; i < transform.childCount; i++) {
       floatingGameObjects[i] = transform.GetChild(i).gameObject;
     }
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
@@ -44,10 +44,10 @@ public class FloatingObjects : MonoBehaviour {
   }
 
   // Check if there any floating objects ready to be spawned
-  public void checkIfSpawn(){
+  public void checkIfSpawn() {
     FloatingObject[] objects = controller.getUser().getVillage().getFloatingObjects();
     //Debug.Log("CHECKING IF SPAWNABLE AT TIME:" + DateTime.Now);
-    for (int i=0; i<objects.Length; i++) {
+    for (int i = 0; i < objects.Length; i++) {
       //Debug.Log(objects[i].getId() + " : " + objects[i].getTime());
       if (DateTime.Compare(objects[i].getTime(), DateTime.Now) < 0) {
         spawn(objects[i]);
@@ -56,29 +56,41 @@ public class FloatingObjects : MonoBehaviour {
   }
 
   // Spawn a floating object on the scene
-  public void spawn(FloatingObject obj){
+  public void spawn(FloatingObject obj) {
     GameObject floatingObj = floatingGameObjects[obj.getId()];
     floatingObj.transform.position = obj.getPosition();
     floatingObj.SetActive(true);
   }
 
   // This runs when the user collects a floating object
-  public void collect(int id){
+  public void collect(int id) {
     // Check how many resources the object is worth
     int[] resources;
-    if (id < 4) { 
-      resources = new int[3] {10, 0, 0};
+    if (id < 4) {
+      resources = new int[3] {
+        10,
+        0,
+        0
+      };
     } else if (id < 6) {
-      resources = new int[3] {20, 20, 0};
+      resources = new int[3] {
+        20,
+        20,
+        0
+      };
     } else {
-      resources = new int[3] {30, 30, 5};
+      resources = new int[3] {
+        30,
+        30,
+        5
+      };
     }
     // Give the collected resources to the user
     int[] spaceLeft = controller.getUser().getStorageSpaceLeft();
-    for(int i=0; i<3; i++){
-      if (resources[i] > 0){
-        if (spaceLeft[i] == 0) { 
-          controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]); 
+    for (int i = 0; i < 3; i++) {
+      if (resources[i] > 0) {
+        if (spaceLeft[i] == 0) {
+          controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]);
         } else {
           controller.getUser().increaseResource(i, resources[i]);
         }
