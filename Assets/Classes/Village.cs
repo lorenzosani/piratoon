@@ -99,9 +99,7 @@ public class Village {
     // Generate n FloatingObjects with randomized values
     for (int i = 0; i < n; i++) {
       TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(maxMinutes)));
-      float x = float.Parse(rnd.Next(-3, 3) + "." + rnd.Next(0, 99), CultureInfo.InvariantCulture.NumberFormat);
-      float y = float.Parse(rnd.Next(-7, -5) + "." + rnd.Next(0, 99), CultureInfo.InvariantCulture.NumberFormat);
-      FloatingObject obj = new FloatingObject(i, DateTime.Now + time, new Vector3(x, y, 0));
+      FloatingObject obj = new FloatingObject(i, DateTime.Now + time, FloatingObjectsPositions.get(rnd.Next(23)));
       objects[i] = obj;
     }
     return objects;
