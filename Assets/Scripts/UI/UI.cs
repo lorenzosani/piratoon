@@ -95,7 +95,7 @@ public class UI : MonoBehaviour {
     localLeadBounty.text = Language.Field["BOUNTY"];
     absLeadBounty.text = Language.Field["BOUNTY"];
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n" + Language.Field["CONNECTION"];
-    InvokeRepeating("updateAccountMenu", 0.0f, 10.0f);
+    InvokeRepeating("updateAccountMenu", 0.0f, 5.0f);
     setUsername();
   }
 
@@ -223,9 +223,9 @@ public class UI : MonoBehaviour {
 
       foreach (Transform child in entry.transform) {
         child.GetComponent<Text>().text = (
-          child.name == "Position"
-          ? (leaderboard[i].Position + 1).ToString() : child.name == "Username"
-          ? leaderboard[i].DisplayName : leaderboard[i].StatValue.ToString()
+          child.name == "Position" ?
+          (leaderboard[i].Position + 1).ToString() : child.name == "Username" ?
+          leaderboard[i].DisplayName : leaderboard[i].StatValue.ToString()
         );
       }
     }

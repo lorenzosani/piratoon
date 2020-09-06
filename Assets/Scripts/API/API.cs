@@ -21,33 +21,30 @@ public static class API {
 
   static ControllerScript controller;
   static Buildings spawner;
-
   public static void RegisterScripts(ControllerScript c, Buildings s) {
     controller = c;
     spawner = s;
   }
 
-  // Register a recoverable account with the provided details, for the current player
+  //*****************************************************************
+  // REGISTER a new user
+  //*****************************************************************
   public static void RegisterUser(string username, string email, string password, Action<string, string> callback) {
+    // Add to the database the username and password for the user
     PlayFabClientAPI.AddUsernamePassword(new AddUsernamePasswordRequest() {
       Email = email,
         Password = password,
         Username = username
     }, result => {
-      PlayFabClientAPI.AddOrUpdateContactEmail(new AddOrUpdateContactEmailRequest() {
-        EmailAddress = email
-      }, res => {
-        StoreUsername(result.Username);
-        StoreRegistered(true);
-        callback("SUCCESS", "");
-        PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest() {
-          DisplayName = username
-        }, a => {
-          controller.getUser().setUsername(a.DisplayName);
-        }, b => OnPlayFabError(b));
-      }, err => {
-        OnPlayFabError(err);
-      });
+      // Update the display name, which is anot the same thing as the username
+      PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest() {
+        DisplayName = username
+      }, a => {
+        controller.getUser().setUsername(a.DisplayName);
+      }, b => OnPlayFabError(b));
+      StoreUsername(result.Username);
+      StoreRegistered(true);
+      callback("SUCCESS", "");
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
@@ -59,14 +56,27 @@ public static class API {
         callback(Language.Field["REG_ALREADY"], "");
       }
     });
+    // Update the contact email, which is needed to recover the password
+    PlayFabClientAPI.AddOrUpdateContactEmail(new AddOrUpdateContactEmailRequest() {
+      EmailAddress = email
+    }, result => { }, error => {
+      OnPlayFabError(error);
+    });
+    // Add user to a map
+    AddUserToMap();
   }
 
+  //*****************************************************************
+  // LOGIN a registered player using their username
+  //*****************************************************************
   public static void UsernameLogin(string username, string password, Action<string> callback = null) {
+    // Login to the game with the details provided
     PlayFabClientAPI.LoginWithPlayFab(new LoginWithPlayFabRequest() {
       Username = username,
         TitleId = "E206C",
         Password = password
     }, result => {
+      // Once logged in, retrieve all the user's info
       PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
         StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
         StoreUsername(r.AccountInfo.Username);
@@ -91,12 +101,17 @@ public static class API {
     });
   }
 
+  //*****************************************************************
+  // LOGIN a registered player using their email
+  //*****************************************************************
   public static void EmailLogin(string email, string password, Action<string> callback = null) {
+    // Login to the game with the details provided
     PlayFabClientAPI.LoginWithEmailAddress(new LoginWithEmailAddressRequest() {
       Email = email,
         TitleId = "E206C",
         Password = password
     }, result => {
+      // Once logged in, retrieve all the user's info
       PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
         StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
         StoreUsername(r.AccountInfo.Username);
@@ -119,22 +134,24 @@ public static class API {
     });
   }
 
+  //*****************************************************************
+  // LOGIN players that are not registered, using locally stored ids
+  //*****************************************************************
   public static void Login(string userId) {
     PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
       CustomId = userId,
         CreateAccount = true
     }, OnLogin, e => OnPlayFabError(e, true));
   }
-
   public static void NewPlayerLogin() {
     Login(controller.getUser().getId());
   }
 
-  public static void AddUserToWorld() {
-    //TODO
-  }
-
+  //*****************************************************************
+  // LOGIN SUCCESSFUL, this is called after
+  //*****************************************************************
   public static void OnLogin(LoginResult login) {
+    // Store the user info
     controller.getUI().showLoadingScreen();
     playFabId = login.PlayFabId;
     entityId = login.EntityToken.Entity.Id;
@@ -146,6 +163,7 @@ public static class API {
       "Village"
     };
     if (!login.NewlyCreated) {
+      // Retrieve all the data (village, buildings etc.) and show it in the game
       GetUserData(keys, result => {
         // Check if data received is valid
         if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}") {
@@ -179,6 +197,9 @@ public static class API {
     }
   }
 
+  //*****************************************************************
+  // SAVE user data on the server
+  //*****************************************************************
   public static void SetUserData(string[] keys) {
     Dictionary<string, string> data = new Dictionary<string, string>() {
       {
@@ -217,6 +238,9 @@ public static class API {
     }, e => OnPlayFabError(e));
   }
 
+  //*****************************************************************
+  // RETRIEVE user data on the server
+  //*****************************************************************
   public static void GetUserData(List<string> keys, Action<GetUserDataResult> callback) {
     // Fetch user data
     PlayFabClientAPI.GetUserData(new GetUserDataRequest() {
@@ -228,8 +252,18 @@ public static class API {
     }, e => OnPlayFabError(e));
   }
 
+  //*****************************************************************
+  // ASSIGN a player to a world map and position on the map
+  //*****************************************************************
+  public static void AddUserToMap() {
+
+  }
+
+  //*****************************************************************
+  // SAVE the player's bounty, which is taken care separately (because of leaderboard)
+  //*****************************************************************
   public static void UpdateBounty(int value) {
-    if (IsRegistered()) {
+    if (IsRegistered() && controller.getUser().getUsername() != null) {
       PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest {
           Statistics = new List<StatisticUpdate> {
             new StatisticUpdate {
@@ -248,6 +282,9 @@ public static class API {
     }
   }
 
+  //*****************************************************************
+  // RETRIEVE the players' leaderboard
+  //*****************************************************************
   public static void GetLeaderboard(Action<List<PlayerLeaderboardEntry>, string> callback) {
     // Get the leaderboard around the user
     PlayFabClientAPI.GetLeaderboardAroundPlayer(new GetLeaderboardAroundPlayerRequest {
@@ -274,6 +311,9 @@ public static class API {
       });
   }
 
+  //*****************************************************************
+  // SEND an email to recover a forgotten password
+  //*****************************************************************
   public static void SendPasswordRecoveryEmail(string emailAddress) {
     if (emailAddress == null) {
       controller.getUI().emailRecoveryError(Language.Field["REG_EMAIL"]);
@@ -290,33 +330,31 @@ public static class API {
     });
   }
 
+  //*****************************************************************
+  // GETTER and SETTER methods
+  //*****************************************************************
   public static string GetStoredPlayerId() {
     return PlayerPrefs.GetString("PlayerId", "");
   }
-
   public static bool IsRegistered() {
     return PlayerPrefs.GetInt("Registered", 0) > 0;
   }
-
   public static void StorePlayerId(string id) {
     PlayerPrefs.SetString("PlayerId", id);
   }
-
   public static void StoreRegistered(bool registered) {
     PlayerPrefs.SetInt("Registered", registered ? 1 : 0);
   }
-
   public static void StoreUsername(string username) {
     PlayerPrefs.SetString("Username", username);
   }
-
   public static string GetUsername() {
     return PlayerPrefs.GetString("Username", "");
   }
 
-  //API Errors handlers
-
-  // If something goes wrong with the API in general
+  //*****************************************************************
+  // ERROR handlers: these are called when something goes wrong
+  //*****************************************************************
   public static void OnPlayFabError(PlayFabError error, bool login = false) {
     Debug.LogWarning("Something went wrong with your API call.");
     Debug.LogError(error.GenerateErrorReport());
@@ -328,8 +366,6 @@ public static class API {
       controller.Invoke("retryConnection", 3.0f);
     }
   }
-
-  // If something goes wrong with sending a password recovery email
   public static void EmailRecoveryError(PlayFabError error) {
     Debug.LogWarning("Something went wrong with sending the email.");
     Debug.LogError(error.GenerateErrorReport());

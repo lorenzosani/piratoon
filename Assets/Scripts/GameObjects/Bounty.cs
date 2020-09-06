@@ -19,20 +19,34 @@ public class Bounty : MonoBehaviour {
   void Start() {
     controller = GetComponent<ControllerScript>();
     ui = controller.getUI();
+    Invoke("CheckBounty", 1.0f);
   }
 
-  void Update() {
+  //*****************************************************************
+  // CHECK if the bounty has changed once every second and update the UI accordingly
+  //*****************************************************************
+  void CheckBounty() {
     int bounty = controller.getUser().getBounty();
+    Debug.Log("BOUNTY " + bounty);
     userLevel = controller.getUser().getLevel();
-    currentLevelEnd = (userLevel + 1) * userLevel * 50;
-    currentLevelLength = userLevel * 100;
-    // Update bounty progress on UI
-    if (bounty != previousBounty)updateBountyUI(bounty);
+    Debug.Log("LEVEL " + userLevel);
+    // Check the user level is correct, given the bounty. If not, update it
+    if (getNewLevel(bounty) != userLevel && bounty == previousBounty) {
+      controller.getUser().increaseLevel(getNewLevel(bounty));
+      Debug.Log("NEW LEVEL " + getNewLevel(bounty));
+      updateBountyUI(bounty);
+    }
+    // If the bounty has changed, update bounty progress on UI
+    if (bounty != previousBounty && bounty != 0)updateBountyUI(bounty);
+    Invoke("CheckBounty", 1.0f);
   }
 
   void updateBountyUI(int value) {
     if (value >= currentLevelEnd) {
-      controller.getUser().increaseLevel(getNewLevel(value));
+      userLevel = getNewLevel(value);
+      currentLevelEnd = getLevelMax(userLevel);
+      currentLevelLength = userLevel * 100;
+      controller.getUser().increaseLevel(userLevel);
       if (previousLevel > 0) {
         ui.showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + userLevel + "!");
         ui.playSuccessSound();
@@ -46,12 +60,16 @@ public class Bounty : MonoBehaviour {
   }
 
   int getNewLevel(int bounty) {
-    int level = 0;
-    int levelBounty = 0;
-    while (bounty < levelBounty) {
+    int level = 1;
+    float levelMaxBounty = getLevelMax(level);
+    while (bounty > levelMaxBounty) {
       level += 1;
-      levelBounty = (level + 1) * (level / 2) * 100;
+      levelMaxBounty = getLevelMax(level);
     }
     return level;
+  }
+
+  int getLevelMax(int level) {
+    return (int)((level + 1.0f) * (level / 2.0f) * 100.0f);
   }
 }

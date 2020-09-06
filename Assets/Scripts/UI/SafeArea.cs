@@ -12,10 +12,16 @@ namespace Crystal {
         void Awake() {
             Panel = GetComponent<RectTransform>();
             if (Panel == null) {
-                Debug.LogError("Cannot apply safe area - no RectTransform found on " + name);
+                Debug.LogError("SAFEAREA: Cannot apply safe area - no RectTransform found on " + name);
                 Destroy(gameObject);
             }
-            ApplySafeArea(GetSafeArea());
+            Rect safeArea = Screen.safeArea;
+            if (safeArea == null) {
+                Debug.LogError("SAFEAREA: Cannot apply safe area - Screen.safeArea is null");
+            } else {
+                Debug.Log("Safearea ok: " + safeArea.height + "*" + safeArea.width);
+            }
+            ApplySafeArea(safeArea);
         }
 
         void Update() {
@@ -25,10 +31,10 @@ namespace Crystal {
         void Refresh() {
             Rect safeArea = GetSafeArea();
 
-            if (safeArea != LastSafeArea
-                || Screen.width != LastScreenSize.x
-                || Screen.height != LastScreenSize.y
-                || Screen.orientation != LastOrientation) {
+            if (safeArea != LastSafeArea ||
+                Screen.width != LastScreenSize.x ||
+                Screen.height != LastScreenSize.y ||
+                Screen.orientation != LastOrientation) {
                 LastScreenSize.x = Screen.width;
                 LastScreenSize.y = Screen.height;
                 LastOrientation = Screen.orientation;
