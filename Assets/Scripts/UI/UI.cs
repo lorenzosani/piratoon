@@ -50,9 +50,12 @@ public class UI : MonoBehaviour {
   public Text loginFormLoginButton;
 
   [Header("Leaderboard menu")]
+  public GameObject leaderboardMenu;
   public GameObject localLeaderboard;
   public GameObject absoluteLeaderboard;
   public GameObject leaderboardEntryPrefab;
+  public GameObject localLoading;
+  public GameObject absoluteLoading;
   public Text leaderboardTitle;
   public Text localLeaderboardTitle;
   public Text absLeaderboardTitle;
@@ -64,6 +67,7 @@ public class UI : MonoBehaviour {
   public Text absLeadBounty;
 
   ControllerScript controller;
+  bool leaderboardLoaded = false;
 
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
@@ -187,8 +191,8 @@ public class UI : MonoBehaviour {
   }
 
   public void showNewGameOrLogin() {
-    loadingSpinner.SetActive(false);
     loadingButtons.SetActive(true);
+    loadingSpinner.SetActive(false);
   }
 
   public void setUsername() {
@@ -207,6 +211,11 @@ public class UI : MonoBehaviour {
   public void populateLeaderboard(List<PlayerLeaderboardEntry> leaderboard, string type) {
     float ENTRY_HEIGHT = 55.0f;
     RectTransform DEFAULT_RECT = leaderboardEntryPrefab.GetComponent<RectTransform>();
+    if (type == "local") {
+      localLoading.SetActive(false);
+    } else {
+      absoluteLoading.SetActive(false);
+    };
     // Go through leaderboard list
     for (int i = 0; i < leaderboard.Count; i++) {
       // For each entry create a new UI object
@@ -229,6 +238,15 @@ public class UI : MonoBehaviour {
         );
       }
     }
-    // TODO: Remember to add internationalisation to this menu
+    leaderboardLoaded = true;
+  }
+
+  public void showLeaderboardMenu() {
+    if (controller.getUser().getUsername() != null) {
+      if (!leaderboardLoaded)API.GetLeaderboard((leaderboard, type) => populateLeaderboard(leaderboard, type));
+      leaderboardMenu.SetActive(true);
+    } else {
+      showPopupMessage("Please register and see your position in the leaderboard!");
+    }
   }
 }

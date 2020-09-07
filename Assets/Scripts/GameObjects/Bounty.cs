@@ -27,13 +27,10 @@ public class Bounty : MonoBehaviour {
   //*****************************************************************
   void CheckBounty() {
     int bounty = controller.getUser().getBounty();
-    Debug.Log("BOUNTY " + bounty);
     userLevel = controller.getUser().getLevel();
-    Debug.Log("LEVEL " + userLevel);
     // Check the user level is correct, given the bounty. If not, update it
     if (getNewLevel(bounty) != userLevel && bounty == previousBounty) {
       controller.getUser().increaseLevel(getNewLevel(bounty));
-      Debug.Log("NEW LEVEL " + getNewLevel(bounty));
       updateBountyUI(bounty);
     }
     // If the bounty has changed, update bounty progress on UI

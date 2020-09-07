@@ -179,7 +179,6 @@ public static class API {
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
           controller.getUI().onLogin();
-          GetLeaderboard((leaderboard, type) => controller.setLeaderboard(leaderboard, type));
           UpdateBounty(controller.getUser().getBounty());
         } else {
           if (result.Data["User"].Value != "") {
