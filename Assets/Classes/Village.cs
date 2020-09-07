@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -99,7 +100,13 @@ public class Village {
     // Generate n FloatingObjects with randomized values
     for (int i = 0; i < n; i++) {
       TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(maxMinutes)));
-      FloatingObject obj = new FloatingObject(i, DateTime.Now + time, FloatingObjectsPositions.get(rnd.Next(23)));
+      // Check if other objects have already this position
+      int randomPos = rnd.Next(23);
+      Vector3[] positionsUsed = objects.Select(o => o != null ? o.getPosition() : Vector3.zero).ToArray();
+      while (positionsUsed.Contains(FloatingObjectsPositions.get(randomPos))) {
+        randomPos = rnd.Next(23);
+      }
+      FloatingObject obj = new FloatingObject(i, DateTime.Now + time, FloatingObjectsPositions.get(randomPos));
       objects[i] = obj;
     }
     return objects;

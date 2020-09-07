@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Globalization;
+using System.Linq;
 using UnityEngine;
 
 public class FloatingObjects : MonoBehaviour {
@@ -77,6 +78,12 @@ public class FloatingObjects : MonoBehaviour {
     int maxMinutes = (int)((TimeSpan.FromHours(16) - TimeSpan.FromHours(0)).TotalMinutes);
     System.Random rnd = new System.Random();
     TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(maxMinutes)));
+    // Check if other objects have already this position
+    int randomPos = rnd.Next(23);
+    Vector3[] positionsUsed = controller.getUser().getVillage().getFloatingObjects().Select(o => o.getPosition()).ToArray();
+    while (positionsUsed.Contains(FloatingObjectsPositions.get(randomPos))) {
+      randomPos = rnd.Next(23);
+    }
     FloatingObject newObject = new FloatingObject(id, DateTime.Now + time, FloatingObjectsPositions.get(rnd.Next(23)));
     // Add the new object to the queue
     controller.getUser().getVillage().replaceFloatingObject(id, newObject);
