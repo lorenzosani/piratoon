@@ -14,9 +14,13 @@ public static class API {
   public static string iosId = string.Empty;
   public static string customId = string.Empty;
 
+  public static string entityId = string.Empty;
+  public static string entityType = string.Empty;
+
+  public static string adminEntityId = string.Empty;
+  public static string adminEntityType = string.Empty;
+
   static string playFabId = string.Empty;
-  static string entityId = string.Empty;
-  static string entityType = string.Empty;
   static string sessionTicket = string.Empty;
 
   static ControllerScript controller;
@@ -40,11 +44,18 @@ public static class API {
       PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest() {
         DisplayName = username
       }, a => {
-        controller.getUser().setUsername(a.DisplayName);
+        // Update the contact email, which is needed to recover the password
+        PlayFabClientAPI.AddOrUpdateContactEmail(new AddOrUpdateContactEmailRequest() {
+          EmailAddress = email
+        }, r => {
+          controller.getUser().setUsername(a.DisplayName);
+          StoreUsername(result.Username);
+          StoreRegistered(true);
+          callback("SUCCESS", "");
+        }, e => {
+          OnPlayFabError(e);
+        });
       }, b => OnPlayFabError(b));
-      StoreUsername(result.Username);
-      StoreRegistered(true);
-      callback("SUCCESS", "");
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
@@ -56,14 +67,6 @@ public static class API {
         callback(Language.Field["REG_ALREADY"], "");
       }
     });
-    // Update the contact email, which is needed to recover the password
-    PlayFabClientAPI.AddOrUpdateContactEmail(new AddOrUpdateContactEmailRequest() {
-      EmailAddress = email
-    }, result => { }, error => {
-      OnPlayFabError(error);
-    });
-    // Add user to a map
-    AddUserToMap();
   }
 
   //*****************************************************************
@@ -249,13 +252,6 @@ public static class API {
       // Check if user has already data
       callback(result.Data != null ? result : null);
     }, e => OnPlayFabError(e));
-  }
-
-  //*****************************************************************
-  // ASSIGN a player to a world map and position on the map
-  //*****************************************************************
-  public static void AddUserToMap() {
-
   }
 
   //*****************************************************************

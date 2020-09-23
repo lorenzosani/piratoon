@@ -79,6 +79,9 @@ public class User {
 
   public void setMapId(string id) {
     serverId = id;
+    API.SetUserData(new string[] {
+      "User"
+    });
   }
 
   public int[] getResources() {
