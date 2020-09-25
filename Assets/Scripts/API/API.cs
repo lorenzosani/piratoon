@@ -17,10 +17,7 @@ public static class API {
   public static string entityId = string.Empty;
   public static string entityType = string.Empty;
 
-  public static string adminEntityId = string.Empty;
-  public static string adminEntityType = string.Empty;
-
-  static string playFabId = string.Empty;
+  public static string playFabId = string.Empty;
   static string sessionTicket = string.Empty;
 
   static ControllerScript controller;

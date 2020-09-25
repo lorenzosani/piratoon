@@ -22,6 +22,7 @@ public class ControllerScript : MonoBehaviour {
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
     user = new User(Guid.NewGuid().ToString(), new Village(0));
     API.RegisterScripts(this, spawner);
+    Mapmaking.RegisterScripts(this);
     login();
   }
 

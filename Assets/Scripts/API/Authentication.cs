@@ -29,7 +29,10 @@ public class Authentication : MonoBehaviour {
   string password = null;
   string repeatPassword = null;
 
+  ControllerScript controller;
+
   void Start() {
+    controller = GetComponent<ControllerScript>();
     description.text = Language.Field["REGISTRATION"];
     loginDescription.text = Language.Field["LOGIN"];
     resetAccountMenu();
@@ -72,6 +75,7 @@ public class Authentication : MonoBehaviour {
   }
 
   public void logout() {
+    Mapmaking.Stop();
     API.StorePlayerId("");
     API.StoreRegistered(false);
     API.StoreUsername("");
@@ -155,6 +159,9 @@ public class Authentication : MonoBehaviour {
       registrationPage.SetActive(false);
       populateAccountInfo();
       onLoginPage.SetActive(true);
+      // Add user to a map
+      Mapmaking.Stop(false);
+      Mapmaking.Start();
       return;
     } else {
       GameObject field = null;
@@ -174,6 +181,11 @@ public class Authentication : MonoBehaviour {
       onLoginPage.SetActive(true);
     } else {
       setError(message, null, true);
+    }
+    // Check if the user has already been assigned to a map
+    if (API.IsRegistered() && controller.getUser().getMapId() == null) {
+      Mapmaking.Stop(false);
+      Mapmaking.Start();
     }
   }
 
