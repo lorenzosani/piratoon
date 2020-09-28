@@ -40,7 +40,7 @@ public class MapController : MonoBehaviour {
           false
         );
         username.GetComponent<Text>().text = players[i].getUsername();
-        username.transform.position = new Vector3(MapPositions.get(i).x, MapPositions.get(i).y + 0.9f, 0.0f);
+        username.transform.position = new Vector3(MapPositions.get(i).x, MapPositions.get(i).y + 0.8f, 0.0f);
       }
     }
   }

@@ -5,6 +5,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Buildings : MonoBehaviour {
@@ -35,7 +36,7 @@ public class Buildings : MonoBehaviour {
   }
 
   void Update() {
-    if (currentlyBuilding != null) {
+    if (currentlyBuilding != null && SceneManager.GetActiveScene().name == "Hideout") {
       int totalTime = currentlyBuilding.getFutureValue() / 4;
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
       if (timeLeft <= 0) {

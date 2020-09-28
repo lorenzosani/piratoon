@@ -178,7 +178,9 @@ public static class API {
           user.setVillage(village);
           controller.setUser(user);
           // Download info about the map the user is in
-          GetMapData(controller.getUser().getMapId());
+          if (controller.getUser().getMapId() != null && controller.getUser().getMapId() != "") {
+            GetMapData(controller.getUser().getMapId());
+          }
           // Show the village
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
