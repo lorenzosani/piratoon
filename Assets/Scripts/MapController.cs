@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MapController : MonoBehaviour {
@@ -52,5 +54,16 @@ public class MapController : MonoBehaviour {
     Camera.main.transform.position = new Vector3(
       MapPositions.get(hideoutPosition).x, MapPositions.get(hideoutPosition).y, -10.0f
     );
+  }
+
+  //*****************************************************************
+  // CLOSE the map and show the hideout
+  //*****************************************************************
+  public async void close() {
+    Camera.main.GetComponent<PanAndZoom>().Zoom(Camera.main.orthographicSize, 3);
+    await Task.Delay(200);
+    ui.showLoadingScreen();
+    DestroyObject(GameObject.Find("GameController"));
+    SceneManager.LoadScene("Hideout", LoadSceneMode.Single);
   }
 }
