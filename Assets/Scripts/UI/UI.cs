@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using PlayFab.ClientModels;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -66,6 +65,13 @@ public class UI : MonoBehaviour {
   public Text localLeadBounty;
   public Text absLeadBounty;
 
+  [Header("Map error dialog")]
+  public GameObject mapErrorMessage;
+  public Text mapErrorText;
+  public GameObject tryAgainButton;
+  public Text tryAgainText;
+  public GameObject tryAgainLoading;
+
   ControllerScript controller;
   bool leaderboardLoaded = false;
 
@@ -98,6 +104,8 @@ public class UI : MonoBehaviour {
     absLeadUsername.text = Language.Field["USERNAME"];
     localLeadBounty.text = Language.Field["BOUNTY"];
     absLeadBounty.text = Language.Field["BOUNTY"];
+    mapErrorText.text = Language.Field["MAP_ERROR"];
+    tryAgainText.text = Language.Field["TRY_AGAIN"];
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n" + Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 5.0f);
     setUsername();
@@ -136,6 +144,7 @@ public class UI : MonoBehaviour {
   }
 
   public void hideLoadingScreen() {
+    Camera.main.GetComponent<PanAndZoom>().Zoom(15, 12);
     accountMenuClose.SetActive(true);
     loadingScreen.SetActive(false);
   }
@@ -205,10 +214,10 @@ public class UI : MonoBehaviour {
     hud.SetActive(true);
     showButtons();
     setUsername();
-    Invoke("hideLoadingScreen", 0.5f);
+    hideLoadingScreen();
   }
 
-  public void populateLeaderboard(List<PlayerLeaderboardEntry> leaderboard, string type) {
+  public void populateLeaderboard(List<PlayFab.ClientModels.PlayerLeaderboardEntry> leaderboard, string type) {
     float ENTRY_HEIGHT = 55.0f;
     RectTransform DEFAULT_RECT = leaderboardEntryPrefab.GetComponent<RectTransform>();
     if (type == "local") {
@@ -248,5 +257,14 @@ public class UI : MonoBehaviour {
     } else {
       showPopupMessage("Please register and see your position in the leaderboard!");
     }
+  }
+
+  public void showMapError(bool active = true) {
+    mapErrorMessage.SetActive(active);
+  }
+
+  public void showMapTryAgain(bool active = true) {
+    tryAgainButton.SetActive(active);
+    tryAgainLoading.SetActive(!active);
   }
 }

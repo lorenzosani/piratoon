@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.DataModels;
+using PlayFab.GroupsModels;
 using UnityEngine;
 
 public static class API {
@@ -175,6 +177,8 @@ public static class API {
           village.setBuildingsFromList(buildings);
           user.setVillage(village);
           controller.setUser(user);
+          // Download info about the map the user is in
+          GetMapData(controller.getUser().getMapId());
           // Show the village
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
@@ -249,6 +253,25 @@ public static class API {
       // Check if user has already data
       callback(result.Data != null ? result : null);
     }, e => OnPlayFabError(e));
+  }
+
+  //*****************************************************************
+  // RETRIEVE data about the map the user is in
+  //*****************************************************************
+  public static void GetMapData(string mapId) {
+    PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
+      GroupName = mapId
+    }, result => {
+      PlayFabDataAPI.GetObjects(new GetObjectsRequest() {
+        Entity = new PlayFab.DataModels.EntityKey() {
+            Id = result.Group.Id, Type = "group"
+          },
+          EscapeObject = true
+      }, r => {
+        MapUser[] players = JsonConvert.DeserializeObject<MapUser[]>(r.Objects["players"].EscapedDataObject);
+        controller.setMap(new Map(mapId, players));
+      }, e => OnPlayFabError(e));
+    }, error => OnPlayFabError(error));
   }
 
   //*****************************************************************

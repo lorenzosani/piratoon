@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -57,10 +58,17 @@ public class PanAndZoom : MonoBehaviour {
     bool canUseMouse;
 
     /// <summary> Has the player at least one finger on the screen? </summary>
-    public bool isTouching { get; private set; }
+    public bool isTouching {
+        get;
+        private set;
+    }
 
     /// <summary> The point of contact if it exists in Screen space. </summary>
-    public Vector2 touchPosition { get { return touch0LastPosition; } }
+    public Vector2 touchPosition {
+        get {
+            return touch0LastPosition;
+        }
+    }
 
     void Start() {
         canUseMouse = Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer && Input.mousePresent;
@@ -102,8 +110,8 @@ public class PanAndZoom : MonoBehaviour {
 
         if (Input.GetMouseButtonUp(0) && isTouching) {
 
-            if (Time.time - touch0StartTime <= maxDurationForTap
-                && Vector2.Distance(Input.mousePosition, touch0StartPosition) <= maxDistanceForTap) {
+            if (Time.time - touch0StartTime <= maxDurationForTap &&
+                Vector2.Distance(Input.mousePosition, touch0StartPosition) <= maxDistanceForTap) {
                 OnClick(Input.mousePosition);
             }
 
@@ -149,9 +157,9 @@ public class PanAndZoom : MonoBehaviour {
                     }
                 case TouchPhase.Ended:
                     {
-                        if (Time.time - touch0StartTime <= maxDurationForTap
-                            && Vector2.Distance(touch.position, touch0StartPosition) <= maxDistanceForTap
-                            && isTouching) {
+                        if (Time.time - touch0StartTime <= maxDurationForTap &&
+                            Vector2.Distance(touch.position, touch0StartPosition) <= maxDistanceForTap &&
+                            isTouching) {
                             OnClick(touch.position);
                         }
 
@@ -262,6 +270,20 @@ public class PanAndZoom : MonoBehaviour {
             float camY = Mathf.Clamp(cam.transform.position.y, camMinY, camMaxY);
 
             cam.transform.position = new Vector3(camX, camY, cam.transform.position.z);
+        }
+    }
+
+    public void Zoom(float from, float to, float time = 0.2f, float steps = 20) {
+        StartCoroutine(CameraZoom(from, to, time, steps));
+    }
+
+    IEnumerator CameraZoom(float from, float to, float time, float steps) {
+        float f = 0;
+
+        while (f <= 1) {
+            Camera.main.orthographicSize = Mathf.Lerp(from, to, Mathf.SmoothStep(0, 1, f));
+            f += 1f / steps;
+            yield return new WaitForSeconds(time / steps);
         }
     }
 }

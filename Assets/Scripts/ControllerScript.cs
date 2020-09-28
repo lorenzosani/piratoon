@@ -8,19 +8,22 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ControllerScript : MonoBehaviour {
-  public bool rememberLoginDetails = true;
+  User user = null;
+  Map map = null;
 
-  User user;
   Buildings spawner;
   UI ui;
 
   string email;
+  public bool rememberLoginDetails = true;
   List<PlayerLeaderboardEntry> leaderboard = null;
 
   void Awake() {
     spawner = GetComponent<Buildings>();
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
     user = new User(Guid.NewGuid().ToString(), new Village(0));
+
+    DontDestroyOnLoad(transform.gameObject);
     API.RegisterScripts(this, spawner);
     Mapmaking.RegisterScripts(this);
     login();
@@ -67,14 +70,6 @@ public class ControllerScript : MonoBehaviour {
     });
   }
 
-  public void loadScene(string sceneName) {
-    if (sceneName == "Map" && user.getMapId() == null) {
-      ui.showPopupMessage(Language.Field["MAP_REGISTER"]);
-      return;
-    }
-    SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-  }
-
   //*****************************************************************
   // GETTERS and SETTERS methods
   //*****************************************************************
@@ -88,6 +83,14 @@ public class ControllerScript : MonoBehaviour {
 
   public UI getUI() {
     return ui;
+  }
+
+  public void setMap(Map m) {
+    map = m;
+  }
+
+  public Map getMap() {
+    return map;
   }
 
   public void setLeaderboard(List<PlayerLeaderboardEntry> llb, string type) {

@@ -47,3 +47,5 @@ SHORT_POSITION = Pos.
 USERNAME = Username
 TOP_PLAYERS = Top players
 MAP_REGISTER = Let's register an account first, so other players will know who you are!
+MAP_ERROR = There was an error loading the map, please try again!
+TRY_AGAIN = Try again
