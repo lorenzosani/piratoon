@@ -63,7 +63,7 @@ public class MapController : MonoBehaviour {
     Camera.main.GetComponent<PanAndZoom>().Zoom(Camera.main.orthographicSize, 3);
     await Task.Delay(200);
     ui.showLoadingScreen();
-    DestroyObject(GameObject.Find("GameController"));
+    Destroy(GameObject.Find("GameController"));
     SceneManager.LoadScene("Hideout", LoadSceneMode.Single);
   }
 }
