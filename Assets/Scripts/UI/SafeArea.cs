@@ -9,7 +9,7 @@ public class SafeArea : MonoBehaviour {
     [SerializeField] bool ConformX = true; // Conform to screen safe area on X-axis (default true, disable to ignore)
     [SerializeField] bool ConformY = true; // Conform to screen safe area on Y-axis (default true, disable to ignore)
 
-    void Awake() {
+    void Start() {
         Panel = GetComponent<RectTransform>();
         applySafeArea(Screen.safeArea);
     }

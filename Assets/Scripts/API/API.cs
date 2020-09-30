@@ -237,7 +237,7 @@ public static class API {
       }
     }
     PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
-      Data = request
+      Data = request, Permission = UserDataPermission.Public
     }, result => {
       Debug.Log("Server-side data updated successfully.");
     }, e => OnPlayFabError(e));
@@ -246,11 +246,10 @@ public static class API {
   //*****************************************************************
   // RETRIEVE user data on the server
   //*****************************************************************
-  public static void GetUserData(List<string> keys, Action<GetUserDataResult> callback) {
+  public static void GetUserData(List<string> keys, Action<GetUserDataResult> callback, string userId = null) {
     // Fetch user data
     PlayFabClientAPI.GetUserData(new GetUserDataRequest() {
-      PlayFabId = playFabId,
-        Keys = keys
+      PlayFabId = userId ?? playFabId, Keys = keys
     }, result => {
       // Check if user has already data
       callback(result.Data != null ? result : null);

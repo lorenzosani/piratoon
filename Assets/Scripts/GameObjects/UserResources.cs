@@ -1,12 +1,25 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UserResources : MonoBehaviour {
   ControllerScript controller;
-  string[] productionBuildings = new string[3] { "Woodcutter", "Stonecutter", "Inn" };
-  string[] tooltipNames = new string[3] { "TooltipWood", "TooltipStone", "TooltipGold" };
-  bool[] shownTooltips = new bool[3] { false, false, false };
+  string[] productionBuildings = new string[3] {
+    "Woodcutter",
+    "Stonecutter",
+    "Inn"
+  };
+  string[] tooltipNames = new string[3] {
+    "TooltipWood",
+    "TooltipStone",
+    "TooltipGold"
+  };
+  bool[] shownTooltips = new bool[3] {
+    false,
+    false,
+    false
+  };
 
   void Awake() {
     controller = GetComponent<ControllerScript>();
@@ -14,10 +27,12 @@ public class UserResources : MonoBehaviour {
   }
 
   void checkLocalResources() {
-    for (int i = 0; i < productionBuildings.Length; i++) {
-      Building building = controller.getUser().getVillage().getBuildingInfo(productionBuildings[i]);
-      if (building != null && building.getLocalStorage() > 0 && !shownTooltips[i]) {
-        showTooltip(productionBuildings[i]);
+    if (SceneManager.GetActiveScene().name == "Hideout") {
+      for (int i = 0; i < productionBuildings.Length; i++) {
+        Building building = controller.getUser().getVillage().getBuildingInfo(productionBuildings[i]);
+        if (building != null && building.getLocalStorage() > 0 && !shownTooltips[i]) {
+          showTooltip(productionBuildings[i]);
+        }
       }
     }
   }
