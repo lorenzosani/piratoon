@@ -15,7 +15,7 @@ public class Watchtower : Building {
       400,
       15
     };
-    completionTime = DateTime.UtcNow.AddSeconds(value / 4 * (level + 1));
+    completionTime = DateTime.UtcNow.AddSeconds(value * (level + 1));
     built = false;
   }
 }

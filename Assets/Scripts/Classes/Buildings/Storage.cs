@@ -17,7 +17,7 @@ public class Storage : Building {
       150,
       0
     };
-    completionTime = DateTime.UtcNow.AddSeconds(value / 4 * (level + 1));
+    completionTime = DateTime.UtcNow.AddSeconds(value * (level + 1));
     storage = 1000 * level;
     built = false;
   }

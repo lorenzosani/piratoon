@@ -95,13 +95,22 @@ public class BuildingsMenu : MonoBehaviour {
     // Set building cost
     for (int i = 0; i < 3; i++) {
       Text textObj = resorucesObject.Find(resourcesNames[i]).gameObject.GetComponent<Text>();
-      textObj.text = cost[i].ToString();
+      textObj.text = formatNumber(cost[i]);
       if (!canAfford) {
         textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
       }
     }
     // Show level up icon
     if (level > 1)levelUpObject.SetActive(true);
+  }
+
+  public string formatNumber(int number) {
+    string stringNumber = number.ToString();
+    if (number < 1000)return stringNumber;
+    if (number < 10000)return stringNumber[0] + (stringNumber[1] == '0' ? "" : "." + stringNumber[1]) + "K";
+    if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
+    if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
+    return stringNumber;
   }
 
   void lockBuilding(Transform building, int level) {

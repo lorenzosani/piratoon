@@ -37,7 +37,7 @@ public class MapLoader : MonoBehaviour {
     Mapmaking.Start();
 
     int secondsPassed = 0;
-    while (controller.getMap() == null && secondsPassed <= 30) {
+    while (controller.getMap() == null && controller.getUser().getMapId() == null && secondsPassed <= 30) {
       await Task.Delay(3000);
       secondsPassed += 3;
     }

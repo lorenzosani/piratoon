@@ -11,11 +11,11 @@ public class Inn : Building {
     position = prefab.transform.position;
     value = 200;
     cost = new int[3] {
-      200,
       250,
+      200,
       20
     };
-    completionTime = DateTime.UtcNow.AddSeconds(value / 4 * (level + 1));
+    completionTime = DateTime.UtcNow.AddSeconds(value * (level + 1));
     lastCollected = DateTime.UtcNow;
     built = false;
   }

@@ -11,11 +11,11 @@ public class Inventor : Building {
     position = prefab.transform.position;
     value = 480;
     cost = new int[3] {
-      300,
-      500,
+      450,
+      450,
       50
     };
-    completionTime = DateTime.UtcNow.AddSeconds(value / 4 * (level + 1));
+    completionTime = DateTime.UtcNow.AddSeconds(value * (level + 1));
     built = false;
   }
 }

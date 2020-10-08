@@ -62,11 +62,9 @@ public class MapController : MonoBehaviour {
   // DETECT clicks or taps on hideouts
   //*****************************************************************
   void onHideoutClick(Vector3 position) {
-    Debug.Log("CLICK");
     Vector2 position2d = new Vector2(position.x, position.y);
     RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
     if (raycastHit) {
-      Debug.Log("HIT");
       string hideoutName = raycastHit.collider.name;
       // Check if the click is on a hideout
       if (hideoutName.Split('_')[0] == "hideout") {

@@ -11,11 +11,11 @@ public class Woodcutter : Building {
     position = prefab.transform.position;
     value = 80;
     cost = new int[3] {
-      25,
       50,
+      25,
       0
     };
-    completionTime = DateTime.UtcNow.AddSeconds(value / 4 * (level + 1));
+    completionTime = DateTime.UtcNow.AddSeconds(value * (level + 1));
     lastCollected = DateTime.UtcNow;
     built = false;
   }
