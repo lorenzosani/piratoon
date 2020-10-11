@@ -8,7 +8,7 @@ public class Headquarter : Building {
     prefab = (GameObject)Resources.Load("Prefabs/Headquarter", typeof(GameObject));
     level = 0;
     name = "Headquarter";
-    position = prefab.transform.position;
+    position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 150;
     cost = new int[3] {
       200,

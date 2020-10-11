@@ -8,7 +8,7 @@ public class Woodcutter : Building {
     prefab = (GameObject)Resources.Load("Prefabs/Woodcutter", typeof(GameObject));
     level = 0;
     name = "Woodcutter";
-    position = prefab.transform.position;
+    position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 80;
     cost = new int[3] {
       50,

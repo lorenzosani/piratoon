@@ -14,7 +14,7 @@ public class Building {
   [JsonProperty]
   protected string name;
   [JsonProperty]
-  protected Vector3 position;
+  protected float[] position;
   [JsonProperty]
   protected DateTime completionTime;
   [JsonProperty]
@@ -47,11 +47,13 @@ public class Building {
   }
 
   public Vector3 getPosition() {
-    return position;
+    return new Vector3(position[0], position[1], position[2]);
   }
 
   public void setPosition(Vector3 v) {
-    position = v;
+    position[0] = v.x;
+    position[1] = v.y;
+    position[2] = v.z;
   }
 
   public GameObject getPrefab() {

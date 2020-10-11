@@ -113,9 +113,9 @@ public class Buildings : MonoBehaviour {
       b.setLevel((int)buildingsObject[i]["level"]);
       b.setPosition(
         new Vector3(
-          (float)buildingsObject[i]["position"]["x"],
-          (float)buildingsObject[i]["position"]["y"],
-          (float)buildingsObject[i]["position"]["z"]
+          (float)buildingsObject[i]["position"][0],
+          (float)buildingsObject[i]["position"][1],
+          (float)buildingsObject[i]["position"][2]
         )
       );
       string t = (string)buildingsObject[i]["completionTime"];

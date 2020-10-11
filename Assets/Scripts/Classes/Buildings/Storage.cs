@@ -10,7 +10,7 @@ public class Storage : Building {
     prefab = (GameObject)Resources.Load("Prefabs/Storage", typeof(GameObject));
     level = 0;
     name = "Storage";
-    position = prefab.transform.position;
+    position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 120;
     cost = new int[3] {
       100,

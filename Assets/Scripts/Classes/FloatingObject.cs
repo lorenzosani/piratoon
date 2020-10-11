@@ -10,12 +10,12 @@ public class FloatingObject {
   [JsonProperty]
   protected DateTime time;
   [JsonProperty]
-  protected Vector3 position;
+  protected float[] position;
 
   public FloatingObject(int _id, DateTime _time, Vector3 _position) {
     id = _id;
     time = _time;
-    position = _position;
+    position = new float[3] { _position.x, _position.y, _position.z };
   }
 
   public int getId() {
@@ -27,6 +27,6 @@ public class FloatingObject {
   }
 
   public Vector3 getPosition() {
-    return position;
+    return new Vector3(position[0], position[1], position[2]);
   }
 }

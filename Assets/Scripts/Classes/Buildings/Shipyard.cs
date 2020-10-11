@@ -8,7 +8,7 @@ public class Shipyard : Building {
     prefab = (GameObject)Resources.Load("Prefabs/Shipyard", typeof(GameObject));
     level = 0;
     name = "Shipyard";
-    position = prefab.transform.position;
+    position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 160;
     cost = new int[3] {
       100,

@@ -8,7 +8,7 @@ public class Inventor : Building {
     prefab = (GameObject)Resources.Load("Prefabs/Inventor", typeof(GameObject));
     level = 0;
     name = "Inventor";
-    position = prefab.transform.position;
+    position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 480;
     cost = new int[3] {
       450,

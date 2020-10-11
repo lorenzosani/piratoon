@@ -8,7 +8,7 @@ public class Watchtower : Building {
     prefab = (GameObject)Resources.Load("Prefabs/Watchtower", typeof(GameObject));
     level = 0;
     name = "Watchtower";
-    position = prefab.transform.position;
+    position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 400;
     cost = new int[3] {
       400,
