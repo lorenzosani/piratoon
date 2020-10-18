@@ -114,9 +114,9 @@ public class UI : MonoBehaviour {
   void Update() {
     // Update resources on UI
     int[] resources = controller.getUser().getResources();
-    woodValue.text = resources[0].ToString();
-    stoneValue.text = resources[1].ToString();
-    goldValue.text = resources[2].ToString();
+    woodValue.text = formatNumber(resources[0]);
+    stoneValue.text = formatNumber(resources[1]);
+    goldValue.text = formatNumber(resources[2]);
     pearlValue.text = controller.getUser().getPearl().ToString();
   }
 
