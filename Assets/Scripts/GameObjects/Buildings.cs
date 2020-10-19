@@ -5,6 +5,8 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -26,13 +28,7 @@ public class Buildings : MonoBehaviour {
   //*****************************************************************
 
   void Start() {
-    controller = GetComponent<ControllerScript>();
-    ui = controller.getUI();
-    floatScript = GameObject.Find("FloatingObjects").GetComponent<FloatingObjects>();
-    loadingSlider = loadingBar.GetComponent<Slider>();
-    loadingText = loadingBar.GetComponentInChildren(typeof(Text), true)as Text;
-    audioSource = GetComponent<AudioSource>();
-    newBuilding = true;
+    populateVariables();
   }
 
   void Update() {
@@ -100,6 +96,17 @@ public class Buildings : MonoBehaviour {
   //*****************************************************************
   // Helper methods
   //*****************************************************************
+
+  // Populate the variables for this script at launch
+  void populateVariables() {
+    controller = GetComponent<ControllerScript>();
+    ui = controller.getUI();
+    floatScript = GameObject.Find("FloatingObjects").GetComponent<FloatingObjects>();
+    loadingSlider = loadingBar.GetComponent<Slider>();
+    loadingText = loadingBar.GetComponentInChildren(typeof(Text), true)as Text;
+    audioSource = GetComponent<AudioSource>();
+    newBuilding = true;
+  }
 
   // Show buildings from json data
   public void populateVillage(string buildingsJson) {
@@ -204,8 +211,22 @@ public class Buildings : MonoBehaviour {
   void spawn(Building b) {
     // Instantiate building on the scene
     GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
+    // Set object properties
     buildingObj.name = b.getName();
     buildingObj.layer = 9;
+    // Add click listener to some types of buildings
+    if (b.getName() == "Shipyard") {
+      addClickListener(buildingObj, () => ui.showShipyardMenu());
+    }
+  }
+
+  // Add a click listener to a building and the function it calls
+  void addClickListener(GameObject obj, Action functionality) {
+    EventTrigger.Entry entry = new EventTrigger.Entry();
+    entry.eventID = EventTriggerType.PointerClick;
+    entry.callback.AddListener(new UnityAction<BaseEventData>((baseData) => functionality()));
+    obj.layer = 10;
+    obj.GetComponent<EventTrigger>().triggers.Add(entry);
   }
 
   public void addBuildingFromServer(Building b) {
@@ -216,9 +237,7 @@ public class Buildings : MonoBehaviour {
     } else if (b.isBuilt() == false) {
       finishBuilding(b);
     } else {
-      GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
-      buildingObj.name = b.getName();
-      buildingObj.layer = 9;
+      spawn(b);
       if (b.getName() == "Woodcutter" || b.getName() == "Stonecutter" || b.getName() == "Inn") {
         if (b.getLocalStorage() > 0) {
           GetComponent<UserResources>().showTooltip(b.getName());

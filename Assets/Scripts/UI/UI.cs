@@ -65,6 +65,9 @@ public class UI : MonoBehaviour {
   public Text localLeadBounty;
   public Text absLeadBounty;
 
+  [Header("Sipyard menu")]
+  public GameObject shipyardMenu;
+
   [Header("Map error dialog")]
   public GameObject mapErrorMessage;
   public Text mapErrorText;
@@ -257,6 +260,10 @@ public class UI : MonoBehaviour {
     } else {
       showPopupMessage("Please register and see your position in the leaderboard!");
     }
+  }
+
+  public void showShipyardMenu(bool active = true) {
+    shipyardMenu.SetActive(active);
   }
 
   public void showMapError(bool active = true) {
