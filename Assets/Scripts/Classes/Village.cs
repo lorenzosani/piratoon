@@ -17,6 +17,8 @@ public class Village {
   int strength;
   [JsonProperty]
   FloatingObject[] floatingObjects;
+  [JsonProperty]
+  Ship[] ships;
 
   public Village(int _position) {
     buildings = new List<Building>();
@@ -24,6 +26,7 @@ public class Village {
     position = _position;
     strength = 0;
     floatingObjects = initialiseFloatingObjects(8);
+    ships = new Ship[3] { null, null, null };
   }
 
   public void addBuilding(Building building) {
@@ -89,6 +92,19 @@ public class Village {
 
   public FloatingObject[] getFloatingObjects() {
     return floatingObjects;
+  }
+
+  public Ship[] getShips() {
+    return ships;
+  }
+
+  public Ship getShip(int i) {
+    if (i < 0 || i >= ships.Length)return null;
+    return ships[i];
+  }
+
+  public void setShip(Ship s, int i) {
+    ships[i] = s;
   }
 
   FloatingObject[] initialiseFloatingObjects(int n) {
