@@ -15,6 +15,8 @@ public class Ship {
   protected ShipJourney currentJourney;
   [JsonProperty]
   protected float[] currentPosition;
+  [JsonProperty]
+  protected int[] cost;
 
   public Ship(string _name, Vector3 initialPosition) {
     name = _name;
@@ -22,6 +24,7 @@ public class Ship {
     condition = 100;
     currentJourney = null;
     currentPosition = new float[3] { initialPosition.x, initialPosition.y, initialPosition.z };
+    cost = new int[3] { 100 + 100 * level * 2, 50 + 50 * level * 2, 50 + 50 * level * 2 };
   }
 
   public string getName() {
@@ -78,5 +81,13 @@ public class Ship {
 
   public void setCurrentPosition(Vector3 p) {
     currentPosition = new float[3] { p.x, p.y, p.z };
+  }
+
+  public int[] getCost(int slot = 0) {
+    int[] costAdjusted = new int[3];
+    for (int i = 0; i < 3; i++) {
+      costAdjusted[i] = cost[i] + cost[i] * (i * 4);
+    }
+    return costAdjusted;
   }
 }
