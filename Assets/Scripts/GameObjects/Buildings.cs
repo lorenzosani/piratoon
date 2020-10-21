@@ -87,7 +87,7 @@ public class Buildings : MonoBehaviour {
     if (newBuilding) {
       controller.getUser().getVillage().addBuilding(building);
     } else {
-      building.setCompletionTime(DateTime.UtcNow.AddSeconds(building.getValue() / 4 * (building.getLevel() + 1)));
+      building.setCompletionTime(DateTime.UtcNow.AddSeconds(building.getValue() * (building.getLevel() + 1)));
     }
     // Spawn building
     startConstruction(building);
