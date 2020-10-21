@@ -7,6 +7,7 @@ public class ShipyardMenu : MonoBehaviour {
   public Text shipyardMenuTitle;
   public GameObject shipyardMenuLoading;
   public GameObject shipyardMenuSlots;
+  public Sprite[] shipSprites;
   ControllerScript controller;
 
   void Start() {
@@ -55,7 +56,7 @@ public class ShipyardMenu : MonoBehaviour {
         }
       }
       // Add correct ship icon
-
+      slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ? shipSprites[1] : shipSprites[ships[i].getLevel()]);
       // Lock ships depending on the level of the shipyard
 
       // Add logic for building and upgrading ships
