@@ -50,3 +50,6 @@ MAP_REGISTER = Let's register an account first, so other players will know who y
 MAP_ERROR = There was an error loading the map, please try again!
 TRY_AGAIN = Try again
 NEW_SHIP = Build a new ship
+BUILD = Build
+UPGRADE = Upgrade
+UPGRADE_BUILDING = Upgrade to Lvl.

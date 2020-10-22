@@ -12,7 +12,6 @@ public class ShipyardMenu : MonoBehaviour {
 
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
-    // Set language
     shipyardMenuTitle.text = Language.Field["SHIPYARD"];
   }
 
@@ -25,6 +24,8 @@ public class ShipyardMenu : MonoBehaviour {
   public void populateShipyardMenu() {
     Ship[] ships = controller.getUser().getVillage().getShips();
     string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
+    int shipyardLevel = controller.getUser().getVillage().getBuildingInfo("Shipyard").getLevel();
+
     // Go through each slot in the menu
     float containerHeight = shipyardMenuSlots.GetComponent<RectTransform>().rect.height;
     float heightTaken = 0;
@@ -38,10 +39,24 @@ public class ShipyardMenu : MonoBehaviour {
       );
       rt.offsetMax = new Vector2(0, heightTaken);
       heightTaken = heightTaken - 20 - rt.sizeDelta.y;
-      // Add correct ship name
-      slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
-        Language.Field["NEW_SHIP"] :
-        ships[i].getName();
+      // Add correct ship icon and name
+      if (i != 0 && i * 4 > shipyardLevel) {
+        // Lock ships depending on the level of the shipyard
+        slot.Find("Image").GetComponent<Image>().sprite = shipSprites[0];
+        slot.Find("Description").Find("Title").GetComponent<Text>().text =
+          Language.Field["UPGRADE_BUILDING"] + " " + (i * 4).ToString();
+        slot.Find("Description").Find("Button").gameObject.SetActive(false);
+      } else {
+        slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ?
+          shipSprites[1] :
+          shipSprites[ships[i].getLevel()]);
+        slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
+          Language.Field["NEW_SHIP"] :
+          ships[i].getName();
+        slot.Find("Description").Find("Button").GetComponent<Text>().text = ships[i] == null ?
+          Language.Field["BUILD"] :
+          Language.Field["UPGRADE"];
+      }
       // Add correct price
       int[] cost = ships[i] == null ?
         new int[3] { 100 + 100 * (i * 4), 50 + 50 * (i * 4), 50 + 50 * (i * 4) } :
@@ -55,12 +70,6 @@ public class ShipyardMenu : MonoBehaviour {
           textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
         }
       }
-      // Add correct ship icon
-      slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ? shipSprites[1] : shipSprites[ships[i].getLevel()]);
-      // Lock ships depending on the level of the shipyard
-
-      // Add logic for building and upgrading ships
-
       i++;
     }
     shipyardMenuLoading.SetActive(false);
