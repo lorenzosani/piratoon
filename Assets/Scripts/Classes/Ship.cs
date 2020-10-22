@@ -17,14 +17,20 @@ public class Ship {
   protected float[] currentPosition;
   [JsonProperty]
   protected int[] cost;
+  [JsonProperty]
+  protected int slot;
+  [JsonProperty]
+  protected DateTime completionTime;
 
-  public Ship(string _name, Vector3 initialPosition) {
+  public Ship(string _name, Vector3 initialPosition, int _slot) {
     name = _name;
     level = 1;
     condition = 100;
     currentJourney = null;
     currentPosition = new float[3] { initialPosition.x, initialPosition.y, initialPosition.z };
     cost = new int[3] { 100 + 100 * level * 2, 50 + 50 * level * 2, 50 + 50 * level * 2 };
+    slot = _slot;
+    completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
   }
 
   public string getName() {
@@ -89,5 +95,14 @@ public class Ship {
       costAdjusted[i] = cost[i] + cost[i] * (i * 4);
     }
     return costAdjusted;
+  }
+
+  public int getSlot() {
+    return slot;
+  }
+
+  public void increaseLevel() {
+    level = level + 1;
+    completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
   }
 }

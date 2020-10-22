@@ -8,7 +8,9 @@ public class ShipyardMenu : MonoBehaviour {
   public GameObject shipyardMenuLoading;
   public GameObject shipyardMenuSlots;
   public Sprite[] shipSprites;
+
   ControllerScript controller;
+  bool currentlyBuilding = false;
 
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
@@ -39,6 +41,8 @@ public class ShipyardMenu : MonoBehaviour {
       );
       rt.offsetMax = new Vector2(0, heightTaken);
       heightTaken = heightTaken - 20 - rt.sizeDelta.y;
+      // If a ship is being built prevent the user from building others
+      slot.Find("Description").Find("Button").gameObject.SetActive(currentlyBuilding);
       // Add correct ship icon and name
       if (i != 0 && i * 4 > shipyardLevel) {
         // Lock ships depending on the level of the shipyard
@@ -83,5 +87,15 @@ public class ShipyardMenu : MonoBehaviour {
     if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
     if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
     return stringNumber;
+  }
+
+  public GameObject setCurrentlyBuilding(bool building, int slot) {
+    currentlyBuilding = building;
+    // TODO: Hide buttons of all slots
+
+    // TODO: Show text of currently building 
+
+    // TODO: Return that text GameObject
+
   }
 }

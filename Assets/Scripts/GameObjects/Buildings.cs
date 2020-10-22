@@ -148,6 +148,14 @@ public class Buildings : MonoBehaviour {
     }
   }
 
+  // Shows spawned floating objects
+  public void populateShips() {
+    Ship[] ships = controller.getUser().getVillage().getShips();
+    for (int i = 0; i < ships.Length; i++) {
+      // TODO: Spawn ships
+    }
+  }
+
   // Factory method that returns the correct building object
   public Building createBuilding(string name) {
     switch (name) {
