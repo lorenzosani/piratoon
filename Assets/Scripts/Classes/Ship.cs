@@ -50,6 +50,7 @@ public class Ship {
 
   public void increaseLevel() {
     level = level + 1;
+    completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
   }
 
   public int getCondition() {
@@ -101,8 +102,7 @@ public class Ship {
     return slot;
   }
 
-  public void increaseLevel() {
-    level = level + 1;
-    completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
+  public DateTime getCompletionTime() {
+    return completionTime;
   }
 }

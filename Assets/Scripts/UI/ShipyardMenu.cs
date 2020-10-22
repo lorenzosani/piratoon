@@ -91,6 +91,7 @@ public class ShipyardMenu : MonoBehaviour {
 
   public GameObject setCurrentlyBuilding(bool building, int slot) {
     currentlyBuilding = building;
+    return null;
     // TODO: Hide buttons of all slots
 
     // TODO: Show text of currently building 

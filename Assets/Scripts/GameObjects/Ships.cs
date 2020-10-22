@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Buildings : MonoBehaviour {
+public class Ships : MonoBehaviour {
   ControllerScript controller;
   Ship currentlyBuilding = null;
   AudioSource audioSource;
@@ -42,12 +42,12 @@ public class Buildings : MonoBehaviour {
   // PUBLIC: Call this with the slot number of the ship you want to build
   //*****************************************************************
   public void buildShip(int slot) {
-    Ship ship = controller.getUser().getShips()[slot];
+    Ship ship = controller.getUser().getVillage().getShip(slot);
     Ship newShip = null;
     if (ship != null) {
       // If it doesn't exist already, create a new ship object
       newShip = new Ship(
-        "Ship" + slot, controller.getUser().getVillage().getPosition(), slot
+        "Ship" + slot, MapPositions.get(controller.getUser().getVillage().getPosition()), slot
       );
     } else {
       // Otherwise create a duplicate of the current ship
@@ -55,7 +55,7 @@ public class Buildings : MonoBehaviour {
         JsonConvert.SerializeObject(ship),
         new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace }
       );
-      newShip.increaseLevel()
+      newShip.increaseLevel();
     }
     // Check if user can afford the building, if yes pay
     if (!canAfford(newShip)) {
@@ -77,27 +77,14 @@ public class Buildings : MonoBehaviour {
     controller = GetComponent<ControllerScript>();
     ui = controller.getUI();
     audioSource = GetComponent<AudioSource>();
-    newBuilding = true;
   }
 
-  void finishShip(Ship b) {
-    // TODO : finish ship construction and spawn
-    loadingBar.SetActive(false);
-    b.setBuilt(true);
-    b.increaseLevel();
-    // Add building's value to user's bounty
-    controller.getUser().addBounty(b.getValue());
+  void finishShip(Ship s) {
+    // Add ship's value to user's bounty
+    controller.getUser().addBounty(s.getLevel() * s.getSlot() * 100);
     // Spawn the building on the scene
-    if (newBuilding)spawn(b);
-    b.startFunctionality(controller);
-    // Reset global variables
+    //spawn(s);
     currentlyBuilding = null;
-    newBuilding = true;
-  }
-
-  //This fetches the prefab of the building to be shown
-  GameObject getPrefab(string buildingName) {
-    return (GameObject)Resources.Load("Prefabs/" + new CultureInfo("en-US", false).TextInfo.ToTitleCase(buildingName), typeof(GameObject));
   }
 
   //This starts the construction of a building
@@ -107,54 +94,18 @@ public class Buildings : MonoBehaviour {
     playBuildingSound();
   }
 
-  //This instantiates the building on the scene and implements its functionality
-  void spawn(Building b) {
-    // Instantiate building on the scene
-    GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
-    // Set object properties
-    buildingObj.name = b.getName();
-    buildingObj.layer = 9;
-    // Add click listener to some types of buildings
-    if (b.getName() == "Shipyard") {
-      addClickListener(buildingObj, () => ui.showShipyardMenu());
-    }
-  }
-
-  // Add a click listener to a building and the function it calls
-  void addClickListener(GameObject obj, Action functionality) {
-    EventTrigger.Entry entry = new EventTrigger.Entry();
-    entry.eventID = EventTriggerType.PointerClick;
-    entry.callback.AddListener(new UnityAction<BaseEventData>((baseData) => functionality()));
-    obj.layer = 10;
-    obj.GetComponent<EventTrigger>().triggers.Add(entry);
-  }
-
-  public void addBuildingFromServer(Building b) {
-    currentlyBuilding = null;
-    b.setPosition(b.getPrefab().transform.position);
-    if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0) {
-      startConstruction(b);
-    } else if (b.isBuilt() == false) {
-      finishBuilding(b);
-    } else {
-      spawn(b);
-      if (b.getName() == "Woodcutter" || b.getName() == "Stonecutter" || b.getName() == "Inn") {
-        if (b.getLocalStorage() > 0) {
-          GetComponent<UserResources>().showTooltip(b.getName());
-        }
-      }
-    }
-  }
-
-  public void removeAllBuildings() {
-    loadingBar.SetActive(false);
-    var objects = FindObjectsOfType(typeof(GameObject));
-    foreach (GameObject obj in objects) {
-      if (obj.layer == 9) {
-        Destroy(obj);
-      }
-    }
-  }
+  // //This instantiates the building on the scene and implements its functionality
+  // void spawn(Building b) {
+  //   // Instantiate building on the scene
+  //   GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
+  //   // Set object properties
+  //   buildingObj.name = b.getName();
+  //   buildingObj.layer = 9;
+  //   // Add click listener to some types of buildings
+  //   if (b.getName() == "Shipyard") {
+  //     addClickListener(buildingObj, () => ui.showShipyardMenu());
+  //   }
+  // }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price
   bool canAfford(Ship b) {
