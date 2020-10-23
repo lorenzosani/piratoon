@@ -139,9 +139,9 @@ public static class API {
   //*****************************************************************
   // LOGIN players that are not registered, using locally stored ids
   //*****************************************************************
-  public static void NewPlayerLogin(string userId = controller.getUser().getId()) {
+  public static void NewPlayerLogin(string userId = null) {
     PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
-      CustomId = userId,
+      CustomId = userId ?? controller.getUser().getId(),
         CreateAccount = true
     }, OnLogin, e => OnPlayFabError(e, true));
   }

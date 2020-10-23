@@ -240,7 +240,13 @@ public class Buildings : MonoBehaviour {
   public void addBuildingFromServer(Building b) {
     currentlyBuilding = null;
     b.setPosition(b.getPrefab().transform.position);
+    foreach (Building bu in controller.getUser().getVillage().getBuildings()) {
+      if (bu.getName() == b.getName()) {
+        newBuilding = false;
+      }
+    }
     if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0) {
+      if (!newBuilding)spawn(b);
       startConstruction(b);
     } else if (b.isBuilt() == false) {
       finishBuilding(b);
