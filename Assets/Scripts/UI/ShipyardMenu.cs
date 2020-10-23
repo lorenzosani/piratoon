@@ -57,7 +57,7 @@ public class ShipyardMenu : MonoBehaviour {
         slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
           Language.Field["NEW_SHIP"] :
           ships[i].getName();
-        slot.Find("Description").Find("Button").GetComponent<Text>().text = ships[i] == null ?
+        slot.Find("Description").Find("Button").Find("Text").GetComponent<Text>().text = ships[i] == null ?
           Language.Field["BUILD"] :
           Language.Field["UPGRADE"];
       }
