@@ -139,14 +139,11 @@ public static class API {
   //*****************************************************************
   // LOGIN players that are not registered, using locally stored ids
   //*****************************************************************
-  public static void Login(string userId) {
+  public static void NewPlayerLogin(string userId = controller.getUser().getId()) {
     PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
       CustomId = userId,
         CreateAccount = true
     }, OnLogin, e => OnPlayFabError(e, true));
-  }
-  public static void NewPlayerLogin() {
-    Login(controller.getUser().getId());
   }
 
   //*****************************************************************

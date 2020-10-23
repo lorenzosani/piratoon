@@ -36,7 +36,7 @@ public class ControllerScript : MonoBehaviour {
       newPlayerLogin();
       PlayerPrefs.SetInt("FirstAccess", 0);
     } else if (!isEmpty(storedId) && rememberLoginDetails) {
-      API.Login(storedId);
+      API.NewPlayerLogin(storedId);
     } else {
       ui.showNewGameOrLogin();
     }
