@@ -42,7 +42,7 @@ public class ShipyardMenu : MonoBehaviour {
       rt.offsetMax = new Vector2(0, heightTaken);
       heightTaken = heightTaken - 20 - rt.sizeDelta.y;
       // If a ship is being built prevent the user from building others
-      slot.Find("Description").Find("Button").gameObject.SetActive(currentlyBuilding);
+      slot.Find("Description").Find("Button").gameObject.SetActive(!currentlyBuilding);
       // Add correct ship icon and name
       if (i != 0 && i * 4 > shipyardLevel) {
         // Lock ships depending on the level of the shipyard
