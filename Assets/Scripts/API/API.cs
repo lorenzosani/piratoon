@@ -149,7 +149,7 @@ public static class API {
   //*****************************************************************
   // LOGIN SUCCESSFUL, this is called after
   //*****************************************************************
-  public static void OnLogin(LoginResult login) {
+  static void OnLogin(LoginResult login) {
     // Store the user info
     controller.getUI().showLoadingScreen();
     playFabId = login.PlayFabId;
