@@ -1,6 +1,6 @@
 # Piratoon
 
-Piratoon is an indie strategy mobile game. Users play as pirtes and their main goal is becoming more and more powerful. They can do so by improving their pirate hideout, plundering other players' hideouts or conquering neighbouring cities. 
+Piratoon is an indie strategy mobile game. Users play as pirtes and their main goal is to become more and more powerful. They can do so by improving their pirate hideout, plundering other players' hideouts or conquering neighbouring cities. 
 
 ## Develop the game
 
