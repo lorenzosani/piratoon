@@ -120,7 +120,7 @@ public class Ships : MonoBehaviour {
     return true;
   }
 
-  public void playBuildingSound() {
+  void playBuildingSound() {
     audioSource.Play();
   }
 }

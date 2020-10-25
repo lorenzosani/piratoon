@@ -237,7 +237,7 @@ public class Buildings : MonoBehaviour {
     obj.GetComponent<EventTrigger>().triggers.Add(entry);
   }
 
-  public void addBuildingFromServer(Building b) {
+  void addBuildingFromServer(Building b) {
     currentlyBuilding = null;
     b.setPosition(b.getPrefab().transform.position);
     foreach (Building bu in controller.getUser().getVillage().getBuildings()) {
@@ -260,7 +260,7 @@ public class Buildings : MonoBehaviour {
     }
   }
 
-  public void removeAllBuildings() {
+  void removeAllBuildings() {
     loadingBar.SetActive(false);
     var objects = FindObjectsOfType(typeof(GameObject));
     foreach (GameObject obj in objects) {
@@ -283,7 +283,7 @@ public class Buildings : MonoBehaviour {
     return true;
   }
 
-  public void playBuildingSound() {
+  void playBuildingSound() {
     audioSource.Play();
   }
 }
