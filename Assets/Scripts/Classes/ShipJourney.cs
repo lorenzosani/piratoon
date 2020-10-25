@@ -6,11 +6,11 @@ using UnityEngine;
 [JsonObject(MemberSerialization.OptIn)]
 public class ShipJourney {
   [JsonProperty]
-  protected float[] startPoint;
+  protected float[] startPoint; // The starting point on the map for this journey
   [JsonProperty]
-  protected float[] arrivalPoint;
+  protected float[] arrivalPoint; // The arrival point on the map for this journey
   [JsonProperty]
-  protected DateTime startTime;
+  protected DateTime startTime; // When this journey has started
 
   public ShipJourney(Vector3 _startPoint, Vector3 _arrivalPoint, DateTime _startTime) {
     startPoint = new float[3] { _startPoint.x, _startPoint.y, _startPoint.z };

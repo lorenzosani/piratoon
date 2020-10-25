@@ -6,11 +6,11 @@ using UnityEngine;
 [JsonObject(MemberSerialization.OptIn)]
 public class FloatingObject {
   [JsonProperty]
-  protected int id;
+  protected int id; // Each floating object has an id between 0 and 7 (8 total objects)
   [JsonProperty]
-  protected DateTime time;
+  protected DateTime time; // The time when this object appears and is collectable
   [JsonProperty]
-  protected float[] position;
+  protected float[] position; // The position in the hideout where this appears
 
   public FloatingObject(int _id, DateTime _time, Vector3 _position) {
     id = _id;

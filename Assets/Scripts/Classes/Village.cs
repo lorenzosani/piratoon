@@ -8,17 +8,17 @@ using UnityEngine;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class Village {
-  List<Building> buildings;
+  List<Building> buildings; // A list of all the buildings in the hideout
   [JsonProperty]
-  int level;
+  int level; // The level of the hideout increases with its strength
   [JsonProperty]
-  int position;
+  int position; // The position of the hideout on the map
   [JsonProperty]
-  int strength;
+  int strength; // The strength is influenced by the amount and level of buildings in the hideout
   [JsonProperty]
-  FloatingObject[] floatingObjects;
+  FloatingObject[] floatingObjects; // The collectable floating objects that appear in the bay
   [JsonProperty]
-  Ship[] ships;
+  Ship[] ships; // The ships that are in this hidoeut
 
   public Village(int _position) {
     buildings = new List<Building>();

@@ -6,21 +6,21 @@ using UnityEngine;
 [JsonObject(MemberSerialization.OptIn)]
 public class Ship {
   [JsonProperty]
-  protected string name;
+  protected string name; // Each ship can be given a name, the default is used otherwise
   [JsonProperty]
-  protected int level;
+  protected int level; // The ship can be upgrade to a higher level, never downgraded
   [JsonProperty]
-  protected int condition;
+  protected int condition; // The 'health status' of the ship. When 0, the ship can't be used anymore
   [JsonProperty]
-  protected ShipJourney currentJourney;
+  protected ShipJourney currentJourney; // The journey on which the ship is currently on
   [JsonProperty]
-  protected float[] currentPosition;
+  protected float[] currentPosition; // The current position in the map
   [JsonProperty]
-  protected int[] cost;
+  protected int[] cost; // The price to build this ship
   [JsonProperty]
-  protected int slot;
+  protected int slot; // A player can have up to 3 ships. This indicates which of the three ships this one is
   [JsonProperty]
-  protected DateTime completionTime;
+  protected DateTime completionTime; // If under construction, upgrade or repair - this indicates when that's complete
 
   public Ship(string _name, Vector3 initialPosition, int _slot) {
     name = _name;

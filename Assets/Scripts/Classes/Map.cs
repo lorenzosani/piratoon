@@ -7,9 +7,9 @@ using UnityEngine;
 [JsonObject(MemberSerialization.OptIn)]
 public class Map {
   [JsonProperty]
-  protected string id;
+  protected string id; // Each map has an unique uuid
   [JsonProperty]
-  protected MapUser[] players;
+  protected MapUser[] players; // List of players that have their hideout on this map
 
   public Map(string _id, MapUser[] _players) {
     id = _id;

@@ -8,23 +8,23 @@ using UnityEngine.UI;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class Building {
-  protected GameObject prefab;
+  protected GameObject prefab; // The Unity object that is shown for this building
   [JsonProperty]
-  protected int level;
+  protected int level; // The level of the building can be increased, never decreased
   [JsonProperty]
-  protected string name;
+  protected string name; // Each building has a specific name
   [JsonProperty]
-  protected float[] position;
+  protected float[] position; // The position in the hideout where this building is shown
   [JsonProperty]
-  protected DateTime completionTime;
+  protected DateTime completionTime; // How long does it take to build this building
   [JsonProperty]
-  protected int value;
+  protected int value; // How 'valuable' is this building, this is consider in increasing the bounty
   [JsonProperty]
-  protected int[] cost;
+  protected int[] cost; // The price of creating this building
   [JsonProperty]
-  protected DateTime lastCollected;
+  protected DateTime lastCollected; // Last time that resources produced by this building have been collected
   [JsonProperty]
-  protected bool built;
+  protected bool built; // If false, the building is still under construction
 
   public void increaseLevel() {
     level += 1;

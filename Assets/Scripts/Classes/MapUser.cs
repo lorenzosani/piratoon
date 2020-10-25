@@ -6,9 +6,9 @@ using UnityEngine;
 [JsonObject(MemberSerialization.OptIn)]
 public class MapUser {
   [JsonProperty]
-  string id;
+  string id; // The uuid of the user
   [JsonProperty]
-  string username;
+  string username; // The username of the user
 
   public MapUser(string _id, string _username) {
     id = _id;

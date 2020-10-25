@@ -5,23 +5,23 @@ using UnityEngine;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class User {
-  Village village;
+  Village village; // This contains info about the user's hideout
   [JsonProperty]
-  string id;
+  string id; // The user's unique uuid
   [JsonProperty]
-  string username;
+  string username; // The user's username
   [JsonProperty]
-  int level;
+  int level; // Can increase level by improving their hideout, building ships, conquering cities
   [JsonProperty]
-  string serverId;
+  string serverId; // The uuid of the map on which the user's hideout is
   [JsonProperty]
-  int bounty;
+  int bounty; // The user's bounty indicates their 'power'
   [JsonProperty]
-  int[] resources;
+  int[] resources; // The amount of each resource owned by the user
   [JsonProperty]
-  int pearl;
+  int pearl; // The amount of premium pearls owned by the user
   [JsonProperty]
-  int storage;
+  int storage; // The max storage space for each resource
 
   public User(string _id, Village _village) {
     id = _id;
