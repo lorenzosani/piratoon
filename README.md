@@ -4,7 +4,7 @@ Piratoon is an indie strategy mobile game. Users play as pirtes and their main g
 
 ## Develop the game
 
-The game is being developed in Unity 2D, using the C# language. Please find more documentation in each script folder.
+The game is being developed in Unity (v2019.3), using the C# language (more documentation in the Scripts folder).
 
 The game makes use of a Microsoft PlayFab backend, which mainly handles authentication, data storage and multiplayer. Please find the PlayFab documentation [here](https://docs.microsoft.com/en-us/gaming/playfab/).
 
