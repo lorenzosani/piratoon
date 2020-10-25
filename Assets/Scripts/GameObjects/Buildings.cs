@@ -157,7 +157,7 @@ public class Buildings : MonoBehaviour {
   }
 
   // Factory method that returns the correct building object
-  public Building createBuilding(string name) {
+  Building createBuilding(string name) {
     switch (name) {
       case "Inventor":
         return new Inventor();
