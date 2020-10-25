@@ -8,6 +8,8 @@ The game is being developed in Unity (v2019.3), using the C# language (more docu
 
 The game makes use of a Microsoft PlayFab backend, which mainly handles authentication, data storage and multiplayer. Please find the PlayFab documentation [here](https://docs.microsoft.com/en-us/gaming/playfab/).
 
+Please log any bug you might find [here](https://docs.google.com/document/d/1UBM9k2lwcrkYN6vE3p2yUdwL0mdAOtvCaXSiO835PyI/edit?usp=sharing).
+
 ## Build the game
 
 You can build the game for both Android and iOS (not tested yet) using Unity. Before performing a build, remember to check that:
