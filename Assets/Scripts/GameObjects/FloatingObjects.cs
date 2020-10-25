@@ -19,7 +19,7 @@ public class FloatingObjects : MonoBehaviour {
   }
 
   // Check if there any floating objects ready to be spawned
-  public void checkIfSpawn() {
+  void checkIfSpawn() {
     FloatingObject[] objects = controller.getUser().getVillage().getFloatingObjects();
     //Debug.Log("CHECKING IF SPAWNABLE AT TIME:" + DateTime.Now);
     for (int i = 0; i < objects.Length; i++) {
