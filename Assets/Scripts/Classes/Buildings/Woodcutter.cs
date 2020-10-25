@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// WOODCUTTER: This is a subclass of Building. This produces 'wood'
+//*****************************************************************
+
 public class Woodcutter : Building {
   public Woodcutter() {
     prefab = (GameObject)Resources.Load("Prefabs/Woodcutter", typeof(GameObject));

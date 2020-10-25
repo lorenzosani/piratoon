@@ -6,6 +6,10 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 
+//*****************************************************************
+// BUILDING: This represents any building in the player's hideout
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class Building {
   protected GameObject prefab; // The Unity object that is shown for this building

@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// DEFENCE: This is a subclass of Building. It represents the defence building,
+// which increases the strength of the village when under attack
+//*****************************************************************
+
 public class Defence : Building {
   public Defence() {
     prefab = (GameObject)Resources.Load("Prefabs/Defence", typeof(GameObject));
@@ -20,6 +25,6 @@ public class Defence : Building {
   }
 
   public override void startFunctionality(ControllerScript controller) {
-    controller.getUser().getVillage().increaseStrength(140);
+    controller.getUser().getVillage().increaseStrength(100 * (level + 1));
   }
 }

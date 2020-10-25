@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// INVENTOR: This is a subclass of Building. The inventor can produce
+// special objects and consumable that can be used by the user. 
+// FUNCTIONALITY NOT YET IMPLEMENTED
+//*****************************************************************
+
 public class Inventor : Building {
   public Inventor() {
     prefab = (GameObject)Resources.Load("Prefabs/Inventor", typeof(GameObject));

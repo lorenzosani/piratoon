@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// INN: This is a subclass of Building. The inn produces an income 
+// of the resource 'gold' for the player.
+//*****************************************************************
+
 public class Inn : Building {
   public Inn() {
     prefab = (GameObject)Resources.Load("Prefabs/Inn", typeof(GameObject));

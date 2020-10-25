@@ -3,6 +3,10 @@ using System.Collections;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// SHIP: This represents any ship in the game
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class Ship {
   [JsonProperty]

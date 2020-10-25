@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// WATCHTOWER: This is a subclass of Building. The watchtower enables
+// the player to unlock new areas of the map
+// FUNCTIONALITY NOT YET IMPLEMENTED
+//*****************************************************************
+
 public class Watchtower : Building {
   public Watchtower() {
     prefab = (GameObject)Resources.Load("Prefabs/Watchtower", typeof(GameObject));

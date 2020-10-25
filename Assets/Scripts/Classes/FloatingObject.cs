@@ -3,6 +3,11 @@ using System.Collections;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// FLOATING OBJECT: This represents one of those objects that appear
+// in the hideout's bay and give resources when collected.
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class FloatingObject {
   [JsonProperty]

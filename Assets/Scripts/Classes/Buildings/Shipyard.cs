@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// SHIPYARD: This is a subclass of Building. The shipyard is where ships
+// are built, upgraded and repaired.
+//*****************************************************************
+
 public class Shipyard : Building {
   public Shipyard() {
     prefab = (GameObject)Resources.Load("Prefabs/Shipyard", typeof(GameObject));

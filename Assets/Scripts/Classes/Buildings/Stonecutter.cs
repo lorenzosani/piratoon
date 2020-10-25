@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// STONECUTTER: This is a subclass of Building. This produces 'stone'.
+//*****************************************************************
+
 public class Stonecutter : Building {
   public Stonecutter() {
     prefab = (GameObject)Resources.Load("Prefabs/Stonecutter", typeof(GameObject));

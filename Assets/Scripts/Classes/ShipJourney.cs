@@ -3,6 +3,11 @@ using System.Collections;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// SHIP JOURNEY: This represents any journey of a player's ship from
+// point A to point B on the map.
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class ShipJourney {
   [JsonProperty]

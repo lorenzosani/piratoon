@@ -3,6 +3,10 @@ using System.Collections;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// USER: This represents a user or player (terms used interchangeably)
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class User {
   Village village; // This contains info about the user's hideout

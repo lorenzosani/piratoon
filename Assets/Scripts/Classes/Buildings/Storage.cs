@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*****************************************************************
+// STORAGE: This is a subclass of Building. The storage buildings
+// stores the resources owned by the user. Higher the level of the storage,
+// higher the number of resources that can be stored.
+//*****************************************************************
+
 public class Storage : Building {
   int storage;
 

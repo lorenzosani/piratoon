@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// MAP: This represents any world map in the game
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class Map {
   [JsonProperty]

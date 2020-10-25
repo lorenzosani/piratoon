@@ -3,6 +3,11 @@ using System.Collections;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// MAP USER: This represents any user on a given map. It's a compact
+// version of the class User.
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class MapUser {
   [JsonProperty]

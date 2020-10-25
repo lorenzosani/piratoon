@@ -6,6 +6,10 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
+//*****************************************************************
+// VILLAGE: This represents a village or hideout (terms used interchangeably)
+//*****************************************************************
+
 [JsonObject(MemberSerialization.OptIn)]
 public class Village {
   List<Building> buildings; // A list of all the buildings in the hideout
