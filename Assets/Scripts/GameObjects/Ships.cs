@@ -30,7 +30,6 @@ public class Ships : MonoBehaviour {
   void Update() {
     if (currentlyBuilding != null && SceneManager.GetActiveScene().name == "Hideout") {
       int totalTime = (currentlyBuilding.getSlot() + 1) * currentlyBuilding.getLevel() * 300;
-      Debug.Log("TOTAL TIME" + totalTime);
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
       if (timeLeft <= 0) {
         finishShip(currentlyBuilding);
