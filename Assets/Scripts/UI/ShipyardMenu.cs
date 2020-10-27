@@ -28,6 +28,14 @@ public class ShipyardMenu : MonoBehaviour {
     string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
     int shipyardLevel = controller.getUser().getVillage().getBuildingInfo("Shipyard").getLevel();
 
+    // Check if any ship is currently being built
+    foreach (Ship ship in ships) {
+      if (ship != null && ((int)(ship.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds) > 0) {
+        currentlyBuilding = true;
+        break;
+      }
+    }
+
     // Go through each slot in the menu
     float containerHeight = shipyardMenuSlots.GetComponent<RectTransform>().rect.height;
     float heightTaken = 0;
@@ -64,7 +72,7 @@ public class ShipyardMenu : MonoBehaviour {
       // Add correct price
       int[] cost = ships[i] == null ?
         new int[3] { 100 + 100 * (i * 4), 50 + 50 * (i * 4), 50 + 50 * (i * 4) } :
-        ships[i].getCost(i);
+        ships[i].getCost();
       int[] resOwned = controller.getUser().getResources();
       for (int j = 0; j < 3; j++) {
         Text textObj = slot.Find("Description").Find("Cost").Find(resourcesNames[j]).gameObject.GetComponent<Text>();
@@ -72,6 +80,9 @@ public class ShipyardMenu : MonoBehaviour {
         // Set price as red if user can't afford
         if (cost[0] > resOwned[0] || cost[1] > resOwned[1] || cost[2] > resOwned[2]) {
           textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
+          slot.Find("Description").Find("Button").gameObject.SetActive(false);
+        } else {
+          textObj.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         }
       }
       i++;
@@ -89,14 +100,22 @@ public class ShipyardMenu : MonoBehaviour {
     return stringNumber;
   }
 
-  public GameObject setCurrentlyBuilding(bool building, int slot) {
-    currentlyBuilding = building;
-    return null;
-    // TODO: Hide buttons of all slots
+  public Text getConstructionTimer(int slotNo) {
+    GameObject timer = null;
 
-    // TODO: Show text of currently building 
+    int i = 0;
+    foreach (Transform slot in shipyardMenuSlots.transform) {
+      if (i == slotNo) {
+        timer = slot.Find("Description").Find("Timer").gameObject;
+        timer.SetActive(true);
+        break;
+      }
+      i += 1;
+    }
+    return timer.GetComponent<Text>();
+  }
 
-    // TODO: Return that text GameObject
-
+  public void setConstructionFinished() {
+    currentlyBuilding = false;
   }
 }

@@ -32,9 +32,9 @@ public class Ship {
     condition = 100;
     currentJourney = null;
     currentPosition = new float[3] { initialPosition.x, initialPosition.y, initialPosition.z };
-    cost = new int[3] { 100 + 100 * level * 2, 50 + 50 * level * 2, 50 + 50 * level * 2 };
     slot = _slot;
-    completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
+    cost = new int[3] { 100 + 100 * (slot * 4 * level), 50 + 50 * (slot * 4 * level), 50 + 50 * (slot * 4 * level) };
+    completionTime = DateTime.UtcNow.AddSeconds(level * (slot + 1) * 300);
   }
 
   public string getName() {
@@ -94,12 +94,8 @@ public class Ship {
     currentPosition = new float[3] { p.x, p.y, p.z };
   }
 
-  public int[] getCost(int slot = 0) {
-    int[] costAdjusted = new int[3];
-    for (int i = 0; i < 3; i++) {
-      costAdjusted[i] = cost[i] + cost[i] * (i * 4);
-    }
-    return costAdjusted;
+  public int[] getCost() {
+    return cost;
   }
 
   public int getSlot() {

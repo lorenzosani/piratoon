@@ -29,12 +29,15 @@ public class Ships : MonoBehaviour {
 
   void Update() {
     if (currentlyBuilding != null && SceneManager.GetActiveScene().name == "Hideout") {
-      int totalTime = currentlyBuilding.getSlot() * currentlyBuilding.getLevel() * 300;
+      int totalTime = (currentlyBuilding.getSlot() + 1) * currentlyBuilding.getLevel() * 300;
+      Debug.Log("TOTAL TIME" + totalTime);
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
       if (timeLeft <= 0) {
         finishShip(currentlyBuilding);
       }
-      loadingText.text = timeLeft > 60 ? Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] : timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
+      loadingText.text = timeLeft > 60 ?
+        Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] :
+        timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
     }
   }
 
@@ -44,10 +47,10 @@ public class Ships : MonoBehaviour {
   public void buildShip(int slot) {
     Ship ship = controller.getUser().getVillage().getShip(slot);
     Ship newShip = null;
-    if (ship != null) {
+    if (ship == null) {
       // If it doesn't exist already, create a new ship object
       newShip = new Ship(
-        "Ship" + slot, MapPositions.get(controller.getUser().getVillage().getPosition()), slot
+        "My Ship", MapPositions.get(controller.getUser().getVillage().getPosition()), slot
       );
     } else {
       // Otherwise create a duplicate of the current ship
@@ -82,16 +85,22 @@ public class Ships : MonoBehaviour {
   void finishShip(Ship s) {
     // Add ship's value to user's bounty
     controller.getUser().addBounty(s.getLevel() * s.getSlot() * 100);
-    // Spawn the building on the scene
+    // TODO: Spawn the ship on the scene
     //spawn(s);
     currentlyBuilding = null;
+    shipyardMenu.setConstructionFinished();
   }
 
   //This starts the construction of a building
   void startConstruction(Ship s) {
+    loadingText = shipyardMenu.getConstructionTimer(s.getSlot());
     currentlyBuilding = s;
-    loadingText = shipyardMenu.setCurrentlyBuilding(true, s.getSlot()).GetComponent<Text>();
     playBuildingSound();
+  }
+
+  // TODO: Populate ships from server, in construction too
+  public void populateShips() {
+    return;
   }
 
   // //This instantiates the building on the scene and implements its functionality
