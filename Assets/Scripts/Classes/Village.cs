@@ -109,6 +109,9 @@ public class Village {
 
   public void setShip(Ship s, int i) {
     ships[i] = s;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   FloatingObject[] initialiseFloatingObjects(int n) {

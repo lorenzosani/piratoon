@@ -12,6 +12,7 @@ using UnityEngine.UI;
 
 public class Buildings : MonoBehaviour {
   ControllerScript controller;
+  Ships shipsScript;
   Building currentlyBuilding = null;
   Slider loadingSlider;
   Text loadingText;
@@ -101,6 +102,7 @@ public class Buildings : MonoBehaviour {
   void populateVariables() {
     controller = GetComponent<ControllerScript>();
     ui = controller.getUI();
+    shipsScript = GetComponent<Ships>();
     floatScript = GameObject.Find("FloatingObjects").GetComponent<FloatingObjects>();
     loadingSlider = loadingBar.GetComponent<Slider>();
     loadingText = loadingBar.GetComponentInChildren(typeof(Text), true)as Text;
@@ -152,7 +154,7 @@ public class Buildings : MonoBehaviour {
   public void populateShips() {
     Ship[] ships = controller.getUser().getVillage().getShips();
     for (int i = 0; i < ships.Length; i++) {
-      // TODO: Spawn ships
+      shipsScript.populateShip(ships[i]);
     }
   }
 

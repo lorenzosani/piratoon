@@ -181,6 +181,7 @@ public static class API {
           // Show the village
           spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
+          spawner.populateShips();
           controller.getUI().onLogin();
           UpdateBounty(controller.getUser().getBounty());
         } else {

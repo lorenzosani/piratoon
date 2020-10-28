@@ -28,13 +28,17 @@ public class Ship {
 
   public Ship(string _name, Vector3 initialPosition, int _slot) {
     name = _name;
-    level = 1;
+    level = 0;
     condition = 100;
     currentJourney = null;
     currentPosition = new float[3] { initialPosition.x, initialPosition.y, initialPosition.z };
     slot = _slot;
-    cost = new int[3] { 100 + 100 * (slot * 4 * level), 50 + 50 * (slot * 4 * level), 50 + 50 * (slot * 4 * level) };
+    cost = new int[3] { computeCost(100), computeCost(50), computeCost(50) };
     completionTime = DateTime.UtcNow.AddSeconds(level * (slot + 1) * 300);
+  }
+
+  int computeCost(int weight) {
+    return weight + (weight * slot * 2) + (weight * level);
   }
 
   public string getName() {
@@ -55,6 +59,9 @@ public class Ship {
   public void increaseLevel() {
     level = level + 1;
     completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public int getCondition() {
@@ -67,6 +74,9 @@ public class Ship {
 
   public void restoreCondition() {
     condition = level * 100;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public bool canStartJourney(ShipJourney j) {
@@ -75,6 +85,9 @@ public class Ship {
 
   public void startJourney(ShipJourney j) {
     currentJourney = j;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public ShipJourney getCurrentJourney() {
@@ -84,6 +97,9 @@ public class Ship {
   public void finishJourney() {
     condition = condition - currentJourney.getShipConditionCost();
     currentJourney = null;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public Vector3 getCurrentPosition() {
@@ -92,9 +108,13 @@ public class Ship {
 
   public void setCurrentPosition(Vector3 p) {
     currentPosition = new float[3] { p.x, p.y, p.z };
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public int[] getCost() {
+    cost = new int[3] { computeCost(100), computeCost(50), computeCost(50) };
     return cost;
   }
 

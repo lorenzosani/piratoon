@@ -70,9 +70,7 @@ public class ShipyardMenu : MonoBehaviour {
           Language.Field["UPGRADE"];
       }
       // Add correct price
-      int[] cost = ships[i] == null ?
-        new int[3] { 100 + 100 * (i * 4), 50 + 50 * (i * 4), 50 + 50 * (i * 4) } :
-        ships[i].getCost();
+      int[] cost = ships[i] == null ? new int[3] { 100 + (200 * i), 50 + (100 * i), 50 + (100 * i) } : ships[i].getCost();
       int[] resOwned = controller.getUser().getResources();
       for (int j = 0; j < 3; j++) {
         Text textObj = slot.Find("Description").Find("Cost").Find(resourcesNames[j]).gameObject.GetComponent<Text>();

@@ -12,12 +12,19 @@ using UnityEngine.UI;
 
 public class Ships : MonoBehaviour {
   ControllerScript controller;
-  Ship currentlyBuilding = null;
   AudioSource audioSource;
   UI ui;
   Text loadingText;
 
+  Ship currentlyBuilding = null;
+  Vector3[] shipPositions = new Vector3[3] {
+    new Vector3(),
+    new Vector3(),
+    new Vector3()
+  };
+
   public ShipyardMenu shipyardMenu;
+  public GameObject[] shipPrefabs;
 
   //*****************************************************************
   // START and UPDATE methods
@@ -85,35 +92,52 @@ public class Ships : MonoBehaviour {
     // Add ship's value to user's bounty
     controller.getUser().addBounty(s.getLevel() * s.getSlot() * 100);
     // TODO: Spawn the ship on the scene
-    //spawn(s);
+    spawn(s);
     currentlyBuilding = null;
     shipyardMenu.setConstructionFinished();
   }
 
   //This starts the construction of a building
-  void startConstruction(Ship s) {
+  void startConstruction(Ship s, bool fromServer = false) {
     loadingText = shipyardMenu.getConstructionTimer(s.getSlot());
     currentlyBuilding = s;
-    playBuildingSound();
+    if (!fromServer)playBuildingSound();
   }
 
-  // TODO: Populate ships from server, in construction too
-  public void populateShips() {
-    return;
+  // Populate ships from server
+  public void populateShip(Ship ship) {
+    // If the ship is null do nothing
+    if (ship == null)return;
+    // If the ship is in construction set it in construction
+    int timeLeft = (int)(ship.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+    if (timeLeft > 0) {
+      startConstruction(ship, true);
+    }
+    // If the ship is built, spawn it
+    //spawn(ship);
   }
 
-  // //This instantiates the building on the scene and implements its functionality
-  // void spawn(Building b) {
-  //   // Instantiate building on the scene
-  //   GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
-  //   // Set object properties
-  //   buildingObj.name = b.getName();
-  //   buildingObj.layer = 9;
-  //   // Add click listener to some types of buildings
-  //   if (b.getName() == "Shipyard") {
-  //     addClickListener(buildingObj, () => ui.showShipyardMenu());
-  //   }
-  // }
+  //This instantiates the building on the scene and implements its functionality
+  void spawn(Ship s) {
+    // Instantiate ship on the scene
+    GameObject shipObj = (GameObject)Instantiate(getShipPrefab(s.getLevel()), getPositionInHideout(s.getSlot()), Quaternion.identity);
+    // If the ship is navigating, hide it in the hideout
+    shipObj.SetActive(s.getCurrentPosition() == MapPositions.get(controller.getUser().getVillage().getPosition()));
+    // Set object properties
+    shipObj.name = "ship_" + s.getSlot();
+    shipObj.layer = 9;
+    // TODO: Add click listener to the ship
+  }
+
+  // Return the correct image of the ship, based on the level
+  GameObject getShipPrefab(int level) {
+    return level > 4 ? shipPrefabs[3] : shipPrefabs[level - 1];
+  }
+
+  // Return the correct position of the ship in the hideout, based on its slot
+  Vector3 getPositionInHideout(int slot) {
+    return new Vector3();
+  }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price
   bool canAfford(Ship b) {
