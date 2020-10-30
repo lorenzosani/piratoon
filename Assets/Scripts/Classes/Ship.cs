@@ -25,6 +25,8 @@ public class Ship {
   protected int slot; // A player can have up to 3 ships. This indicates which of the three ships this one is
   [JsonProperty]
   protected DateTime completionTime; // If under construction, upgrade or repair - this indicates when that's complete
+  [JsonProperty]
+  protected bool built; // True if the ship has been constructed and already delivered
 
   public Ship(string _name, Vector3 initialPosition, int _slot) {
     name = _name;
@@ -35,6 +37,7 @@ public class Ship {
     slot = _slot;
     cost = new int[3] { computeCost(100), computeCost(50), computeCost(50) };
     completionTime = DateTime.UtcNow.AddSeconds(level * (slot + 1) * 300);
+    built = false;
   }
 
   int computeCost(int weight) {
@@ -58,7 +61,7 @@ public class Ship {
 
   public void increaseLevel() {
     level = level + 1;
-    completionTime = DateTime.UtcNow.AddSeconds(level * slot * 300);
+    completionTime = DateTime.UtcNow.AddSeconds(level * (slot + 1) * 300);
     API.SetUserData(new string[] {
       "Village"
     });
@@ -124,5 +127,13 @@ public class Ship {
 
   public DateTime getCompletionTime() {
     return completionTime;
+  }
+
+  public void setBuilt(bool b) {
+    built = b;
+  }
+
+  public bool isBuilt() {
+    return built;
   }
 }

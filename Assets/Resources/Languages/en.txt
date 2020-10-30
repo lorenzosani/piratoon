@@ -53,3 +53,4 @@ NEW_SHIP = Build a new ship
 BUILD = Build
 UPGRADE = Upgrade
 UPGRADE_BUILDING = Upgrade to Lvl.
+CONDITION = Condition

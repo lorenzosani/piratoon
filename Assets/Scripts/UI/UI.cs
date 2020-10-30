@@ -65,8 +65,10 @@ public class UI : MonoBehaviour {
   public Text localLeadBounty;
   public Text absLeadBounty;
 
-  [Header("Sipyard menu")]
+  [Header("Ships")]
   public GameObject shipyardMenu;
+  public GameObject shipInfo;
+  public Sprite[] shipSprites;
 
   [Header("Map error dialog")]
   public GameObject mapErrorMessage;
@@ -273,5 +275,20 @@ public class UI : MonoBehaviour {
   public void showMapTryAgain(bool active = true) {
     tryAgainButton.SetActive(active);
     tryAgainLoading.SetActive(!active);
+  }
+
+  public void showShipInfo(int slot) {
+    Ship ship = controller.getUser().getVillage().getShip(slot);
+    // Set the correct image 
+    Sprite shipSprite = ship.getLevel() <= 4 ? shipSprites[ship.getLevel() - 1] : shipSprites[3];
+    shipInfo.transform.Find("Image").GetComponent<Image>().sprite = shipSprite;
+    // Set the correct name
+    shipInfo.transform.Find("ShipName").GetComponent<Text>().text = ship.getName();
+    // Set the correct information about the ship
+    Transform info = shipInfo.transform.Find("Info").transform;
+    info.Find("Level").GetComponent<Text>().text = Language.Field["LEVEL"] + " " + ship.getLevel();
+    info.Find("Condition").GetComponent<Text>().text = Language.Field["CONDITION"] + " " + ship.getCondition();
+    // Show the dialog
+    shipInfo.SetActive(true);
   }
 }

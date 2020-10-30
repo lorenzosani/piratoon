@@ -18,9 +18,9 @@ public class Ships : MonoBehaviour {
 
   Ship currentlyBuilding = null;
   Vector3[] shipPositions = new Vector3[3] {
-    new Vector3(),
-    new Vector3(),
-    new Vector3()
+    new Vector3(2.5f, -5.5f, 0),
+    new Vector3(3, -7, 0),
+    new Vector3(7.5f, -11, 0)
   };
 
   public ShipyardMenu shipyardMenu;
@@ -29,12 +29,12 @@ public class Ships : MonoBehaviour {
   //*****************************************************************
   // START and UPDATE methods
   //*****************************************************************
-
   void Start() {
     populateVariables();
   }
 
   void Update() {
+    detectClick();
     if (currentlyBuilding != null && SceneManager.GetActiveScene().name == "Hideout") {
       int totalTime = (currentlyBuilding.getSlot() + 1) * currentlyBuilding.getLevel() * 300;
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
@@ -64,7 +64,7 @@ public class Ships : MonoBehaviour {
         JsonConvert.SerializeObject(ship),
         new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace }
       );
-      newShip.increaseLevel();
+      newShip.setCurrentPosition(new Vector3(1000, 1000, 1000));
     }
     // Check if user can afford the building, if yes pay
     if (!canAfford(newShip)) {
@@ -72,6 +72,7 @@ public class Ships : MonoBehaviour {
       return;
     }
     // Register the new ship with the controller
+    newShip.increaseLevel();
     controller.getUser().getVillage().setShip(newShip, slot);
     // Spawn ships in the hideout view
     startConstruction(newShip);
@@ -80,6 +81,28 @@ public class Ships : MonoBehaviour {
   //*****************************************************************
   // Helper methods
   //*****************************************************************
+
+  // DETECT general clicks or taps on the map
+  void detectClick() {
+    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
+      onShipClick(Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position));
+    } else if (Input.GetMouseButtonUp(0)) {
+      onShipClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+    }
+  }
+
+  // HANDLE clicks or taps on ship
+  void onShipClick(Vector3 position) {
+    Vector2 position2d = new Vector2(position.x, position.y);
+    RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
+    if (raycastHit) {
+      string shipName = raycastHit.collider.name;
+      // Check if the click is on a hideout
+      if (shipName.Split('_')[0] == "ship") {
+        ui.showShipInfo(Int32.Parse(shipName.Split('_')[1]));
+      }
+    }
+  }
 
   // Populate the variables for this script at launch
   void populateVariables() {
@@ -91,7 +114,9 @@ public class Ships : MonoBehaviour {
   void finishShip(Ship s) {
     // Add ship's value to user's bounty
     controller.getUser().addBounty(s.getLevel() * s.getSlot() * 100);
-    // TODO: Spawn the ship on the scene
+    // Spawn the ship on the scene
+    s.setCurrentPosition(MapPositions.get(controller.getUser().getVillage().getPosition()));
+    s.setBuilt(true);
     spawn(s);
     currentlyBuilding = null;
     shipyardMenu.setConstructionFinished();
@@ -101,6 +126,7 @@ public class Ships : MonoBehaviour {
   void startConstruction(Ship s, bool fromServer = false) {
     loadingText = shipyardMenu.getConstructionTimer(s.getSlot());
     currentlyBuilding = s;
+    s.setBuilt(false);
     if (!fromServer)playBuildingSound();
   }
 
@@ -108,35 +134,35 @@ public class Ships : MonoBehaviour {
   public void populateShip(Ship ship) {
     // If the ship is null do nothing
     if (ship == null)return;
-    // If the ship is in construction set it in construction
     int timeLeft = (int)(ship.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
     if (timeLeft > 0) {
+      // If the ship is in construction set it in construction
       startConstruction(ship, true);
+    } else if (!ship.isBuilt()) {
+      // If the construction complete when the user was not logged in, do this
+      finishShip(ship);
+    } else {
+      // If the ship is built, spawn it
+      spawn(ship);
     }
-    // If the ship is built, spawn it
-    //spawn(ship);
   }
 
   //This instantiates the building on the scene and implements its functionality
   void spawn(Ship s) {
     // Instantiate ship on the scene
-    GameObject shipObj = (GameObject)Instantiate(getShipPrefab(s.getLevel()), getPositionInHideout(s.getSlot()), Quaternion.identity);
+    GameObject shipObj = (GameObject)Instantiate(getShipPrefab(s.getLevel()), shipPositions[s.getSlot()], Quaternion.identity);
     // If the ship is navigating, hide it in the hideout
     shipObj.SetActive(s.getCurrentPosition() == MapPositions.get(controller.getUser().getVillage().getPosition()));
     // Set object properties
     shipObj.name = "ship_" + s.getSlot();
     shipObj.layer = 9;
-    // TODO: Add click listener to the ship
+    // Add click listener to the ship
+
   }
 
   // Return the correct image of the ship, based on the level
   GameObject getShipPrefab(int level) {
     return level > 4 ? shipPrefabs[3] : shipPrefabs[level - 1];
-  }
-
-  // Return the correct position of the ship in the hideout, based on its slot
-  Vector3 getPositionInHideout(int slot) {
-    return new Vector3();
   }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price
