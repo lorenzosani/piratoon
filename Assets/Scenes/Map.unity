@@ -421,6 +421,10 @@ MonoBehaviour:
   hideoutStone: {fileID: 1904678845}
   hideoutGold: {fileID: 1706189911}
   hideoutStrength: {fileID: 1742295678}
+  hideoutLevelTitle: {fileID: 1358939593}
+  hideoutStrengthTitle: {fileID: 6232189}
+  attackButton: {fileID: 376365548}
+  shipPickerDialog: {fileID: 0}
 --- !u!1 &45853609
 GameObject:
   m_ObjectHideFlags: 0

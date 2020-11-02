@@ -18,7 +18,18 @@ public class MapUI : MonoBehaviour {
   public Text hideoutStone;
   public Text hideoutGold;
   public Text hideoutStrength;
-  // ADD INTERNATIONALISATION ON HIDEOUT POPUP
+  public Text hideoutLevelTitle;
+  public Text hideoutStrengthTitle;
+  public Text attackButton;
+
+  [Header("Ship Picker Menu")]
+  public GameObject shipPickerDialog;
+
+  void Start() {
+    hideoutLevelTitle.text = Language.Field["USER_LVL"];
+    hideoutStrengthTitle.text = Language.Field["STRENGTH"];
+    attackButton.text = Language.Field["ATTACK"];
+  }
 
   public void showLoadingScreen(bool show = true) {
     loadingScreen.SetActive(show);
@@ -54,5 +65,10 @@ public class MapUI : MonoBehaviour {
     if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
     if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
     return stringNumber;
+  }
+
+  public void showShipPicker() {
+    showHideoutPopup(false);
+    shipPickerDialog.SetActive(true);
   }
 }
