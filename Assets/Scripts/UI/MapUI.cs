@@ -24,11 +24,12 @@ public class MapUI : MonoBehaviour {
 
   [Header("Ship Picker Menu")]
   public GameObject shipPickerDialog;
+  public Sprite[] shipSprites;
 
   void Start() {
     hideoutLevelTitle.text = Language.Field["USER_LVL"];
     hideoutStrengthTitle.text = Language.Field["STRENGTH"];
-    attackButton.text = Language.Field["ATTACK"];
+    attackButton.text = Language.Field["ATTACK_VERB"];
   }
 
   public void showLoadingScreen(bool show = true) {
@@ -67,8 +68,33 @@ public class MapUI : MonoBehaviour {
     return stringNumber;
   }
 
-  public void showShipPicker() {
-    showHideoutPopup(false);
-    shipPickerDialog.SetActive(true);
+  public void showShipPicker(Ship[] ships, bool show = true) {
+    if (show) {
+      // Populate with the correct ships
+      Transform slots = shipPickerDialog.transform.Find("Slots");
+      float containerHeight = slots.GetComponent<RectTransform>().rect.height;
+      float heightTaken = 0;
+      int i = 0;
+      foreach (Transform slot in slots.transform) {
+        // Adjust slot position and height
+        RectTransform rt = slot.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(rt.sizeDelta.x, (containerHeight - 40) / ships.Length);
+        rt.offsetMax = new Vector2(0, heightTaken);
+        heightTaken = heightTaken - 20 - rt.sizeDelta.y;
+        // Add correct ship icon and name
+        slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ?
+          shipSprites[0] :
+          shipSprites[ships[i].getLevel()]);
+        slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
+          " " : ships[i].getName();
+        // Hide attack button on empty slots
+        if (ships[i] == null) {
+          slot.Find("Description").Find("Button").gameObject.SetActive(false);
+        }
+        i++;
+      }
+    }
+    // TODO: Add internationalisation to ship picker
+    shipPickerDialog.SetActive(show);
   }
 }

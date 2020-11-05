@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7896555039512738303}
   - component: {fileID: 6217872458768155996}
-  - component: {fileID: -4441422280473639148}
+  - component: {fileID: -8230844536313068420}
   m_Layer: 0
   m_Name: Hideout
   m_TagString: Untagged
@@ -82,8 +82,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &-4441422280473639148
-CircleCollider2D:
+--- !u!70 &-8230844536313068420
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -96,5 +96,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1.2
+  m_Size: {x: 2, y: 2}
+  m_Direction: 0

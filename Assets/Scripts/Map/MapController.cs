@@ -9,14 +9,15 @@ using UnityEngine.UI;
 
 public class MapController : MonoBehaviour {
   ControllerScript controller;
+  string selectedHideout = null;
 
   public MapUI ui;
   public GameObject worldSpaceUi;
   public GameObject hideoutsParent;
+  public GameObject ship;
 
   AIPath path;
   AIDestinationSetter destination;
-  public GameObject ship;
 
   void Start() {
     ui.showLoadingScreen();
@@ -33,6 +34,13 @@ public class MapController : MonoBehaviour {
     destination = ship.GetComponent<AIDestinationSetter>();
     detectDirection();
     detectClick();
+  }
+
+  //*****************************************************************
+  // GET the script that manages the map UI
+  //*****************************************************************
+  public MapUI getUI() {
+    return ui;
   }
 
   //*****************************************************************
@@ -61,6 +69,7 @@ public class MapController : MonoBehaviour {
           Quaternion.identity
         );
         hideout.transform.parent = hideoutsParent.transform;
+        hideout.layer = 8;
         // The hideout object has name: 'hideout_[position]_[userId]' DO NOT CHANGE THIS
         hideout.name = String.Format("hideout_{0}_{1}", i, players[i].getId());
         // Put the username above the hideout in the world space UI
@@ -73,6 +82,7 @@ public class MapController : MonoBehaviour {
         username.transform.position = new Vector3(MapPositions.get(i).x, MapPositions.get(i).y + 0.8f, 0.0f);
       }
     }
+    AstarPath.active.Scan();
   }
 
   //*****************************************************************
@@ -99,6 +109,7 @@ public class MapController : MonoBehaviour {
         if (hideoutName.Split('_')[2] == API.playFabId) { // If the hideout is the player's one, open it
           close();
         } else { // Otherwise show information about it
+          selectedHideout = hideoutName;
           ui.showHideoutPopup();
           API.GetUserData(
             new List<string> {
@@ -128,8 +139,7 @@ public class MapController : MonoBehaviour {
       string cityName = raycastHit.collider.name;
       Debug.Log("Raycast hit " + cityName);
       if (cityName.Split('_')[0] == "city") { // Check if the click is on a city
-        Debug.Log("Set target");
-        destination.target = raycastHit.transform; // If yes, set target to the pathfinder
+        startNavigation(raycastHit.transform); // If yes, start the navigation
       }
     }
   }
@@ -166,5 +176,16 @@ public class MapController : MonoBehaviour {
     ui.showLoadingScreen();
     Destroy(GameObject.Find("GameController"));
     SceneManager.LoadScene("Hideout", LoadSceneMode.Single);
+  }
+
+  //*****************************************************************
+  // START the navigation of a ship by setting the target
+  //*****************************************************************
+  public void startNavigation(Transform destintn = null) {
+    if (destintn != null) {
+      destination.target = destintn;
+    } else {
+      destination.target = GameObject.Find(selectedHideout).transform;
+    }
   }
 }
