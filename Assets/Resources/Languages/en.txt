@@ -57,3 +57,6 @@ CONDITION = Condition
 USER_LVL = User Level
 STRENGTH = Strength
 ATTACK_VERB = Attack
+ROCK = Rock
+GOLD = Gold
+WOOD = Wood

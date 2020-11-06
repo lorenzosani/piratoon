@@ -67,7 +67,12 @@ public class UserResources : MonoBehaviour {
     int storageSpaceLeft = controller.getUser().getStorageSpaceLeft()[resourceCode];
     int newResources = building.getLocalStorage();
     if (storageSpaceLeft == 0) {
-      controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]);
+      string[] resourceTypes = new string[3] {
+      Language.Field["WOOD"], Language.Field["ROCK"], Language.Field["GOLD"]
+      };
+      controller.getUI().showPopupMessage(
+        resourceTypes[resourceCode] + ": " + Language.Field["STORAGE_SPACE"]
+      );
       return;
     }
     controller.getUser().increaseResource(resourceCode, newResources);

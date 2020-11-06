@@ -114,7 +114,8 @@ public class User {
   }
 
   public void increaseResource(int i, int n) {
-    resources[i] = (resources[i] + n > storage) ? storage : resources[i] + n;
+    resources[i] = (resources[i] + n > getStorageSpaceLeft()[i]) ?
+      resources[i] + getStorageSpaceLeft()[i] : resources[i] + n;
     API.SetUserData(new string[] {
       "User"
     });

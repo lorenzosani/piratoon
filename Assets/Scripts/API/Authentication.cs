@@ -182,11 +182,6 @@ public class Authentication : MonoBehaviour {
     } else {
       setError(message, null, true);
     }
-    // Check if the user has already been assigned to a map
-    if (API.IsRegistered() && controller.getUser().getMapId() == null) {
-      Mapmaking.Stop(false);
-      Mapmaking.Start();
-    }
   }
 
   void populateAccountInfo() {
