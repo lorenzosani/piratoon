@@ -1,5 +1,5 @@
 INVENTOR = Inventor
-DEFENCE = Cannon
+DEFENCE = Defence
 HEADQUARTER = Headquarter
 INN = Inn
 SHIPYARD = Shipyard
