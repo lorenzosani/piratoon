@@ -1,5 +1,5 @@
 INVENTOR = Inventore
-DEFENCE = Difese
+DEFENCE = Cannone
 HEADQUARTER = Quartier Generale
 INN = Taverna
 SHIPYARD = Cantiere Navale
