@@ -6765,10 +6765,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipyardMenu: {fileID: 1915992458}
   shipPrefabs:
-  - {fileID: 7390025948015269883, guid: 7dd465cbc1b36cf10bae3b048679bf4d, type: 3}
-  - {fileID: 1982129261392536882, guid: cffc6a1c89a5b141d88cbfc5ba2cbf0c, type: 3}
-  - {fileID: 825617541359827399, guid: 4c85f1b5e7598bb37ba0c8136230c5c7, type: 3}
-  - {fileID: 215646708225726285, guid: d4b72ecccd7313dfaaeee677f04abe48, type: 3}
+  - {fileID: 341994963171954876, guid: 02aed5f7946259c21b96d5cd8c49fc29, type: 3}
+  - {fileID: 2501509724669782433, guid: e381a64717f1b307b820648062d609f5, type: 3}
+  - {fileID: 201860344514155655, guid: 5c89019de375311e0afabb61d0491933, type: 3}
+  - {fileID: 6203366622585376883, guid: 92e7756227096764999c1c4b5d1e0649, type: 3}
 --- !u!1 &444012195
 GameObject:
   m_ObjectHideFlags: 0

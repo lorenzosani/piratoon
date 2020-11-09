@@ -99,6 +99,8 @@ public class Ship {
 
   public void finishJourney() {
     condition = condition - currentJourney.getShipConditionCost();
+    Vector3 newPos = currentJourney.getArrivalPoint();
+    currentPosition = new float[3] { newPos.x, newPos.y, newPos.z };
     currentJourney = null;
     API.SetUserData(new string[] {
       "Village"
@@ -106,6 +108,7 @@ public class Ship {
   }
 
   public Vector3 getCurrentPosition() {
+    // TODO: This should return the updated position as the ship navigates the map between start and arrival points
     return new Vector3(currentPosition[0], currentPosition[1], currentPosition[2]);
   }
 

@@ -65,7 +65,12 @@ public class FloatingObjects : MonoBehaviour {
     for (int i = 0; i < 3; i++) {
       if (resources[i] > 0) {
         if (spaceLeft[i] == 0) {
-          controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]);
+          string[] resourceTypes = new string[3] {
+          Language.Field["WOOD"], Language.Field["ROCK"], Language.Field["GOLD"]
+          };
+          controller.getUI().showPopupMessage(
+            resourceTypes[i] + ": " + Language.Field["STORAGE_SPACE"]
+          );
         } else {
           controller.getUser().increaseResource(i, resources[i]);
         }

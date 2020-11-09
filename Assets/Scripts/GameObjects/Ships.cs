@@ -151,6 +151,8 @@ public class Ships : MonoBehaviour {
   void spawn(Ship s) {
     // Instantiate ship on the scene
     GameObject shipObj = (GameObject)Instantiate(getShipPrefab(s.getLevel()), shipPositions[s.getSlot()], Quaternion.identity);
+    // Show the ship with the adequate size
+    shipObj.transform.GetChild(0).localScale = new Vector3(0.5f, 0.5f, 1.0f);
     // If the ship is navigating, hide it in the hideout
     shipObj.SetActive(s.getCurrentPosition() == MapPositions.get(controller.getUser().getVillage().getPosition()));
     // Set object properties

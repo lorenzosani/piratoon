@@ -2,22 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Pathfinding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MapController : MonoBehaviour {
   ControllerScript controller;
-  string selectedHideout = null;
 
   public MapUI ui;
   public GameObject worldSpaceUi;
   public GameObject hideoutsParent;
-  public GameObject ship;
-
-  AIPath path;
-  AIDestinationSetter destination;
 
   void Start() {
     ui.showLoadingScreen();
@@ -29,31 +23,11 @@ public class MapController : MonoBehaviour {
     Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
   }
 
-  void Update() {
-    path = ship.GetComponent<AIPath>();
-    destination = ship.GetComponent<AIDestinationSetter>();
-    detectDirection();
-    detectClick();
-  }
-
   //*****************************************************************
   // GET the script that manages the map UI
   //*****************************************************************
   public MapUI getUI() {
     return ui;
-  }
-
-  //*****************************************************************
-  // CHANGE the ship orientation based on its navigation direction
-  //*****************************************************************
-  void detectDirection() {
-    // TODO: Improve to have 8 directions
-    // TODO: for each direction show a different sprite
-    if (path.desiredVelocity.x >= 0.01f) {
-      ship.transform.localScale = new Vector3(-1f, 1f, 1f);
-    } else if (path.desiredVelocity.x <= -0.01f) {
-      ship.transform.localScale = new Vector3(1f, 1f, 1f);
-    }
   }
 
   //*****************************************************************
@@ -86,68 +60,9 @@ public class MapController : MonoBehaviour {
   }
 
   //*****************************************************************
-  // DETECT general clicks or taps on the map
-  //*****************************************************************
-  void detectClick() {
-    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
-      onHideoutClick(Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position));
-    } else if (Input.GetMouseButtonUp(0)) {
-      onHideoutClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-    }
-  }
-
-  //*****************************************************************
-  // HANDLE clicks or taps on hideouts
-  //*****************************************************************
-  void onHideoutClick(Vector3 position) {
-    Vector2 position2d = new Vector2(position.x, position.y);
-    RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
-    if (raycastHit) {
-      string hideoutName = raycastHit.collider.name;
-      // Check if the click is on a hideout
-      if (hideoutName.Split('_')[0] == "hideout") {
-        if (hideoutName.Split('_')[2] == API.playFabId) { // If the hideout is the player's one, open it
-          close();
-        } else { // Otherwise show information about it
-          selectedHideout = hideoutName;
-          ui.showHideoutPopup();
-          API.GetUserData(
-            new List<string> {
-              "User",
-              "Village"
-            },
-            result => showHideoutInfo(
-              result.Data.ContainsKey("User") ? result.Data["User"].Value : null,
-              result.Data.ContainsKey("Village") ? result.Data["Village"].Value : null),
-            hideoutName.Split('_')[2]
-          );
-        }
-      } else if (hideoutName.Split('_')[0] == "city") {
-        onCityClick(position);
-      }
-    }
-  }
-
-  //*****************************************************************
-  // HANDLE clicks or taps on hideouts
-  //*****************************************************************
-  public void onCityClick(Vector3 position) {
-    Vector2 position2d = new Vector2(position.x, position.y);
-    RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
-    if (raycastHit) {
-
-      string cityName = raycastHit.collider.name;
-      Debug.Log("Raycast hit " + cityName);
-      if (cityName.Split('_')[0] == "city") { // Check if the click is on a city
-        startNavigation(raycastHit.transform); // If yes, start the navigation
-      }
-    }
-  }
-
-  //*****************************************************************
   // SHOW information about a hideout
   //*****************************************************************
-  void showHideoutInfo(string userData, string villageData) {
+  public void showHideoutInfo(string userData, string villageData) {
     User user = JsonConvert.DeserializeObject<User>(userData);
     Village village = JsonConvert.DeserializeObject<Village>(villageData);
     ui.populateHideoutPopup(
@@ -176,16 +91,5 @@ public class MapController : MonoBehaviour {
     ui.showLoadingScreen();
     Destroy(GameObject.Find("GameController"));
     SceneManager.LoadScene("Hideout", LoadSceneMode.Single);
-  }
-
-  //*****************************************************************
-  // START the navigation of a ship by setting the target
-  //*****************************************************************
-  public void startNavigation(Transform destintn = null) {
-    if (destintn != null) {
-      destination.target = destintn;
-    } else {
-      destination.target = GameObject.Find(selectedHideout).transform;
-    }
   }
 }
