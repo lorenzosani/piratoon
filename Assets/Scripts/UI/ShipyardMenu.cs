@@ -61,7 +61,7 @@ public class ShipyardMenu : MonoBehaviour {
       } else {
         slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ?
           shipSprites[1] :
-          shipSprites[ships[i].getLevel()]);
+          shipSprites[ships[i].getLevel() < 5 ? ships[i].getLevel() : 4]);
         slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
           Language.Field["NEW_SHIP"] :
           ships[i].getName();

@@ -72,15 +72,21 @@ public class Attacks : MonoBehaviour {
   // CHANGE the ship orientation based on its navigation direction
   //*****************************************************************
   void detectDirection() {
+    float SPEED_THRESHOLD = 0.0005f;
     // TODO: Improve to have 8 directions
     // TODO: for each direction show a different sprite
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (shipsSpawned[i] == null)continue;
-      if (paths[i].desiredVelocity.x >= 0.01f) {
+      if (paths[i].desiredVelocity.x >= SPEED_THRESHOLD) {
         shipsSpawned[i].transform.localScale = new Vector3(-1f, 1f, 1f);
-      } else if (paths[i].desiredVelocity.x <= -0.01f) {
+      } else if (paths[i].desiredVelocity.x <= -SPEED_THRESHOLD) {
         shipsSpawned[i].transform.localScale = new Vector3(1f, 1f, 1f);
       }
+      int timeLeft = (int)(paths[i].remainingDistance / paths[i].speed);
+      string formattedTimeLeft = timeLeft > 60 ?
+        Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] :
+        timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
+      Debug.Log(formattedTimeLeft);
     }
   }
 
@@ -161,8 +167,9 @@ public class Attacks : MonoBehaviour {
     ship.startJourney(journey);
     // Spawn that ship onto the map only if it's not been spawn already
     if (shipsSpawned[shipNumber] == null) {
+      int spriteNumber = ship.getLevel() < 5 ? ship.getLevel() - 1 : 3;
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
-        shipsPrefabs[ship.getLevel() - 1],
+        shipsPrefabs[spriteNumber],
         ship.getCurrentPosition(),
         Quaternion.identity
       );

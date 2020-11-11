@@ -84,7 +84,7 @@ public class MapUI : MonoBehaviour {
         // Add correct ship icon and name
         slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ?
           shipSprites[0] :
-          shipSprites[ships[i].getLevel()]);
+          shipSprites[ships[i].getLevel() < 5 ? ships[i].getLevel() : 4]);
         slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
           " " : ships[i].getName();
         // Hide attack button on empty slots
