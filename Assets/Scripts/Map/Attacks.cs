@@ -1,33 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Pathfinding;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Attacks : MonoBehaviour {
   static int SHIPS_MAX_NUMBER = 3;
 
   public GameObject[] shipsPrefabs;
+  public GameObject timerPrefab;
+  public GameObject lineRendererPrefab;
+  public GameObject worldSpaceUi;
   string selectedTarget = null;
 
   ControllerScript controller;
   MapController mapController;
   MapUI ui;
 
-  AIPath[] paths = new AIPath[SHIPS_MAX_NUMBER];
+  ShipPath[] paths = new ShipPath[SHIPS_MAX_NUMBER];
   bool[] destinationReached = new bool[SHIPS_MAX_NUMBER];
   AIDestinationSetter[] destinations = new AIDestinationSetter[SHIPS_MAX_NUMBER];
   GameObject[] shipsSpawned = new GameObject[SHIPS_MAX_NUMBER];
+  GameObject[] timersSpawned = new GameObject[SHIPS_MAX_NUMBER];
+  LineRenderer[] lineRenderers = new LineRenderer[SHIPS_MAX_NUMBER];
 
   void Update() {
-    detectDirection();
     detectClick();
-    for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
-      if (paths[i] != null && paths[i].reachedEndOfPath && !destinationReached[i]) {
-        controller.getUser().getVillage().getShip(i).finishJourney();
-        destinationReached[i] = true;
-      }
-    }
+    detectDirection();
+    updateTimers();
+    checkIfDestinationReached();
   }
 
   void Start() {
@@ -82,11 +85,42 @@ public class Attacks : MonoBehaviour {
       } else if (paths[i].desiredVelocity.x <= -SPEED_THRESHOLD) {
         shipsSpawned[i].transform.localScale = new Vector3(1f, 1f, 1f);
       }
+    }
+  }
+
+  //*****************************************************************
+  // UPDATE the timers that indicate the ships' time left until arrival
+  //*****************************************************************
+  void updateTimers() {
+    for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
+      if (timersSpawned[i] == null || paths[i].getPath() == null)continue;
+      // Update the position
+      Vector3 shipPosition = shipsSpawned[i].transform.position;
+      timersSpawned[i].transform.position = new Vector3(shipPosition.x, shipPosition.y + 0.6f, 0.0f);
+      // Update the content
       int timeLeft = (int)(paths[i].remainingDistance / paths[i].speed);
       string formattedTimeLeft = timeLeft > 60 ?
         Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] :
         timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
-      Debug.Log(formattedTimeLeft);
+      timersSpawned[i].transform.GetChild(0).GetComponent<Text>().text = formattedTimeLeft;
+    }
+  }
+
+  //*****************************************************************
+  // CHECK if any ship has reached its destination
+  //*****************************************************************
+  void checkIfDestinationReached() {
+    for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
+      if (paths[i] != null && paths[i].reachedEndOfPath && !destinationReached[i]) {
+        // Do this when a ship destination is reached
+        controller.getUser().getVillage().getShip(i).finishJourney();
+        destinationReached[i] = true;
+        // Hide the ship on the map and the timer
+        Destroy(shipsSpawned[i]);
+        Destroy(paths[i]);
+        Destroy(destinations[i]);
+        Destroy(timersSpawned[i]);
+      }
     }
   }
 
@@ -133,7 +167,7 @@ public class Attacks : MonoBehaviour {
       // Check if the click is on a city
       if (cityName.Split('_')[0] == "city") {
         selectedTarget = cityName;
-        GetComponent<Attacks>().startAttack();
+        startAttack();
       }
     }
   }
@@ -173,14 +207,41 @@ public class Attacks : MonoBehaviour {
         ship.getCurrentPosition(),
         Quaternion.identity
       );
-      for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
-        if (shipsSpawned[i] != null) {
-          paths[i] = shipsSpawned[i].GetComponent<AIPath>();
-          destinations[i] = shipsSpawned[i].GetComponent<AIDestinationSetter>();
-        }
-      }
+      paths[shipNumber] = shipsSpawned[shipNumber].GetComponent<ShipPath>();
+      destinations[shipNumber] = shipsSpawned[shipNumber].GetComponent<AIDestinationSetter>();
+      // Spawn a timer that shows how long until the destination
+      Vector3 timerPosition = shipsSpawned[shipNumber].transform.position;
+      timersSpawned[shipNumber] = (GameObject)Instantiate(
+        timerPrefab,
+        worldSpaceUi.transform,
+        false
+      );
+      timersSpawned[shipNumber].transform.position = new Vector3(timerPosition.x, timerPosition.y + 0.6f, 0.0f);
+      updateTimers();
     }
-    // The ship starts the navigation towards the arrival of the ShipJourney
+    // The ship starts the navigation towards the destination specified by ShipJourney
     startNavigation(shipNumber);
+    showPath(shipNumber);
+  }
+
+  //*****************************************************************
+  // DRAW the ship navigation path on the scene
+  //*****************************************************************
+  async void showPath(int shipNumber) {
+    // Create a new LineRenderer, which is the object that takes care of drawing the path
+    if (lineRenderers[shipNumber] == null) {
+      GameObject lineRendererSpawned = (GameObject)Instantiate(lineRendererPrefab, Vector3.zero, Quaternion.identity);
+      lineRenderers[shipNumber] = lineRendererSpawned.GetComponent<LineRenderer>();
+    }
+    // Wait until the path has been calculated
+    while (paths[shipNumber].getPath() == null) {
+      await Task.Delay(100);
+    }
+    // Then use the LineRenderer to show the path
+    List<Vector3> path = paths[shipNumber].getPath();
+    lineRenderers[shipNumber].positionCount = path.Count;
+    for (int i = 0; i < path.Count; i++) {
+      lineRenderers[shipNumber].SetPosition(i, path[i]);
+    }
   }
 }

@@ -6684,6 +6684,11 @@ MonoBehaviour:
   - {fileID: 2501509724669782433, guid: e381a64717f1b307b820648062d609f5, type: 3}
   - {fileID: 201860344514155655, guid: 5c89019de375311e0afabb61d0491933, type: 3}
   - {fileID: 6203366622585376883, guid: 92e7756227096764999c1c4b5d1e0649, type: 3}
+  timerPrefab: {fileID: 8418068413407911646, guid: 504e6a35539eb81feb4d5eb116be7585,
+    type: 3}
+  lineRendererPrefab: {fileID: 5705463010423057507, guid: 8baeefe82df404f729cc66aa57678543,
+    type: 3}
+  worldSpaceUi: {fileID: 1303680580}
 --- !u!1 &849577315
 GameObject:
   m_ObjectHideFlags: 0
@@ -18275,7 +18280,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 228308121}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -18284,7 +18289,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!1 &1303982645
 GameObject:
