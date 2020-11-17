@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -16,6 +17,10 @@ public class ShipJourney {
   protected float[] arrivalPoint; // The arrival point on the map for this journey
   [JsonProperty]
   protected DateTime startTime; // When this journey has started
+  [JsonProperty]
+  protected float[, ] path = null; // The actual path that the ship has to follow on the map to get to the destination
+  [JsonProperty]
+  protected int duration; // The duration of the journey
 
   public ShipJourney(Vector3 _startPoint, Vector3 _arrivalPoint, DateTime _startTime) {
     startPoint = new float[3] { _startPoint.x, _startPoint.y, _startPoint.z };
@@ -32,16 +37,39 @@ public class ShipJourney {
   }
 
   public DateTime getArrivalTime() {
-    return startTime.Add(getDuration());
+    return startTime.Add(TimeSpan.FromSeconds(getDuration()));
   }
 
   public DateTime getStartTime() {
     return startTime;
   }
 
-  public TimeSpan getDuration() {
-    // Needs implementation
-    return new TimeSpan();
+  public void setPath(List<Vector3> p) {
+    float[, ] pathArr = new float[p.Count, 3];
+    for (int i = 0; i < p.Count; i++) {
+      pathArr[i, 0] = p[i].x;
+      pathArr[i, 1] = p[i].y;
+      pathArr[i, 2] = p[i].z;
+    }
+    path = pathArr;
+  }
+
+  public List<Vector3> getPath() {
+    if (path == null)return new List<Vector3>();
+    List<Vector3> listPath = new List<Vector3>();
+    for (int i = 0; i < path.GetLength(0); i++) {
+      Vector3 v = new Vector3(path[i, 0], path[i, 1], path[i, 2]);
+      listPath.Add(v);
+    }
+    return listPath;
+  }
+
+  public void setDuration(int d) {
+    duration = d;
+  }
+
+  public int getDuration() {
+    return duration;
   }
 
   public int getShipConditionCost() {

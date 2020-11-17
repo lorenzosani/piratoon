@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -108,8 +108,20 @@ public class Ship {
   }
 
   public Vector3 getCurrentPosition() {
-    // TODO: This should return the updated position as the ship navigates the map between start and arrival points
-    return new Vector3(currentPosition[0], currentPosition[1], currentPosition[2]);
+    if (currentJourney == null || currentJourney.getDuration() == 0 || currentJourney.getPath().Count == 0) {
+      // This returns the position where the ship is waiting when not navigating
+      return new Vector3(currentPosition[0], currentPosition[1], currentPosition[2]);
+    } else {
+      // This returns the updated position as the ship navigates
+      // First, it gets the current percentage of the path already went through (in seconds)
+      int timeNavigating = (int)(DateTime.Now - currentJourney.getStartTime()).TotalSeconds;
+      int totalDuration = currentJourney.getDuration();
+      int percentageNavigated = (int)timeNavigating * 100 / totalDuration;
+      // Then, it checks on the actual path where that percentage corresponds
+      List<Vector3> path = currentJourney.getPath();
+      int pathLength = path.Count;
+      return path[(int)percentageNavigated * 100 / pathLength];
+    }
   }
 
   public void setCurrentPosition(Vector3 p) {

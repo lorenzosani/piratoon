@@ -30,6 +30,8 @@ public class Attacks : MonoBehaviour {
     detectClick();
     detectDirection();
     updateTimers();
+    Debug.ClearDeveloperConsole();
+    Debug.Log(controller.getUser().getVillage().getShip(0).getCurrentPosition());
   }
 
   void Start() {
@@ -242,6 +244,10 @@ public class Attacks : MonoBehaviour {
     while (paths[shipNumber].getPath() == null) {
       await Task.Delay(10);
     }
+    // Add information about the path to the ShipJourney object
+    ShipJourney journey = controller.getUser().getVillage().getShip(shipNumber).getCurrentJourney();
+    journey.setPath(paths[shipNumber].getPath());
+    journey.setDuration((int)(paths[shipNumber].remainingDistance / paths[shipNumber].speed));
     // Then use the LineRenderer to show the path
     List<Vector3> path = paths[shipNumber].getPath();
     lineRenderers[shipNumber].positionCount = path.Count;
