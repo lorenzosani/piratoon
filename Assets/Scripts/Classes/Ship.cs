@@ -114,9 +114,6 @@ public class Ship {
 
   public void setCurrentPosition(Vector3 p) {
     currentPosition = new float[3] { p.x, p.y, p.z };
-    API.SetUserData(new string[] {
-      "Village"
-    });
   }
 
   public int[] getCost() {

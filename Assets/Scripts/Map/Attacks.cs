@@ -30,13 +30,13 @@ public class Attacks : MonoBehaviour {
     detectClick();
     detectDirection();
     updateTimers();
-    checkIfDestinationReached();
   }
 
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     mapController = GetComponent<MapController>();
     ui = mapController.getUI();
+    InvokeRepeating("checkIfDestinationReached", 0.5f, 0.5f);
   }
 
   //*****************************************************************
@@ -120,6 +120,9 @@ public class Attacks : MonoBehaviour {
         Destroy(paths[i]);
         Destroy(destinations[i]);
         Destroy(timersSpawned[i]);
+        Destroy(lineRenderers[i]);
+      } else if (paths[i] != null) {
+        controller.getUser().getVillage().getShip(i).setCurrentPosition(paths[i].position);
       }
     }
   }
@@ -229,13 +232,15 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   async void showPath(int shipNumber) {
     // Create a new LineRenderer, which is the object that takes care of drawing the path
-    if (lineRenderers[shipNumber] == null) {
-      GameObject lineRendererSpawned = (GameObject)Instantiate(lineRendererPrefab, Vector3.zero, Quaternion.identity);
-      lineRenderers[shipNumber] = lineRendererSpawned.GetComponent<LineRenderer>();
+    if (lineRenderers[shipNumber] != null) {
+      Destroy(lineRenderers[shipNumber]);
+      paths[shipNumber].resetPath();
     }
+    GameObject lineRendererSpawned = (GameObject)Instantiate(lineRendererPrefab, Vector3.zero, Quaternion.identity);
+    lineRenderers[shipNumber] = lineRendererSpawned.GetComponent<LineRenderer>();
     // Wait until the path has been calculated
     while (paths[shipNumber].getPath() == null) {
-      await Task.Delay(100);
+      await Task.Delay(10);
     }
     // Then use the LineRenderer to show the path
     List<Vector3> path = paths[shipNumber].getPath();
