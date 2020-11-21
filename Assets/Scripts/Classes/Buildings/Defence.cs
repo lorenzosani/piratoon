@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class Defence : Building {
   public Defence() {
-    prefab = (GameObject)Resources.Load("Prefabs/Defence", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Defence";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

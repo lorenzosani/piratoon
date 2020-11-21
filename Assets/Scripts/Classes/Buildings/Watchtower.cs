@@ -11,7 +11,7 @@ using UnityEngine;
 
 public class Watchtower : Building {
   public Watchtower() {
-    prefab = (GameObject)Resources.Load("Prefabs/Watchtower", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Watchtower";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

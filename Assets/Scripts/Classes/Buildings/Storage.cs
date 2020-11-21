@@ -13,7 +13,7 @@ public class Storage : Building {
   int storage;
 
   public Storage() {
-    prefab = (GameObject)Resources.Load("Prefabs/Storage", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Storage";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

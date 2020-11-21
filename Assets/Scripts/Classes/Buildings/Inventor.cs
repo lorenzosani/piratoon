@@ -11,7 +11,7 @@ using UnityEngine;
 
 public class Inventor : Building {
   public Inventor() {
-    prefab = (GameObject)Resources.Load("Prefabs/Inventor", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Inventor";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

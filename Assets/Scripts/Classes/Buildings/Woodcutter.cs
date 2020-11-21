@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class Woodcutter : Building {
   public Woodcutter() {
-    prefab = (GameObject)Resources.Load("Prefabs/Woodcutter", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Woodcutter";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

@@ -213,12 +213,13 @@ class Language {
                 break;
             case SystemLanguage.Unknown:
                 res = "EN";
+                Debug.Log("Unknown language");
                 break;
             case SystemLanguage.Vietnamese:
                 res = "VI";
                 break;
         }
-        //		Debug.Log ("Lang: " + res);
+        Debug.Log("Lang: " + res);
         return res;
     }
 

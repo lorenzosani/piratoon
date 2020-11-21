@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class Stonecutter : Building {
   public Stonecutter() {
-    prefab = (GameObject)Resources.Load("Prefabs/Stonecutter", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Stonecutter";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

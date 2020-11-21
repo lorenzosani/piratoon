@@ -11,7 +11,7 @@ using UnityEngine;
 
 public class Headquarter : Building {
   public Headquarter() {
-    prefab = (GameObject)Resources.Load("Prefabs/Headquarter", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Headquarter";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

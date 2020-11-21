@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class Inn : Building {
   public Inn() {
-    prefab = (GameObject)Resources.Load("Prefabs/Inn", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Inn";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };

@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class Shipyard : Building {
   public Shipyard() {
-    prefab = (GameObject)Resources.Load("Prefabs/Shipyard", typeof(GameObject));
+    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Shipyard";
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
