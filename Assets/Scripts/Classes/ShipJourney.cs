@@ -21,6 +21,8 @@ public class ShipJourney {
   protected float[, ] path = null; // The actual path that the ship has to follow on the map to get to the destination
   [JsonProperty]
   protected int duration; // The duration of the journey
+  [JsonProperty]
+  protected string destinationName; // The name of the object towards which the ship is navigating
 
   public ShipJourney(Vector3 _startPoint, Vector3 _arrivalPoint, DateTime _startTime) {
     startPoint = new float[3] { _startPoint.x, _startPoint.y, _startPoint.z };
@@ -70,6 +72,14 @@ public class ShipJourney {
 
   public int getDuration() {
     return duration;
+  }
+
+  public string getDestinationName() {
+    return destinationName;
+  }
+
+  public void setDestinationName(string d) {
+    destinationName = d;
   }
 
   public int getShipConditionCost() {

@@ -6688,6 +6688,8 @@ MonoBehaviour:
     type: 3}
   lineRendererPrefab: {fileID: 5705463010423057507, guid: 8baeefe82df404f729cc66aa57678543,
     type: 3}
+  markerPrefab: {fileID: 6355611002519294999, guid: 078adb02bb98bc1fabf473308965c095,
+    type: 3}
   worldSpaceUi: {fileID: 1303680580}
 --- !u!1 &849577315
 GameObject:

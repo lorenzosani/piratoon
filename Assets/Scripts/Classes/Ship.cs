@@ -93,18 +93,20 @@ public class Ship {
     });
   }
 
-  public ShipJourney getCurrentJourney() {
-    return currentJourney;
+  public void finishJourney() {
+    if (currentJourney != null) {
+      condition = condition - currentJourney.getShipConditionCost();
+      Vector3 newPos = getCurrentPosition();
+      currentPosition = new float[3] { newPos.x, newPos.y, newPos.z };
+      currentJourney = null;
+      API.SetUserData(new string[] {
+        "Village"
+      });
+    }
   }
 
-  public void finishJourney() {
-    condition = condition - currentJourney.getShipConditionCost();
-    Vector3 newPos = currentJourney.getArrivalPoint();
-    currentPosition = new float[3] { newPos.x, newPos.y, newPos.z };
-    currentJourney = null;
-    API.SetUserData(new string[] {
-      "Village"
-    });
+  public ShipJourney getCurrentJourney() {
+    return currentJourney;
   }
 
   public Vector3 getCurrentPosition() {
@@ -119,8 +121,34 @@ public class Ship {
       int percentageNavigated = (int)timeNavigating * 100 / totalDuration;
       // Then, it checks on the actual path where that percentage corresponds
       List<Vector3> path = currentJourney.getPath();
-      int pathLength = path.Count;
-      return path[(int)percentageNavigated * 100 / pathLength];
+      // Compute path length
+      double pathLength = 0;
+      for (int i = 1; i < path.Count; i++) {
+        pathLength += Vector3.Distance(path[i - 1], path[i]);
+      }
+      // Compute what's the distance navigated already based on the time percentage above
+      double distanceNavigated = percentageNavigated * pathLength / 100;
+      if (distanceNavigated > pathLength)distanceNavigated = pathLength;
+      // Compute the position on the map that corresponds to that distance navigated
+      double currentDistance = 0;
+      double percentageLeftToPosition = 0;
+      int index = 0;
+      for (int i = 1; i < path.Count; i++) {
+        currentDistance += Vector3.Distance(path[i - 1], path[i]);
+        if (currentDistance >= distanceNavigated) {
+          // Current position is in between path[i-1] and path[i]
+          // previousDistance = distance at path[i-1]
+          // currentDistance = distance at path[i]
+          // distanceLeftToPosition = previousDistance + (distanceNavigated - previousDistance)
+          double previousDistance = currentDistance - Vector3.Distance(path[i - 1], path[i]);
+          double distanceLeftToPosition = previousDistance + (distanceNavigated - previousDistance);
+          percentageLeftToPosition = distanceLeftToPosition / Vector3.Distance(path[i - 1], path[i]);
+          index = i;
+          break;
+        }
+      }
+      Debug.Log(Vector3.Lerp(path[index - 1], path[index], (float)percentageLeftToPosition));
+      return Vector3.Lerp(path[index - 1], path[index], (float)percentageLeftToPosition);
     }
   }
 

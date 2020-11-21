@@ -12,6 +12,7 @@ public class Attacks : MonoBehaviour {
   public GameObject[] shipsPrefabs;
   public GameObject timerPrefab;
   public GameObject lineRendererPrefab;
+  public GameObject markerPrefab;
   public GameObject worldSpaceUi;
   string selectedTarget = null;
 
@@ -25,13 +26,12 @@ public class Attacks : MonoBehaviour {
   GameObject[] shipsSpawned = new GameObject[SHIPS_MAX_NUMBER];
   GameObject[] timersSpawned = new GameObject[SHIPS_MAX_NUMBER];
   LineRenderer[] lineRenderers = new LineRenderer[SHIPS_MAX_NUMBER];
+  GameObject[] shipMarkers = new GameObject[SHIPS_MAX_NUMBER];
 
   void Update() {
     detectClick();
     detectDirection();
     updateTimers();
-    Debug.ClearDeveloperConsole();
-    Debug.Log(controller.getUser().getVillage().getShip(0).getCurrentPosition());
   }
 
   void Start() {
@@ -39,6 +39,27 @@ public class Attacks : MonoBehaviour {
     mapController = GetComponent<MapController>();
     ui = mapController.getUI();
     InvokeRepeating("checkIfDestinationReached", 0.5f, 0.5f);
+
+    // Populate ships on the map
+    Ship[] ships = controller.getUser().getVillage().getShips();
+    for (int i = 0; i < ships.Length; i++) {
+      if (ships[i] != null) {
+        if (ships[i].getCurrentJourney() != null) {
+          spawnShip(i);
+        } else {
+          // Mark village/city where they're parked
+          Vector3 position = ships[i].getCurrentPosition();
+          Vector2 position2d = new Vector2(position.x, position.y);
+          RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
+          if (raycastHit) {
+            string hideoutName = raycastHit.collider.name;
+            if (hideoutName.Split('_')[0] == "hideout" || hideoutName.Split('_')[0] == "city") {
+              addShipMarker(GameObject.Find(hideoutName).transform, i);
+            }
+          }
+        }
+      }
+    }
   }
 
   //*****************************************************************
@@ -56,6 +77,7 @@ public class Attacks : MonoBehaviour {
         if (s != null) {
           ui.showHideoutPopup(false);
           spawnShip(s.getSlot());
+          Destroy(shipMarkers[s.getSlot()]);
           break;
         }
       }
@@ -94,6 +116,7 @@ public class Attacks : MonoBehaviour {
   // UPDATE the timers that indicate the ships' time left until arrival
   //*****************************************************************
   void updateTimers() {
+    // TODO: Fix time calculation, doesn't work
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (timersSpawned[i] == null || paths[i].getPath() == null)continue;
       // Update the position
@@ -115,6 +138,8 @@ public class Attacks : MonoBehaviour {
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (paths[i] != null && paths[i].reachedEndOfPath && !destinationReached[i]) {
         // Do this when a ship destination is reached
+        string destinationName = controller.getUser().getVillage().getShip(i).getCurrentJourney().getDestinationName();
+        addShipMarker(GameObject.Find(destinationName).transform, i);
         controller.getUser().getVillage().getShip(i).finishJourney();
         destinationReached[i] = true;
         // Hide the ship on the map and the timer
@@ -123,8 +148,6 @@ public class Attacks : MonoBehaviour {
         Destroy(destinations[i]);
         Destroy(timersSpawned[i]);
         Destroy(lineRenderers[i]);
-      } else if (paths[i] != null) {
-        controller.getUser().getVillage().getShip(i).setCurrentPosition(paths[i].position);
       }
     }
   }
@@ -178,18 +201,23 @@ public class Attacks : MonoBehaviour {
   }
 
   //*****************************************************************
-  // START the navigation of a ship by setting the target
+  // GET the selected target position towards which a ship will navigate
   //*****************************************************************
-  void startNavigation(int ship) {
-    destinations[ship].target = GameObject.Find(selectedTarget).transform;
-    destinationReached[ship] = false;
+  Transform getNavigationTarget(int i) {
+    if (selectedTarget == null) {
+      Ship ship = controller.getUser().getVillage().getShip(i);
+      return GameObject.Find(ship.getCurrentJourney().getDestinationName()).transform;
+    } else {
+      return GameObject.Find(selectedTarget).transform;
+    }
   }
 
   //*****************************************************************
-  // GET the selected target towards which a ship will start navigation
+  // START the navigation of a ship by setting the target
   //*****************************************************************
-  Transform getNavigationTarget() {
-    return GameObject.Find(selectedTarget).transform;
+  void startNavigation(int ship) {
+    destinations[ship].target = getNavigationTarget(ship);
+    destinationReached[ship] = false;
   }
 
   //*****************************************************************
@@ -197,19 +225,27 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   public void spawnShip(int shipNumber) {
     Ship ship = controller.getUser().getVillage().getShip(shipNumber);
-    // Create ShipJourney object and add it to the ship (+store on playfab)
-    ShipJourney journey = new ShipJourney(
-      ship.getCurrentPosition(),
-      getNavigationTarget().position,
-      DateTime.Now
-    );
-    ship.startJourney(journey);
+    Vector3 currentShipPosition = ship.getCurrentPosition();
+    // Create ShipJourney object and add it to the ship
+    if (selectedTarget != null) {
+      if (getNavigationTarget(shipNumber).position == currentShipPosition) {
+        return;
+      }
+      ShipJourney journey = new ShipJourney(
+        currentShipPosition,
+        getNavigationTarget(shipNumber).position,
+        DateTime.Now
+      );
+      journey.setDestinationName(selectedTarget);
+      ship.finishJourney();
+      ship.startJourney(journey);
+    }
     // Spawn that ship onto the map only if it's not been spawn already
     if (shipsSpawned[shipNumber] == null) {
       int spriteNumber = ship.getLevel() < 5 ? ship.getLevel() - 1 : 3;
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
         shipsPrefabs[spriteNumber],
-        ship.getCurrentPosition(),
+        currentShipPosition,
         Quaternion.identity
       );
       paths[shipNumber] = shipsSpawned[shipNumber].GetComponent<ShipPath>();
@@ -235,7 +271,7 @@ public class Attacks : MonoBehaviour {
   async void showPath(int shipNumber) {
     // Create a new LineRenderer, which is the object that takes care of drawing the path
     if (lineRenderers[shipNumber] != null) {
-      Destroy(lineRenderers[shipNumber]);
+      Destroy(lineRenderers[shipNumber].gameObject);
       paths[shipNumber].resetPath();
     }
     GameObject lineRendererSpawned = (GameObject)Instantiate(lineRendererPrefab, Vector3.zero, Quaternion.identity);
@@ -254,5 +290,17 @@ public class Attacks : MonoBehaviour {
     for (int i = 0; i < path.Count; i++) {
       lineRenderers[shipNumber].SetPosition(i, path[i]);
     }
+  }
+
+  //*****************************************************************
+  // MARK on the map that a ship is parked at a given place
+  //*****************************************************************
+  void addShipMarker(Transform place, int shipNumber) {
+    shipMarkers[shipNumber] = (GameObject)Instantiate(
+      markerPrefab,
+      worldSpaceUi.transform,
+      false
+    );
+    shipMarkers[shipNumber].transform.position = new Vector3(place.position.x, place.position.y + 0.6f, 0.0f);
   }
 }
