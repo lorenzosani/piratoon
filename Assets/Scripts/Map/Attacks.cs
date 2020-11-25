@@ -8,13 +8,13 @@ using UnityEngine.UI;
 
 public class Attacks : MonoBehaviour {
   static int SHIPS_MAX_NUMBER = 3;
+  string selectedTarget = null;
 
   public GameObject[] shipsPrefabs;
   public GameObject timerPrefab;
   public GameObject lineRendererPrefab;
   public GameObject markerPrefab;
   public GameObject worldSpaceUi;
-  string selectedTarget = null;
 
   ControllerScript controller;
   MapController mapController;
@@ -99,16 +99,37 @@ public class Attacks : MonoBehaviour {
   // CHANGE the ship orientation based on its navigation direction
   //*****************************************************************
   void detectDirection() {
-    float SPEED_THRESHOLD = 0.0005f;
-    // TODO: Improve to have 8 directions
-    // TODO: for each direction show a different sprite
+    float THRESHOLD = 0.001f;
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (shipsSpawned[i] == null)continue;
-      if (paths[i].desiredVelocity.x >= SPEED_THRESHOLD) {
-        shipsSpawned[i].transform.localScale = new Vector3(-1f, 1f, 1f);
-      } else if (paths[i].desiredVelocity.x <= -SPEED_THRESHOLD) {
-        shipsSpawned[i].transform.localScale = new Vector3(1f, 1f, 1f);
+      // Get the sprite renderer
+      SpriteRenderer sr = shipsSpawned[i].transform.GetChild(0).GetComponent<SpriteRenderer>();
+      Vector3 speed = paths[i].desiredVelocity;
+      string direction = "/S";
+      if (speed.x <= THRESHOLD && speed.x >= -THRESHOLD) {
+        if (speed.y >= THRESHOLD) {
+          direction = "/N";
+        } else {
+          direction = "/S";
+        }
+      } else if (speed.x >= THRESHOLD) {
+        if (speed.y >= -THRESHOLD && speed.y <= THRESHOLD) {
+          direction = "/E";
+        } else if (speed.y >= THRESHOLD) {
+          direction = "/NE";
+        } else {
+          direction = "/SE";
+        }
+      } else {
+        if (speed.y >= -THRESHOLD && speed.y <= THRESHOLD) {
+          direction = "/W";
+        } else if (speed.y >= THRESHOLD) {
+          direction = "/NW";
+        } else {
+          direction = "/SW";
+        }
       }
+      sr.sprite = (Sprite)Resources.Load("Images/Ships/Ship" + (i + 1).ToString() + direction, typeof(Sprite));
     }
   }
 

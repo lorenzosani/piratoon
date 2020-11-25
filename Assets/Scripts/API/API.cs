@@ -242,7 +242,6 @@ public static class API {
     while (timeToCall > 0) {
       await Task.Delay(10);
       timeToCall = timeToCall - 10;
-      Debug.Log(timeToCall);
     }
     // Make the API call
     if (request.Values.Count() == 0)return;
