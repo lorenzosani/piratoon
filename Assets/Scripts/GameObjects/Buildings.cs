@@ -240,7 +240,6 @@ public class Buildings : MonoBehaviour {
   }
 
   void addBuildingFromServer(Building b) {
-    currentlyBuilding = null;
     b.setPosition(b.getPrefab().transform.position);
     foreach (Building bu in controller.getUser().getVillage().getBuildings()) {
       if (bu.getName() == b.getName()) {
