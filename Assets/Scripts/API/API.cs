@@ -205,7 +205,9 @@ public static class API {
   //*****************************************************************
   // SAVE user data on the server
   //*****************************************************************
-  public static void SetUserData(string[] keys) {
+  static Dictionary<string, string> request = new Dictionary<string, string>();
+  static int timeToCall = 0;
+  public async static void SetUserData(string[] keys) {
     Dictionary<string, string> data = new Dictionary<string, string>() {
       {
       "Buildings",
@@ -230,15 +232,24 @@ public static class API {
       })
       }
     };
-    Dictionary<string, string> request = new Dictionary<string, string>();
     foreach (string key in keys) {
       if (data.ContainsKey(key)) {
         request[key] = data[key];
       }
     }
+    // Debounce the API call
+    timeToCall = 500;
+    while (timeToCall > 0) {
+      await Task.Delay(10);
+      timeToCall = timeToCall - 10;
+      Debug.Log(timeToCall);
+    }
+    // Make the API call
+    if (request.Values.Count() == 0)return;
     PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
       Data = request, Permission = UserDataPermission.Public
     }, result => {
+      request = new Dictionary<string, string>();
       Debug.Log("Server-side data updated successfully.");
     }, e => OnPlayFabError(e));
   }
