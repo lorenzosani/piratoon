@@ -79,6 +79,7 @@ public class Authentication : MonoBehaviour {
     API.StorePlayerId("");
     API.StoreRegistered(false);
     API.StoreUsername("");
+    Destroy(GameObject.Find("GameController"));
     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
   }
 

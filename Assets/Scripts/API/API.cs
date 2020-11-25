@@ -195,6 +195,8 @@ public static class API {
       });
     } else {
       // Set default data for a new user
+      User user = new User(Guid.NewGuid().ToString(), new Village(0));
+      controller.setUser(user);
       SetUserData(keys.ToArray());
       controller.getUI().Invoke("hideLoadingScreen", 0.5f);
     }
