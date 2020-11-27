@@ -22,6 +22,9 @@ public class MapUI : MonoBehaviour {
   public Text hideoutStrengthTitle;
   public Text attackButton;
 
+  [Header("Message Popup")]
+  public GameObject messagePopup;
+
   [Header("Ship Picker Menu")]
   public GameObject shipPickerDialog;
   public Sprite[] shipSprites;
@@ -96,5 +99,11 @@ public class MapUI : MonoBehaviour {
     }
     // TODO: Add internationalisation to ship picker
     shipPickerDialog.SetActive(show);
+  }
+
+  public void showPopupMessage(string message) {
+    Text messageText = messagePopup.GetComponentInChildren(typeof(Text), true)as Text;
+    messageText.text = message;
+    messagePopup.SetActive(true);
   }
 }

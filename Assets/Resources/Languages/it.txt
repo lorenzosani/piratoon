@@ -60,3 +60,5 @@ ATTACK_VERB = Attacca
 ROCK = Pietra
 GOLD = Oro
 WOOD = Legna
+ATTACK_VICTORY = Hai vinto!! Hai guadagnato {0} legna, {1} pietra and {2} oro!
+ATTACK_DEFEAT = Oh no! Sei stato sconfitto e la tua nave è stata distrutta in battaglia

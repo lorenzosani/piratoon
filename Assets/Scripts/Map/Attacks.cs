@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.UI;
@@ -161,8 +162,11 @@ public class Attacks : MonoBehaviour {
         // Do this when a ship destination is reached
         string destinationName = controller.getUser().getVillage().getShip(i).getCurrentJourney().getDestinationName();
         addShipMarker(GameObject.Find(destinationName).transform, i);
-        controller.getUser().getVillage().getShip(i).finishJourney();
+        Ship ship = controller.getUser().getVillage().getShip(i);
+        ship.finishJourney();
         destinationReached[i] = true;
+        // Generate attack outcome
+        generateAttackOutcome(ship, destinationName);
         // Hide the ship on the map and the timer
         Destroy(shipsSpawned[i]);
         Destroy(paths[i]);
@@ -171,6 +175,63 @@ public class Attacks : MonoBehaviour {
         Destroy(lineRenderers[i]);
       }
     }
+  }
+
+  //*****************************************************************
+  // TODO: Needs refinement, this just generates a general attack outcome
+  //*****************************************************************
+  async void generateAttackOutcome(Ship ship, string enemyName) {
+    int userStrength = 150 * ship.getLevel();
+    int enemyStrength = 200;
+    int[] enemyResources = new int[3];
+    string outcomeMessage = "";
+    bool userDataReceived = false;
+    // Get enemy and user strengths
+    API.GetUserData(
+      new List<string> {
+        "User",
+        "Village"
+      },
+      result => {
+        if (result.Data.ContainsKey("User") && result.Data.ContainsKey("Village")) {
+          User user = JsonConvert.DeserializeObject<User>(result.Data["User"].Value);
+          Village village = JsonConvert.DeserializeObject<Village>(result.Data["Village"].Value);
+          user.setVillage(village);
+          enemyStrength = village.getStrength();
+          enemyResources = user.getResources();
+          userDataReceived = true;
+        } else {
+          Debug.Log("ERROR: Failed to retrieve enemy strength. Value set to default.");
+          userDataReceived = true;
+        }
+      },
+      enemyName.Split('_')[2]
+    );
+    while (!userDataReceived) {
+      await Task.Delay(10);
+    }
+    if (enemyName.Split('_')[0] == "hideout") {
+      if (userStrength >= enemyStrength) { // If victory, compute the resources won
+        int[] resourcesWon = new int[3];
+        // TODO: deal with situations when the storage is full
+        for (int i = 0; i < 3; i++) {
+          resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
+          controller.getUser().increaseResource(i, resourcesWon[i]);
+        }
+        // TODO: Remove resources from enemy after an attack
+        outcomeMessage = String.Format(
+          Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
+      } else { // If loss, compute whether ship is lost
+        controller.getUser().getVillage().setShip(null, ship.getSlot());
+        outcomeMessage = Language.Field["ATTACK_DEFEAT"];
+      }
+    } else {
+      // TODO: Implement attack outcome for cities
+      Debug.Log("Attack outcomes for cities have not yet been implemented");
+    }
+    // Show outcome message
+    Debug.Log(outcomeMessage);
+    ui.showPopupMessage(outcomeMessage);
   }
 
   //*****************************************************************
