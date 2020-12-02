@@ -77,6 +77,12 @@ public static class Mapmaking {
     Debug.Log("********ADD TO MAP " + mapId + "***********"); // TO BE REMOVED
     if (stopped)return;
 
+    string cities = JsonConvert.SerializeObject(
+      controller.getMap().getCities(),
+      new JsonSerializerSettings {
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+      });
+
     if (newMap) {
       // Create a new group
       PlayFabGroupsAPI.CreateGroup(new CreateGroupRequest {
@@ -84,11 +90,7 @@ public static class Mapmaking {
       }, result => {
         PlayFabClientAPI.ExecuteCloudScript(new PlayFab.ClientModels.ExecuteCloudScriptRequest() {
           FunctionName = "addToGroup", FunctionParameter = new string[] {
-            result.Group.Id,
-              API.entityId,
-              position.ToString(),
-              controller.getUser().getUsername(),
-              API.playFabId
+            result.Group.Id, API.entityId, position.ToString(), controller.getUser().getUsername(), API.playFabId, cities
           }
         }, r => {
           if (r.Error != null) {
@@ -126,7 +128,8 @@ public static class Mapmaking {
               API.entityId,
               position.ToString(),
               controller.getUser().getUsername(),
-              API.playFabId
+              API.playFabId,
+              "none"
           }
         }, r => {
           if (r.Error != null) {
@@ -154,6 +157,27 @@ public static class Mapmaking {
         Stop();
       });
     }
+  }
+
+  //*****************************************************************
+  // ADD the information about cities to a map that doesn't have it
+  //*****************************************************************
+  public static void AddCitiesToMap(string mapId, City[] cities) {
+    string citiesJson = JsonConvert.SerializeObject(cities,
+      new JsonSerializerSettings {
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+      });
+    PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
+      GroupName = mapId
+    }, result => {
+      PlayFabClientAPI.ExecuteCloudScript(new PlayFab.ClientModels.ExecuteCloudScriptRequest() {
+        FunctionName = "addCitiesToMap", FunctionParameter = new string[] {
+          result.Group.Id, citiesJson
+        }
+      }, r => {
+        Debug.Log(r.FunctionResult.ToString());
+      }, e => { Debug.Log(e); });
+    }, error => { Debug.Log(error); });
   }
 
   //*****************************************************************

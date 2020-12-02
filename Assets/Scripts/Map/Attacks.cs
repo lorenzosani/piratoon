@@ -277,7 +277,8 @@ public class Attacks : MonoBehaviour {
       // Check if the click is on a city
       if (cityName.Split('_')[0] == "city") {
         selectedTarget = cityName;
-        startAttack();
+        int cityNo = Int32.Parse(cityName.Split('_')[1]);
+        mapController.showCityInfo(controller.getMap().getCities()[cityNo]);
       }
     }
   }

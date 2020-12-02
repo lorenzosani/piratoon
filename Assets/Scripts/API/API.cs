@@ -280,7 +280,15 @@ public static class API {
           EscapeObject = true
       }, r => {
         MapUser[] players = JsonConvert.DeserializeObject<MapUser[]>(r.Objects["players"].EscapedDataObject);
-        controller.setMap(new Map(mapId, players));
+        City[] cities = null;
+        if (r.Objects.Keys.Contains("cities")) {
+          cities = JsonConvert.DeserializeObject<City[]>(r.Objects["cities"].EscapedDataObject);
+        } else {
+          Map map = new Map(mapId, players);
+          Mapmaking.AddCitiesToMap(mapId, map.getCities());
+          cities = map.getCities();
+        }
+        controller.setMap(new Map(mapId, players, cities));
       }, e => OnPlayFabError(e));
     }, error => OnPlayFabError(error));
   }

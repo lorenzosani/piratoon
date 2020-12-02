@@ -22,6 +22,22 @@ public class MapUI : MonoBehaviour {
   public Text hideoutStrengthTitle;
   public Text attackButton;
 
+  [Header("City popup")]
+  public GameObject cityPopup;
+  public GameObject cityPopupInfo;
+  public GameObject cityPopupLoading;
+  public Text cityName;
+  public Text cityLevel;
+  public Text cityWoodProduction;
+  public Text cityStoneProduction;
+  public Text cityGoldProduction;
+  public Text cityWood;
+  public Text cityStone;
+  public Text cityGold;
+  public Text cityLevelTitle;
+  public Text cityProductionTitle;
+  public Text cityResourcesTitle;
+
   [Header("Message Popup")]
   public GameObject messagePopup;
 
@@ -32,6 +48,9 @@ public class MapUI : MonoBehaviour {
   void Start() {
     hideoutLevelTitle.text = Language.Field["USER_LVL"];
     hideoutStrengthTitle.text = Language.Field["STRENGTH"];
+    cityLevelTitle.text = Language.Field["CITY_LVL"];
+    cityProductionTitle.text = Language.Field["PROD"];
+    cityResourcesTitle.text = Language.Field["RES"];
     attackButton.text = Language.Field["ATTACK_VERB"];
   }
 
@@ -49,17 +68,31 @@ public class MapUI : MonoBehaviour {
     }
   }
 
-  public void populateHideoutPopup(string username, int level, int[] resources, int strength) {
-    // Assign the correct values to the differnet UI bits
+  public void populateHideoutPopup(string username, int level, int[] resources, int strength = 0) {
+    // Assign the correct values to the different UI bits
     hideoutUsername.text = username;
     hideoutLevel.text = level.ToString();
     hideoutWood.text = formatNumber(resources[0]);
     hideoutStone.text = formatNumber(resources[1]);
     hideoutGold.text = formatNumber(resources[2]);
-    hideoutStrength.text = strength.ToString();
+    hideoutStrength.text = strength == 0 ? "" : strength.ToString();
     // Show all the information
     hideoutPopupLoading.SetActive(false);
     hideoutPopupInfo.SetActive(true);
+  }
+
+  public void showCityPopup(string name, int level, int[] production, int[] resources) {
+    // Assign the correct values to the different UI bits
+    cityName.text = name;
+    cityLevel.text = level.ToString();
+    cityWoodProduction.text = formatNumber(production[0]);
+    cityStoneProduction.text = formatNumber(production[1]);
+    cityGoldProduction.text = formatNumber(production[2]);
+    cityWood.text = formatNumber(resources[0]);
+    cityStone.text = formatNumber(resources[1]);
+    cityGold.text = formatNumber(resources[2]);
+    // Show all the information
+    cityPopup.SetActive(true);
   }
 
   public string formatNumber(int number) {

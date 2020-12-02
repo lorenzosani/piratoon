@@ -60,7 +60,7 @@ public class MapController : MonoBehaviour {
   }
 
   //*****************************************************************
-  // SHOW information about a hideout
+  // SHOW information about a hideout or a city
   //*****************************************************************
   public void showHideoutInfo(string userData, string villageData) {
     User user = JsonConvert.DeserializeObject<User>(userData);
@@ -70,6 +70,14 @@ public class MapController : MonoBehaviour {
       user.getLevel(),
       user.getResources(),
       village.getStrength()
+    );
+  }
+  public void showCityInfo(City city) {
+    ui.showCityPopup(
+      city.getName(),
+      city.getLevel(),
+      city.getHourlyProduction(),
+      city.getResources()
     );
   }
 

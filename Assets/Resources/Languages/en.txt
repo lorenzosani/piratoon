@@ -62,3 +62,6 @@ GOLD = Gold
 WOOD = Wood
 ATTACK_VICTORY = Victory!! You won the attack and gained {0} wood, {1} rock and {2} gold!
 ATTACK_DEFEAT = Oh no! You've been defeated and lost your ship in the battle...
+RES = Resources
+PROD = Hourly production
+CITY_LVL = City Level
