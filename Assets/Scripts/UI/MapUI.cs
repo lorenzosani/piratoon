@@ -114,7 +114,7 @@ public class MapUI : MonoBehaviour {
       foreach (Transform slot in slots.transform) {
         // Adjust slot position and height
         RectTransform rt = slot.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(rt.sizeDelta.x, (containerHeight - 40) / ships.Length);
+        rt.sizeDelta = new Vector2(rt.sizeDelta.x, (containerHeight - 40) / 3);
         rt.offsetMax = new Vector2(0, heightTaken);
         heightTaken = heightTaken - 20 - rt.sizeDelta.y;
         // Add correct ship icon and name

@@ -11,10 +11,9 @@ public class Attacks : MonoBehaviour {
   static int SHIPS_MAX_NUMBER = 3;
   string selectedTarget = null;
 
-  public GameObject[] shipsPrefabs;
   public GameObject timerPrefab;
   public GameObject lineRendererPrefab;
-  public GameObject markerPrefab;
+  public GameObject[] markerPrefabs;
   public GameObject worldSpaceUi;
 
   ControllerScript controller;
@@ -68,6 +67,7 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   public void startAttack() {
     Ship[] shipsOwned = controller.getUser().getVillage().getShips();
+    Debug.Log("TEST - SHIPS OWNED: " + shipsOwned.Count(s => s != null));
     if (shipsOwned.Count(s => s != null) > 1) {
       // If the user has more than one ship, let them pick one for the attack
       ui.showHideoutPopup(false);
@@ -130,7 +130,8 @@ public class Attacks : MonoBehaviour {
           direction = "/SW";
         }
       }
-      sr.sprite = (Sprite)Resources.Load("Images/Ships/Ship" + (i + 1).ToString() + direction, typeof(Sprite));
+      int shipLevel = controller.getUser().getVillage().getShip(i).getLevel();
+      sr.sprite = (Sprite)Resources.Load("Images/Ships/Ship" + (shipLevel > 5 ? "4" : (shipLevel).ToString()) + direction, typeof(Sprite));
     }
   }
 
@@ -163,7 +164,7 @@ public class Attacks : MonoBehaviour {
         string destinationName = controller.getUser().getVillage().getShip(i).getCurrentJourney().getDestinationName();
         addShipMarker(GameObject.Find(destinationName).transform, i);
         Ship ship = controller.getUser().getVillage().getShip(i);
-        ship.finishJourney();
+        ship.finishJourney(GameObject.Find(destinationName).transform.position);
         destinationReached[i] = true;
         // Generate attack outcome
         generateAttackOutcome(ship, destinationName);
@@ -289,8 +290,10 @@ public class Attacks : MonoBehaviour {
   Transform getNavigationTarget(int i) {
     if (selectedTarget == null) {
       Ship ship = controller.getUser().getVillage().getShip(i);
+      Debug.Log("TEST - DESTINATION NAME: " + ship.getCurrentJourney().getDestinationName());
       return GameObject.Find(ship.getCurrentJourney().getDestinationName()).transform;
     } else {
+      Debug.Log("TEST - SELECTED TARGET: " + selectedTarget);
       return GameObject.Find(selectedTarget).transform;
     }
   }
@@ -299,6 +302,7 @@ public class Attacks : MonoBehaviour {
   // START the navigation of a ship by setting the target
   //*****************************************************************
   void startNavigation(int ship) {
+    Debug.Log("TEST - SHIP NO: " + ship);
     destinations[ship].target = getNavigationTarget(ship);
     destinationReached[ship] = false;
   }
@@ -307,10 +311,13 @@ public class Attacks : MonoBehaviour {
   // SET which ship is going to attack and start the navigation
   //*****************************************************************
   public void spawnShip(int shipNumber) {
+    Debug.Log("TEST - SHIP NO: " + shipNumber);
     Ship ship = controller.getUser().getVillage().getShip(shipNumber);
+    Debug.Log("TEST - SHIP LEVEL: " + ship.getLevel());
     Vector3 currentShipPosition = ship.getCurrentPosition();
     // Create ShipJourney object and add it to the ship
     if (selectedTarget != null) {
+      Debug.Log("TEST - SELECTED TARGET: " + selectedTarget);
       if (getNavigationTarget(shipNumber).position == currentShipPosition) {
         return;
       }
@@ -320,14 +327,14 @@ public class Attacks : MonoBehaviour {
         DateTime.Now
       );
       journey.setDestinationName(selectedTarget);
-      ship.finishJourney();
       ship.startJourney(journey);
     }
     // Spawn that ship onto the map only if it's not been spawn already
     if (shipsSpawned[shipNumber] == null) {
-      int spriteNumber = ship.getLevel() < 5 ? ship.getLevel() - 1 : 3;
+      int prefabNumber = ship.getLevel() < 5 ? ship.getLevel() : 4;
+      Debug.Log("TEST - PREFAB NUMBER: " + prefabNumber);
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
-        shipsPrefabs[spriteNumber],
+        (GameObject)Resources.Load("Prefabs/Ship" + prefabNumber, typeof(GameObject)),
         currentShipPosition,
         Quaternion.identity
       );
@@ -352,6 +359,7 @@ public class Attacks : MonoBehaviour {
   // DRAW the ship navigation path on the scene
   //*****************************************************************
   async void showPath(int shipNumber) {
+    Debug.Log("TEST - SHIP NO: " + shipNumber);
     // Create a new LineRenderer, which is the object that takes care of drawing the path
     if (lineRenderers[shipNumber] != null) {
       Destroy(lineRenderers[shipNumber].gameObject);
@@ -360,15 +368,16 @@ public class Attacks : MonoBehaviour {
     GameObject lineRendererSpawned = (GameObject)Instantiate(lineRendererPrefab, Vector3.zero, Quaternion.identity);
     lineRenderers[shipNumber] = lineRendererSpawned.GetComponent<LineRenderer>();
     // Wait until the path has been calculated
-    while (paths[shipNumber].getPath() == null) {
+    List<Vector3> path = paths[shipNumber].getPath();
+    while (path == null) {
       await Task.Delay(10);
+      path = paths[shipNumber].getPath();
     }
     // Add information about the path to the ShipJourney object
     ShipJourney journey = controller.getUser().getVillage().getShip(shipNumber).getCurrentJourney();
-    journey.setPath(paths[shipNumber].getPath());
+    journey.setPath(path);
     journey.setDuration((int)(paths[shipNumber].remainingDistance / paths[shipNumber].speed));
     // Then use the LineRenderer to show the path
-    List<Vector3> path = paths[shipNumber].getPath();
     lineRenderers[shipNumber].positionCount = path.Count;
     for (int i = 0; i < path.Count; i++) {
       lineRenderers[shipNumber].SetPosition(i, path[i]);
@@ -380,7 +389,7 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   void addShipMarker(Transform place, int shipNumber) {
     shipMarkers[shipNumber] = (GameObject)Instantiate(
-      markerPrefab,
+      markerPrefabs[shipNumber],
       worldSpaceUi.transform,
       false
     );

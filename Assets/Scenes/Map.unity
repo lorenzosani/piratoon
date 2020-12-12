@@ -595,10 +595,10 @@ MonoBehaviour:
   shipPickerDialog: {fileID: 80371819}
   shipSprites:
   - {fileID: 21300000, guid: 5ad9c13ba3d8492a998e7a6aafbca8e3, type: 3}
+  - {fileID: 21300000, guid: 869b8252fb5239bb19375318e3cbd46f, type: 3}
   - {fileID: 21300000, guid: 9b0e0c56f5124047bacd1f44da89d6f0, type: 3}
-  - {fileID: 21300000, guid: 1d47acd6eeea198339b3d42f78d76819, type: 3}
-  - {fileID: 21300000, guid: a9ff4dfa052d78a10b3ed8183ccd5432, type: 3}
-  - {fileID: 21300000, guid: e1fd56b207d945f098b6e21ebe0108ce, type: 3}
+  - {fileID: 21300000, guid: 7a8cfc14e6b2c533e977f050a63ac932, type: 3}
+  - {fileID: 21300000, guid: e4dd92c1ef28cfec8bba530b729c4767, type: 3}
 --- !u!1 &45853609
 GameObject:
   m_ObjectHideFlags: 0
@@ -3918,7 +3918,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 846293166}
-        m_MethodName: setAttackingShip
+        m_MethodName: spawnShip
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5602,7 +5602,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 846293166}
-        m_MethodName: setAttackingShip
+        m_MethodName: spawnShip
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7571,8 +7571,10 @@ MonoBehaviour:
     type: 3}
   lineRendererPrefab: {fileID: 5705463010423057507, guid: 8baeefe82df404f729cc66aa57678543,
     type: 3}
-  markerPrefab: {fileID: 6355611002519294999, guid: 078adb02bb98bc1fabf473308965c095,
-    type: 3}
+  markerPrefabs:
+  - {fileID: 6355611002519294999, guid: 078adb02bb98bc1fabf473308965c095, type: 3}
+  - {fileID: 5413082544946662896, guid: cf3ad10a0b087fae2853d26b1e1a214f, type: 3}
+  - {fileID: 7734300883919977496, guid: 4d3b01683439f55eab439b6c5da55c38, type: 3}
   worldSpaceUi: {fileID: 1303680580}
 --- !u!1 &849577315
 GameObject:
@@ -8752,7 +8754,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 846293166}
-        m_MethodName: setAttackingShip
+        m_MethodName: spawnShip
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

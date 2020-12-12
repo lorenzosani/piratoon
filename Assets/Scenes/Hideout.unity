@@ -457,10 +457,10 @@ MonoBehaviour:
   shipyardMenu: {fileID: 1915992453}
   shipInfo: {fileID: 1802016787}
   shipSprites:
+  - {fileID: 21300000, guid: 869b8252fb5239bb19375318e3cbd46f, type: 3}
   - {fileID: 21300000, guid: 9b0e0c56f5124047bacd1f44da89d6f0, type: 3}
-  - {fileID: 21300000, guid: 1d47acd6eeea198339b3d42f78d76819, type: 3}
-  - {fileID: 21300000, guid: a9ff4dfa052d78a10b3ed8183ccd5432, type: 3}
-  - {fileID: 21300000, guid: e1fd56b207d945f098b6e21ebe0108ce, type: 3}
+  - {fileID: 21300000, guid: 7a8cfc14e6b2c533e977f050a63ac932, type: 3}
+  - {fileID: 21300000, guid: e4dd92c1ef28cfec8bba530b729c4767, type: 3}
   mapErrorMessage: {fileID: 1077548609}
   mapErrorText: {fileID: 49538842}
   tryAgainButton: {fileID: 1312909840}
@@ -29421,10 +29421,10 @@ MonoBehaviour:
   shipyardMenuSlots: {fileID: 228499336}
   shipSprites:
   - {fileID: 21300000, guid: 5ad9c13ba3d8492a998e7a6aafbca8e3, type: 3}
+  - {fileID: 21300000, guid: 869b8252fb5239bb19375318e3cbd46f, type: 3}
   - {fileID: 21300000, guid: 9b0e0c56f5124047bacd1f44da89d6f0, type: 3}
-  - {fileID: 21300000, guid: 1d47acd6eeea198339b3d42f78d76819, type: 3}
-  - {fileID: 21300000, guid: a9ff4dfa052d78a10b3ed8183ccd5432, type: 3}
-  - {fileID: 21300000, guid: e1fd56b207d945f098b6e21ebe0108ce, type: 3}
+  - {fileID: 21300000, guid: 7a8cfc14e6b2c533e977f050a63ac932, type: 3}
+  - {fileID: 21300000, guid: e4dd92c1ef28cfec8bba530b729c4767, type: 3}
 --- !u!1 &1918713050
 GameObject:
   m_ObjectHideFlags: 0

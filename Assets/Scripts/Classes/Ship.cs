@@ -93,11 +93,10 @@ public class Ship {
     });
   }
 
-  public void finishJourney() {
+  public void finishJourney(Vector3 arrivalPos) {
     if (currentJourney != null) {
       condition = condition - currentJourney.getShipConditionCost();
-      Vector3 newPos = getCurrentPosition();
-      currentPosition = new float[3] { newPos.x, newPos.y, newPos.z };
+      currentPosition = new float[3] { arrivalPos.x, arrivalPos.y, arrivalPos.z };
       currentJourney = null;
       API.SetUserData(new string[] {
         "Village"

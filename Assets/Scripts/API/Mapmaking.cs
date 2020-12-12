@@ -177,7 +177,7 @@ public static class Mapmaking {
       }, r => {
         Debug.Log(r.FunctionResult.ToString());
       }, e => { Debug.Log(e); });
-    }, error => { Debug.Log(error); });
+    }, error => { });
   }
 
   //*****************************************************************
