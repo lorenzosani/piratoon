@@ -67,12 +67,16 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   public void startAttack() {
     Ship[] shipsOwned = controller.getUser().getVillage().getShips();
+    // If the user has no ships available show a message
+    if (shipsOwned.Count(s => s != null) == 0) {
+      ui.showPopupMessage(Language.Field["NO_SHIPS"]);
+      return;
+    }
+    // If the user has more than one ship, let them pick one for the attack
     if (shipsOwned.Count(s => s != null) > 1) {
-      // If the user has more than one ship, let them pick one for the attack
       ui.showHideoutPopup(false);
       ui.showShipPicker(shipsOwned, true);
-    } else {
-      // Otherwise just set that ship as the attacking ship
+    } else { // Otherwise just set the only ship as the attacking ship
       foreach (Ship s in shipsOwned) {
         if (s != null) {
           ui.showHideoutPopup(false);
@@ -215,7 +219,7 @@ public class Attacks : MonoBehaviour {
     while (!userDataReceived) {
       await Task.Delay(10);
     }
-    if (userStrength >= enemyStrength) { // If victory, compute the resources won
+    if (getRandomOutcome(userStrength, enemyStrength)) { // If victory, compute the resources won
       int[] resourcesWon = new int[3];
       for (int i = 0; i < 3; i++) {
         resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
@@ -239,7 +243,7 @@ public class Attacks : MonoBehaviour {
   void computeCityAttack(Ship ship, int userStrength, string cityName) {
     City city = controller.getMap().getCities()[Int32.Parse(cityName.Split('_')[1])];
     string outcomeMessage = "";
-    if (userStrength >= city.getLevel() * 100) { // User victory
+    if (getRandomOutcome(userStrength, city.getLevel() * 100)) { // User victory
       int[] resourcesWon = new int[3];
       for (int i = 0; i < 3; i++) {
         resourcesWon[i] = (int)city.getResources()[i] / 5 * ship.getLevel();
@@ -255,6 +259,33 @@ public class Attacks : MonoBehaviour {
     }
     // Show outcome message
     ui.showPopupMessage(outcomeMessage);
+  }
+
+  //*****************************************************************
+  // Add some randomness to the outcome of an attack
+  //*****************************************************************
+  bool getRandomOutcome(int userStrength, int enemyStrength) {
+    // This represents the likelihood of a victory out of 10
+    int coefficient = 4;
+    switch ((double)userStrength / enemyStrength) {
+      case double n when(n >= 5):
+        coefficient = 8;
+        break;
+      case double n when(n >= 1.5):
+        coefficient = 6;
+        break;
+      case double n when(n >= 0.8):
+        coefficient = 4;
+        break;
+      case double n when(n >= 0.4):
+        coefficient = 2;
+        break;
+      default:
+        coefficient = 0;
+        break;
+    }
+    System.Random rnd = new System.Random();
+    return coefficient >= rnd.Next(10);
   }
 
   //*****************************************************************

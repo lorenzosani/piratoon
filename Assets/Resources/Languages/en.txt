@@ -66,3 +66,4 @@ ATTACK_DEFEAT = Oh no! You've been defeated and lost your ship in the battle...
 RES = Resources
 PROD = Hourly production
 CITY_LVL = City Level
+NO_SHIPS = Hmm you need a ship first! Go to your Shipyard building to get one

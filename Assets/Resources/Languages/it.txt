@@ -66,3 +66,4 @@ ATTACK_DEFEAT = Oh no! Sei stato sconfitto e la tua nave è stata distrutta in b
 RES = Risorse
 PROD = Produzione oraria
 CITY_LVL = Livello
+NO_SHIPS = Ti serve una nave per poter attaccare! Costruiscila al tuo Cantiere Navale
