@@ -84,6 +84,6 @@ public class ShipJourney {
 
   public int getShipConditionCost() {
     // Needs implementation
-    return 0;
+    return 10;
   }
 }

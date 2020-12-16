@@ -67,7 +67,6 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   public void startAttack() {
     Ship[] shipsOwned = controller.getUser().getVillage().getShips();
-    Debug.Log("TEST - SHIPS OWNED: " + shipsOwned.Count(s => s != null));
     if (shipsOwned.Count(s => s != null) > 1) {
       // If the user has more than one ship, let them pick one for the attack
       ui.showHideoutPopup(false);
@@ -78,7 +77,6 @@ public class Attacks : MonoBehaviour {
         if (s != null) {
           ui.showHideoutPopup(false);
           spawnShip(s.getSlot());
-          Destroy(shipMarkers[s.getSlot()]);
           break;
         }
       }
@@ -139,7 +137,6 @@ public class Attacks : MonoBehaviour {
   // UPDATE the timers that indicate the ships' time left until arrival
   //*****************************************************************
   void updateTimers() {
-    // TODO: Fix time calculation, doesn't work
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (timersSpawned[i] == null || paths[i].getPath() == null)continue;
       // Update the position
@@ -147,10 +144,7 @@ public class Attacks : MonoBehaviour {
       timersSpawned[i].transform.position = new Vector3(shipPosition.x, shipPosition.y + 0.6f, 0.0f);
       // Update the content
       int timeLeft = (int)(paths[i].remainingDistance / paths[i].speed);
-      string formattedTimeLeft = timeLeft > 60 ?
-        Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] :
-        timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
-      timersSpawned[i].transform.GetChild(0).GetComponent<Text>().text = formattedTimeLeft;
+      timersSpawned[i].transform.GetChild(0).GetComponent<Text>().text = controller.getUI().formatTime(timeLeft);
     }
   }
 
@@ -162,9 +156,10 @@ public class Attacks : MonoBehaviour {
       if (paths[i] != null && paths[i].reachedEndOfPath && !destinationReached[i]) {
         // Do this when a ship destination is reached
         string destinationName = controller.getUser().getVillage().getShip(i).getCurrentJourney().getDestinationName();
-        addShipMarker(GameObject.Find(destinationName).transform, i);
+        Transform destination = GameObject.Find(destinationName).transform;
+        addShipMarker(destination, i);
         Ship ship = controller.getUser().getVillage().getShip(i);
-        ship.finishJourney(GameObject.Find(destinationName).transform.position);
+        ship.finishJourney(destination.position);
         destinationReached[i] = true;
         // Generate attack outcome
         generateAttackOutcome(ship, destinationName);
@@ -179,20 +174,29 @@ public class Attacks : MonoBehaviour {
   }
 
   //*****************************************************************
-  // TODO: Needs refinement, this just generates a general attack outcome
+  // Generate the outcome of an attack
   //*****************************************************************
-  async void generateAttackOutcome(Ship ship, string enemyName) {
+  void generateAttackOutcome(Ship ship, string enemyName) {
     int userStrength = 150 * ship.getLevel();
-    int enemyStrength = 200;
+    // If the user is attacking an enemy hideout
+    if (enemyName.Split('_')[0] == "hideout") {
+      computeHideoutAttack(ship, userStrength, enemyName);
+    } else {
+      computeCityAttack(ship, userStrength, enemyName);
+    }
+  }
+
+  //*****************************************************************
+  // Compute the outcome of an attack to an enemy hideout
+  //*****************************************************************
+  async void computeHideoutAttack(Ship ship, int userStrength, string enemyName) {
+    bool userDataReceived = false;
     int[] enemyResources = new int[3];
     string outcomeMessage = "";
-    bool userDataReceived = false;
-    // Get enemy and user strengths
+    int enemyStrength = 200;
+
     API.GetUserData(
-      new List<string> {
-        "User",
-        "Village"
-      },
+      new List<string> { "User", "Village" },
       result => {
         if (result.Data.ContainsKey("User") && result.Data.ContainsKey("Village")) {
           User user = JsonConvert.DeserializeObject<User>(result.Data["User"].Value);
@@ -206,32 +210,50 @@ public class Attacks : MonoBehaviour {
           userDataReceived = true;
         }
       },
-      enemyName.Split('_')[2]
+      enemyName.Split('_')[1]
     );
     while (!userDataReceived) {
       await Task.Delay(10);
     }
-    if (enemyName.Split('_')[0] == "hideout") {
-      if (userStrength >= enemyStrength) { // If victory, compute the resources won
-        int[] resourcesWon = new int[3];
-        // TODO: deal with situations when the storage is full
-        for (int i = 0; i < 3; i++) {
-          resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
-          controller.getUser().increaseResource(i, resourcesWon[i]);
-        }
-        // TODO: Remove resources from enemy after an attack
-        outcomeMessage = String.Format(
-          Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
-      } else { // If loss, compute whether ship is lost
-        controller.getUser().getVillage().setShip(null, ship.getSlot());
-        outcomeMessage = Language.Field["ATTACK_DEFEAT"];
+    if (userStrength >= enemyStrength) { // If victory, compute the resources won
+      int[] resourcesWon = new int[3];
+      for (int i = 0; i < 3; i++) {
+        resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
+        controller.getUser().increaseResource(i, resourcesWon[i]);
       }
-    } else {
-      // TODO: Implement attack outcome for cities
-      Debug.Log("Attack outcomes for cities have not yet been implemented");
+      // TODO: Remove resources from enemy after an attack
+      outcomeMessage = String.Format(
+        Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
+    } else { // If loss, compute whether ship is lost
+      Destroy(shipMarkers[ship.getSlot()]);
+      controller.getUser().getVillage().setShip(null, ship.getSlot());
+      outcomeMessage = Language.Field["ATTACK_DEFEAT"];
     }
     // Show outcome message
-    Debug.Log(outcomeMessage);
+    ui.showPopupMessage(outcomeMessage);
+  }
+
+  //*****************************************************************
+  // Compute the outcome of an attack to a city
+  //*****************************************************************
+  void computeCityAttack(Ship ship, int userStrength, string cityName) {
+    City city = controller.getMap().getCities()[Int32.Parse(cityName.Split('_')[1])];
+    string outcomeMessage = "";
+    if (userStrength >= city.getLevel() * 100) { // User victory
+      int[] resourcesWon = new int[3];
+      for (int i = 0; i < 3; i++) {
+        resourcesWon[i] = (int)city.getResources()[i] / 5 * ship.getLevel();
+        controller.getUser().increaseResource(i, resourcesWon[i]);
+      }
+      // TODO: Remove resources from enemy after an attack
+      outcomeMessage = String.Format(
+        Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
+    } else { // User defeat
+      Destroy(shipMarkers[ship.getSlot()]);
+      controller.getUser().getVillage().setShip(null, ship.getSlot());
+      outcomeMessage = Language.Field["ATTACK_DEFEAT"];
+    }
+    // Show outcome message
     ui.showPopupMessage(outcomeMessage);
   }
 
@@ -290,10 +312,8 @@ public class Attacks : MonoBehaviour {
   Transform getNavigationTarget(int i) {
     if (selectedTarget == null) {
       Ship ship = controller.getUser().getVillage().getShip(i);
-      Debug.Log("TEST - DESTINATION NAME: " + ship.getCurrentJourney().getDestinationName());
       return GameObject.Find(ship.getCurrentJourney().getDestinationName()).transform;
     } else {
-      Debug.Log("TEST - SELECTED TARGET: " + selectedTarget);
       return GameObject.Find(selectedTarget).transform;
     }
   }
@@ -302,7 +322,6 @@ public class Attacks : MonoBehaviour {
   // START the navigation of a ship by setting the target
   //*****************************************************************
   void startNavigation(int ship) {
-    Debug.Log("TEST - SHIP NO: " + ship);
     destinations[ship].target = getNavigationTarget(ship);
     destinationReached[ship] = false;
   }
@@ -311,13 +330,10 @@ public class Attacks : MonoBehaviour {
   // SET which ship is going to attack and start the navigation
   //*****************************************************************
   public void spawnShip(int shipNumber) {
-    Debug.Log("TEST - SHIP NO: " + shipNumber);
     Ship ship = controller.getUser().getVillage().getShip(shipNumber);
-    Debug.Log("TEST - SHIP LEVEL: " + ship.getLevel());
     Vector3 currentShipPosition = ship.getCurrentPosition();
     // Create ShipJourney object and add it to the ship
     if (selectedTarget != null) {
-      Debug.Log("TEST - SELECTED TARGET: " + selectedTarget);
       if (getNavigationTarget(shipNumber).position == currentShipPosition) {
         return;
       }
@@ -332,7 +348,6 @@ public class Attacks : MonoBehaviour {
     // Spawn that ship onto the map only if it's not been spawn already
     if (shipsSpawned[shipNumber] == null) {
       int prefabNumber = ship.getLevel() < 5 ? ship.getLevel() : 4;
-      Debug.Log("TEST - PREFAB NUMBER: " + prefabNumber);
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
         (GameObject)Resources.Load("Prefabs/Ship" + prefabNumber, typeof(GameObject)),
         currentShipPosition,
@@ -349,6 +364,8 @@ public class Attacks : MonoBehaviour {
       );
       timersSpawned[shipNumber].transform.position = new Vector3(timerPosition.x, timerPosition.y + 0.6f, 0.0f);
       updateTimers();
+      // Remove ship marker
+      Destroy(shipMarkers[shipNumber]);
     }
     // The ship starts the navigation towards the destination specified by ShipJourney
     startNavigation(shipNumber);
@@ -359,7 +376,6 @@ public class Attacks : MonoBehaviour {
   // DRAW the ship navigation path on the scene
   //*****************************************************************
   async void showPath(int shipNumber) {
-    Debug.Log("TEST - SHIP NO: " + shipNumber);
     // Create a new LineRenderer, which is the object that takes care of drawing the path
     if (lineRenderers[shipNumber] != null) {
       Destroy(lineRenderers[shipNumber].gameObject);

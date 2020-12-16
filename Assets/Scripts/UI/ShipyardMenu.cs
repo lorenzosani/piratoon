@@ -74,7 +74,7 @@ public class ShipyardMenu : MonoBehaviour {
       int[] resOwned = controller.getUser().getResources();
       for (int j = 0; j < 3; j++) {
         Text textObj = slot.Find("Description").Find("Cost").Find(resourcesNames[j]).gameObject.GetComponent<Text>();
-        textObj.text = formatNumber(cost[j]);
+        textObj.text = controller.getUI().formatNumber(cost[j]);
         // Set price as red if user can't afford
         if (cost[0] > resOwned[0] || cost[1] > resOwned[1] || cost[2] > resOwned[2]) {
           textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
@@ -87,15 +87,6 @@ public class ShipyardMenu : MonoBehaviour {
     }
     shipyardMenuLoading.SetActive(false);
     shipyardMenuSlots.SetActive(true);
-  }
-
-  public string formatNumber(int number) {
-    string stringNumber = number.ToString();
-    if (number < 1000)return stringNumber;
-    if (number < 10000)return stringNumber[0] + (stringNumber[1] == '0' ? "" : "." + stringNumber[1]) + "K";
-    if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
-    if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
-    return stringNumber;
   }
 
   public Text getConstructionTimer(int slotNo) {

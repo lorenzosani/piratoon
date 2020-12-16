@@ -3928,6 +3928,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 80371819}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &448941758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5604,6 +5615,17 @@ MonoBehaviour:
       - m_Target: {fileID: 846293166}
         m_MethodName: spawnShip
         m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 80371819}
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7562,11 +7584,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd71848a99e07abda29c024fc2f0db7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shipsPrefabs:
-  - {fileID: 341994963171954876, guid: 02aed5f7946259c21b96d5cd8c49fc29, type: 3}
-  - {fileID: 2501509724669782433, guid: e381a64717f1b307b820648062d609f5, type: 3}
-  - {fileID: 201860344514155655, guid: 5c89019de375311e0afabb61d0491933, type: 3}
-  - {fileID: 6203366622585376883, guid: 92e7756227096764999c1c4b5d1e0649, type: 3}
   timerPrefab: {fileID: 8418068413407911646, guid: 504e6a35539eb81feb4d5eb116be7585,
     type: 3}
   lineRendererPrefab: {fileID: 5705463010423057507, guid: 8baeefe82df404f729cc66aa57678543,
@@ -8760,6 +8777,17 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 80371819}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

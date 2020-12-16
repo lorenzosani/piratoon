@@ -131,15 +131,6 @@ public class UI : MonoBehaviour {
     messagePopup.SetActive(true);
   }
 
-  public string formatNumber(int number) {
-    string stringNumber = number.ToString();
-    if (number < 1000)return stringNumber;
-    if (number < 10000)return stringNumber[0] + (stringNumber[1] == '0' ? "" : "." + stringNumber[1]) + "K";
-    if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
-    if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
-    return stringNumber;
-  }
-
   public void playSuccessSound() {
     messagePopup.GetComponent<AudioSource>().Play();
   }
@@ -290,5 +281,27 @@ public class UI : MonoBehaviour {
     info.Find("Condition").GetComponent<Text>().text = Language.Field["CONDITION"] + " " + ship.getCondition();
     // Show the dialog
     shipInfo.SetActive(true);
+  }
+
+  public string formatTime(int time) {
+    if (time <= 60)return time + Language.Field["SECONDS_FIRST_LETTER"];
+    if (time <= 3600) {
+      int minutes = (int)Math.Floor((double)time / 60);
+      int seconds = time % 60;
+      return minutes + Language.Field["MINUTES_FIRST_LETTER"] + " " + seconds + Language.Field["SECONDS_FIRST_LETTER"];
+    } else {
+      int hours = (int)Math.Floor((double)time / 3600);
+      int minutes = (time - hours * 3600) / 60;
+      return hours + Language.Field["HOURS_FIRST_LETTER"] + " " + minutes + Language.Field["MINUTES_FIRST_LETTER"];
+    }
+  }
+
+  public string formatNumber(int number) {
+    string stringNumber = number.ToString();
+    if (number < 1000)return stringNumber;
+    if (number < 10000)return stringNumber[0] + (stringNumber[1] == '0' ? "" : "." + stringNumber[1]) + "K";
+    if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
+    if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
+    return stringNumber;
   }
 }

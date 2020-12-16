@@ -10,6 +10,7 @@ WOODCUTTER = Taglialegna
 LEVEL = Livello
 LEVEL_UNLOCK = Sblocca al livello
 LEVEL_SHORT = Liv.
+HOURS_FIRST_LETTER = h
 MINUTES_FIRST_LETTER = m
 SECONDS_FIRST_LETTER = s
 DUPLICATE_BUILDING = C'è già un edificio in costruzione!\n\nPuoi costruirne solo uno per volta...
