@@ -170,13 +170,7 @@ public static class Mapmaking {
     PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
       GroupName = mapId
     }, result => {
-      PlayFabClientAPI.ExecuteCloudScript(new PlayFab.ClientModels.ExecuteCloudScriptRequest() {
-        FunctionName = "addCitiesToMap", FunctionParameter = new string[] {
-          result.Group.Id, citiesJson
-        }
-      }, r => {
-        Debug.Log(r.FunctionResult.ToString());
-      }, e => { Debug.Log(e); });
+      // TODO: Add cities to new group object
     }, error => { });
   }
 

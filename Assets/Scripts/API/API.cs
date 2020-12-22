@@ -296,12 +296,22 @@ public static class API {
   //*****************************************************************
   // SAVE the player's bounty, which is taken care separately (because of leaderboard)
   //*****************************************************************
-  public static void UpdateBounty(int value) {
+  static int timeToCallBounty = 0;
+  static int latestBountyValue = 0;
+  public async static void UpdateBounty(int value) {
+    // Debounce the API call
+    timeToCallBounty = 500;
+    latestBountyValue = value;
+    while (timeToCallBounty > 0) {
+      await Task.Delay(10);
+      timeToCallBounty = timeToCallBounty - 10;
+    }
+    // Make the api call
     if (IsRegistered() && controller.getUser().getUsername() != null) {
       PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest {
           Statistics = new List<StatisticUpdate> {
             new StatisticUpdate {
-              StatisticName = "bounty", Value = value
+              StatisticName = "bounty", Value = latestBountyValue
             }
           }
         },

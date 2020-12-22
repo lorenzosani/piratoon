@@ -61,12 +61,13 @@ public class Building {
   }
 
   public GameObject getPrefab() {
-    UnityEngine.Object[] allPrefabs = Resources.LoadAll("Prefabs/" + name, typeof(GameObject));
-    GameObject correctPrefab = (GameObject)Array.Find(allPrefabs, obj => obj.name == name + level.ToString());
-    if (correctPrefab == null) {
-      correctPrefab = (GameObject)(level == 0 ? allPrefabs[0] : allPrefabs[allPrefabs.Length - 1]);
+    UnityEngine.Object[] allPrefabs = Resources.LoadAll("Prefabs/" + name + "/", typeof(GameObject));
+    UnityEngine.Object correctPrefab = null;
+    for (int i = 0; i < allPrefabs.Length; i++) {
+      correctPrefab = allPrefabs[i];
+      if (allPrefabs[i].name == name + level.ToString())break;
     }
-    return correctPrefab;
+    return level == 0 ? (GameObject)allPrefabs[0] : (GameObject)correctPrefab;
   }
 
   public int getValue() {

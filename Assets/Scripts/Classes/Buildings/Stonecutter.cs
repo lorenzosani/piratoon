@@ -9,9 +9,9 @@ using UnityEngine;
 
 public class Stonecutter : Building {
   public Stonecutter() {
-    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Stonecutter";
+    prefab = (GameObject)getPrefab();
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 80;
     cost = new int[3] {

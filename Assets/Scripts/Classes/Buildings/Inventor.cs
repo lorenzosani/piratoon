@@ -11,9 +11,9 @@ using UnityEngine;
 
 public class Inventor : Building {
   public Inventor() {
-    prefab = (GameObject)getPrefab();
     level = 0;
     name = "Inventor";
+    prefab = (GameObject)getPrefab();
     position = new float[3] { prefab.transform.position.x, prefab.transform.position.y, prefab.transform.position.z };
     value = 480;
     cost = new int[3] {

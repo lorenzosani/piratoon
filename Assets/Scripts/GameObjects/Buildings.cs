@@ -65,12 +65,13 @@ public class Buildings : MonoBehaviour {
         headquarter = b;
       }
     }
+    if (building == null)newBuilding = true;
     if (buildingName != "Headquarter") {
       if (checkHeadquarter && headquarter == null) {
         ui.showPopupMessage(Language.Field["HEADQUARTERS_FIRST"]);
         return;
       }
-      if (checkHeadquarter && !newBuilding && headquarter != null && headquarter.getLevel() <= building.getLevel()) {
+      if (checkHeadquarter && !newBuilding && headquarter != null && building != null && headquarter.getLevel() <= building.getLevel()) {
         ui.showPopupMessage(Language.Field["UPGRADE_HEADQUARTERS"]);
         newBuilding = true;
         return;
@@ -196,11 +197,6 @@ public class Buildings : MonoBehaviour {
     // Reset global variables
     currentlyBuilding = null;
     newBuilding = true;
-  }
-
-  //This fetches the prefab of the building to be shown
-  GameObject getPrefab(string buildingName) {
-    return (GameObject)Resources.Load("Prefabs/" + new CultureInfo("en-US", false).TextInfo.ToTitleCase(buildingName), typeof(GameObject));
   }
 
   //This starts the construction of a building
