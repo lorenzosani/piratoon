@@ -378,7 +378,7 @@ public class Attacks : MonoBehaviour {
     }
     // Spawn that ship onto the map only if it's not been spawn already
     if (shipsSpawned[shipNumber] == null) {
-      int prefabNumber = ship.getLevel() < 5 ? ship.getLevel() : 4;
+      int prefabNumber = ship.getLevel() < 7 ? ship.getLevel() : 6;
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
         (GameObject)Resources.Load("Prefabs/Ship" + prefabNumber, typeof(GameObject)),
         currentShipPosition,

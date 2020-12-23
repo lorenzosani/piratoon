@@ -58,11 +58,11 @@ public class ShipyardMenu : MonoBehaviour {
         slot.Find("Description").Find("Title").GetComponent<Text>().text =
           Language.Field["UPGRADE_BUILDING"] + " " + (i * 4).ToString();
         slot.Find("Description").Find("Button").gameObject.SetActive(false);
-        slot.Find("Description").Find("Resources").gameObject.SetActive(false);
+        slot.Find("Description").Find("Cost").gameObject.SetActive(false);
       } else {
         slot.Find("Image").GetComponent<Image>().sprite = (ships[i] == null ?
           shipSprites[1] :
-          shipSprites[ships[i].getLevel() < 5 ? ships[i].getLevel() : 4]);
+          shipSprites[ships[i].getLevel() < 7 ? ships[i].getLevel() : 6]);
         slot.Find("Description").Find("Title").GetComponent<Text>().text = ships[i] == null ?
           Language.Field["NEW_SHIP"] :
           ships[i].getName();

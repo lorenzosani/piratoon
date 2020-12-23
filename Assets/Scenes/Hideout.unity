@@ -6841,6 +6841,8 @@ MonoBehaviour:
   - {fileID: 2501509724669782433, guid: e381a64717f1b307b820648062d609f5, type: 3}
   - {fileID: 201860344514155655, guid: 5c89019de375311e0afabb61d0491933, type: 3}
   - {fileID: 6203366622585376883, guid: 92e7756227096764999c1c4b5d1e0649, type: 3}
+  - {fileID: 6203366622585376883, guid: af8acfa60ac84ce179319f7851f9371c, type: 3}
+  - {fileID: 6203366622585376883, guid: e4fe753df49e111efacd71f76a0ba100, type: 3}
 --- !u!1 &444012195
 GameObject:
   m_ObjectHideFlags: 0
@@ -12880,7 +12882,7 @@ MonoBehaviour:
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 3rd Ship
@@ -18131,7 +18133,7 @@ MonoBehaviour:
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 1st Ship
@@ -22099,7 +22101,7 @@ MonoBehaviour:
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 2nd Ship
@@ -29409,6 +29411,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9b0e0c56f5124047bacd1f44da89d6f0, type: 3}
   - {fileID: 21300000, guid: 7a8cfc14e6b2c533e977f050a63ac932, type: 3}
   - {fileID: 21300000, guid: e4dd92c1ef28cfec8bba530b729c4767, type: 3}
+  - {fileID: 21300000, guid: b27bfb13b32f3561ebf2644b1fd5ebd7, type: 3}
+  - {fileID: 21300000, guid: b5dc39219a8c302bfa3dbf0cf76b6934, type: 3}
 --- !u!1 &1918713050
 GameObject:
   m_ObjectHideFlags: 0

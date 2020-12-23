@@ -164,7 +164,7 @@ public class Ships : MonoBehaviour {
 
   // Return the correct image of the ship, based on the level
   GameObject getShipPrefab(int level) {
-    return level > 4 ? shipPrefabs[3] : shipPrefabs[level - 1];
+    return level > 6 ? shipPrefabs[5] : shipPrefabs[level - 1];
   }
 
   //This checks wether the suer can afford to buy a building; if yes, pay the price
