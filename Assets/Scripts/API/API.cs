@@ -186,8 +186,11 @@ public static class API {
           UpdateBounty(controller.getUser().getBounty());
         } else {
           if (result.Data["User"].Value != "") {
-            SetUserData(keys.ToArray());
-            controller.getUI().Invoke("hideLoadingScreen", 0.5f);
+            SetUserData(new string[] {
+              "User",
+              "Village"
+            });
+            controller.getUI().hideLoadingScreen();
           } else {
             Debug.Log("API Error: fetched data is null.");
           }
@@ -197,7 +200,10 @@ public static class API {
       // Set default data for a new user
       User user = new User(Guid.NewGuid().ToString(), new Village(0));
       controller.setUser(user);
-      SetUserData(keys.ToArray());
+      SetUserData(new string[] {
+        "User",
+        "Village"
+      });
       controller.getUI().Invoke("hideLoadingScreen", 0.5f);
     }
   }
@@ -279,18 +285,52 @@ public static class API {
           },
           EscapeObject = true
       }, r => {
+        // Get the players' and cities' information
         MapUser[] players = JsonConvert.DeserializeObject<MapUser[]>(r.Objects["players"].EscapedDataObject);
-        City[] cities = null;
-        if (r.Objects.Keys.Contains("cities")) {
-          cities = JsonConvert.DeserializeObject<City[]>(r.Objects["cities"].EscapedDataObject);
-        } else {
-          Map map = new Map(mapId, players);
-          Mapmaking.AddCitiesToMap(mapId, map.getCities());
-          cities = map.getCities();
-        }
+        City[] cities = new Map(mapId, players).getCities();
+        // Format all the information
+        if (r.Objects.Keys.Contains("cities0")) {
+          string allCities = (r.Objects["cities0"].EscapedDataObject + r.Objects["cities1"].EscapedDataObject).Trim(new char[] { '"', ' ' });
+          string[] citiesArray = allCities.Split(' ');
+          for (int i = 0; i < citiesArray.Length; i++) {
+            // Cities' info in the format [Owner]:[Resource1],[Resource2],[Resource3]
+            cities[i].setOwner(citiesArray[i].Split(':')[0]);
+            string[] resources = citiesArray[i].Split(':')[1].Split(',');
+            cities[i].setResources(new int[3] {
+              Int32.Parse(resources[0]), Int32.Parse(resources[1]), Int32.Parse(resources[2])
+            });
+          }
+        } else UpdateCities(mapId, cities);
+        // Save the information in the controller
         controller.setMap(new Map(mapId, players, cities));
       }, e => OnPlayFabError(e));
     }, error => OnPlayFabError(error));
+  }
+
+  //*****************************************************************
+  // UPDATE information about cities on a map
+  //*****************************************************************
+  public static void UpdateCities(string mapId, City[] cities) {
+    string citiesResources0 = "";
+    string citiesResources1 = "";
+    for (int i = 0; i < cities.Length; i++) {
+      if (i < 50) {
+        citiesResources0 = citiesResources0 + cities[i].getOwner() + ":" + string.Join(",", cities[i].getResources()) + " ";
+      } else {
+        citiesResources1 = citiesResources1 + cities[i].getOwner() + ":" + string.Join(",", cities[i].getResources()) + " ";
+      }
+    }
+    PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
+      GroupName = mapId
+    }, result => {
+      PlayFabClientAPI.ExecuteCloudScript(new PlayFab.ClientModels.ExecuteCloudScriptRequest() {
+        FunctionName = "addCitiesToMap", FunctionParameter = new string[] {
+          result.Group.Id, citiesResources0, citiesResources1
+        }
+      }, r => {
+        Debug.Log(r.FunctionResult.ToString());
+      }, error => { Debug.Log(error); });
+    }, e => API.OnPlayFabError(e));
   }
 
   //*****************************************************************

@@ -18,12 +18,15 @@ public class City {
   protected int[] hourlyProductionWeights;
   [JsonProperty]
   protected int[] resources;
+  [JsonProperty]
+  protected string owner;
 
   public City(string _name) {
     name = _name;
     level = randomLevel();
     hourlyProductionWeights = generateHourlyProductionWeights();
     resources = generateNewResources();
+    owner = "";
   }
 
   public string getName() {
@@ -76,5 +79,17 @@ public class City {
 
   public int[] getResources() {
     return resources;
+  }
+
+  public void setResources(int[] r) {
+    resources = r;
+  }
+
+  public void setOwner(string o) {
+    owner = o;
+  }
+
+  public string getOwner() {
+    return owner;
   }
 }

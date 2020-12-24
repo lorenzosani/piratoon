@@ -40,6 +40,9 @@ public class Building {
 
   public void setLevel(int l) {
     level = l;
+    API.SetUserData(new string[] {
+      "Buildings"
+    });
   }
 
   public int getLevel() {
@@ -111,6 +114,9 @@ public class Building {
 
   public void setBuilt(bool v) {
     built = v;
+    API.SetUserData(new string[] {
+      "Buildings"
+    });
   }
 
   public bool isBuilt() {

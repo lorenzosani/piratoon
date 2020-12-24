@@ -206,11 +206,6 @@ public class Buildings : MonoBehaviour {
     loadingBar.transform.position = b.getPosition();
     loadingBar.SetActive(true);
     playBuildingSound();
-    API.SetUserData(new string[] {
-      "Buildings",
-      "User",
-      "Village"
-    });
   }
 
   //This instantiates the building on the scene and implements its functionality

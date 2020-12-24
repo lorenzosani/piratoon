@@ -160,21 +160,6 @@ public static class Mapmaking {
   }
 
   //*****************************************************************
-  // ADD the information about cities to a map that doesn't have it
-  //*****************************************************************
-  public static void AddCitiesToMap(string mapId, City[] cities) {
-    string citiesJson = JsonConvert.SerializeObject(cities,
-      new JsonSerializerSettings {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-      });
-    PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
-      GroupName = mapId
-    }, result => {
-      // TODO: Add cities to new group object
-    }, error => { });
-  }
-
-  //*****************************************************************
   // SET the title-wide data indicating the next available map and position on that map
   //*****************************************************************
   static void UpdateTitleData(string mapId, int position, bool newMap) {
