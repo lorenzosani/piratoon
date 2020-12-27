@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pathfinding;
+using PlayFab;
+using PlayFab.AdminModels;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -198,13 +200,15 @@ public class Attacks : MonoBehaviour {
     int[] enemyResources = new int[3];
     string outcomeMessage = "";
     int enemyStrength = 200;
-
+    User user = null;
+    Village village = null;
+    // Get information about the enemy
     API.GetUserData(
       new List<string> { "User", "Village" },
       result => {
         if (result.Data.ContainsKey("User") && result.Data.ContainsKey("Village")) {
-          User user = JsonConvert.DeserializeObject<User>(result.Data["User"].Value);
-          Village village = JsonConvert.DeserializeObject<Village>(result.Data["Village"].Value);
+          user = JsonConvert.DeserializeObject<User>(result.Data["User"].Value);
+          village = JsonConvert.DeserializeObject<Village>(result.Data["Village"].Value);
           user.setVillage(village);
           enemyStrength = village.getStrength();
           enemyResources = user.getResources();
@@ -214,21 +218,37 @@ public class Attacks : MonoBehaviour {
           userDataReceived = true;
         }
       },
-      enemyName.Split('_')[1]
+      enemyName.Split('_')[2]
     );
+    // Wait until that infromation is received
     while (!userDataReceived) {
       await Task.Delay(10);
     }
-    if (getRandomOutcome(userStrength, enemyStrength)) { // If victory, compute the resources won
+    // If victory, compute the resources won
+    if (getRandomOutcome(userStrength, enemyStrength)) {
       int[] resourcesWon = new int[3];
       for (int i = 0; i < 3; i++) {
         resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
         controller.getUser().increaseResource(i, resourcesWon[i]);
       }
-      // TODO: Remove resources from enemy after an attack
       outcomeMessage = String.Format(
         Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
-    } else { // If loss, compute whether ship is lost
+      // Update the resources of the enemy after the attack
+      user.setResources(enemyResources.Select((elem, index) => elem - resourcesWon[index]).ToArray());
+      PlayFabAdminAPI.UpdateUserData(new UpdateUserDataRequest() {
+        PlayFabId = enemyName.Split('_')[2], Data = new Dictionary<string, string>() {
+          {
+            "User",
+            JsonConvert.SerializeObject(user, new JsonSerializerSettings {
+              ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            })
+          }
+        }, Permission = UserDataPermission.Public
+      }, result => {
+        Debug.Log("Enemy data updated successfully.");
+      }, e => API.OnPlayFabError(e));
+    } else {
+      // If loss, compute whether ship is lost
       Destroy(shipMarkers[ship.getSlot()]);
       controller.getUser().getVillage().setShip(null, ship.getSlot());
       outcomeMessage = Language.Field["ATTACK_DEFEAT"];

@@ -264,6 +264,8 @@ public static class API {
   //*****************************************************************
   public static void GetUserData(List<string> keys, Action<GetUserDataResult> callback, string userId = null) {
     // Fetch user data
+    Debug.Log("ENEMY ID: " + userId);
+    Debug.Log("MY ID: " + playFabId);
     PlayFabClientAPI.GetUserData(new GetUserDataRequest() {
       PlayFabId = userId ?? playFabId, Keys = keys
     }, result => {
