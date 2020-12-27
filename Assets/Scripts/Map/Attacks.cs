@@ -7,6 +7,7 @@ using Pathfinding;
 using PlayFab;
 using PlayFab.AdminModels;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Attacks : MonoBehaviour {
@@ -78,7 +79,8 @@ public class Attacks : MonoBehaviour {
     if (shipsOwned.Count(s => s != null) > 1) {
       ui.showHideoutPopup(false);
       ui.showShipPicker(shipsOwned, true);
-    } else { // Otherwise just set the only ship as the attacking ship
+    } else {
+      // Otherwise just set the only ship as the attacking ship
       foreach (Ship s in shipsOwned) {
         if (s != null) {
           ui.showHideoutPopup(false);
@@ -168,7 +170,7 @@ public class Attacks : MonoBehaviour {
         ship.finishJourney(destination.position);
         destinationReached[i] = true;
         // Generate attack outcome
-        generateAttackOutcome(ship, destinationName);
+        if (destinationName.Split('_')[2] != API.playFabId)generateAttackOutcome(ship, destinationName);
         // Hide the ship on the map and the timer
         Destroy(shipsSpawned[i]);
         Destroy(paths[i]);
@@ -314,14 +316,18 @@ public class Attacks : MonoBehaviour {
   void onHideoutClick(Vector3 position) {
     Vector2 position2d = new Vector2(position.x, position.y);
     RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
+    // Return if the click is on the UI
+    if (EventSystem.current.IsPointerOverGameObject())return;
     if (raycastHit) {
       string hideoutName = raycastHit.collider.name;
       // Check if the click is on a hideout
       if (hideoutName.Split('_')[0] == "hideout") {
-        if (hideoutName.Split('_')[2] == API.playFabId) { // If the hideout is the player's one, open it
-          mapController.close();
-        } else { // Otherwise show information about it
-          selectedTarget = hideoutName;
+        selectedTarget = hideoutName;
+        if (hideoutName.Split('_')[2] == API.playFabId) {
+          // Do this, if the hideout is the own player's one
+          ui.showOwnHideoutPopup();
+        } else {
+          // Otherwise show information about it
           ui.showHideoutPopup();
           API.GetUserData(
             new List<string> {

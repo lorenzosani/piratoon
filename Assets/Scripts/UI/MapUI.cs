@@ -22,6 +22,9 @@ public class MapUI : MonoBehaviour {
   public Text hideoutStrengthTitle;
   public Text attackButton;
 
+  [Header("Player's own Hideout popup")]
+  public GameObject ownHideoutPopup;
+
   [Header("City popup")]
   public GameObject cityPopup;
   public GameObject cityPopupInfo;
@@ -138,5 +141,9 @@ public class MapUI : MonoBehaviour {
     Text messageText = messagePopup.GetComponentInChildren(typeof(Text), true)as Text;
     messageText.text = message;
     messagePopup.SetActive(true);
+  }
+
+  public void showOwnHideoutPopup(bool show = true) {
+    ownHideoutPopup.SetActive(show);
   }
 }
