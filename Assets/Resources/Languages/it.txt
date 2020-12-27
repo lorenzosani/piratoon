@@ -67,3 +67,7 @@ RES = Risorse
 PROD = Produzione oraria
 CITY_LVL = Livello
 NO_SHIPS = Ti serve una nave per poter attaccare! Costruiscila al tuo Cantiere Navale
+YOUR_H = Il tuo Covo
+NAVIGATE = Naviga
+SHOW = Apri
+SHIP_PICK = Scegli una nave

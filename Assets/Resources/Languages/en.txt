@@ -67,3 +67,7 @@ RES = Resources
 PROD = Hourly production
 CITY_LVL = City Level
 NO_SHIPS = Hmm you need a ship first! Go to your Shipyard building to get one
+YOUR_H = Your Hideout
+NAVIGATE = Navigate
+SHOW = Show
+SHIP_PICK = Pickka ship

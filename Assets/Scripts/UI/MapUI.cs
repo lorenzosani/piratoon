@@ -24,6 +24,9 @@ public class MapUI : MonoBehaviour {
 
   [Header("Player's own Hideout popup")]
   public GameObject ownHideoutPopup;
+  public Text ownHideoutTitle;
+  public Text navigateButton;
+  public Text showButton;
 
   [Header("City popup")]
   public GameObject cityPopup;
@@ -46,6 +49,7 @@ public class MapUI : MonoBehaviour {
 
   [Header("Ship Picker Menu")]
   public GameObject shipPickerDialog;
+  public Text shipPickerTitle;
   public Sprite[] shipSprites;
 
   void Start() {
@@ -55,6 +59,10 @@ public class MapUI : MonoBehaviour {
     cityProductionTitle.text = Language.Field["PROD"];
     cityResourcesTitle.text = Language.Field["RES"];
     attackButton.text = Language.Field["ATTACK_VERB"];
+    ownHideoutTitle.text = Language.Field["YOUR_H"];
+    navigateButton.text = Language.Field["NAVIGATE"].ToUpper();
+    showButton.text = Language.Field["SHOW"].ToUpper();
+    shipPickerTitle.text = Language.Field["SHIP_PICK"];
   }
 
   public void showLoadingScreen(bool show = true) {
@@ -129,11 +137,13 @@ public class MapUI : MonoBehaviour {
         // Hide attack button on empty slots
         if (ships[i] == null) {
           slot.Find("Description").Find("Button").gameObject.SetActive(false);
+        } else {
+          Transform btnText = slot.Find("Description").Find("Button").Find("Text");
+          btnText.GetComponent<Text>().text = Language.Field["ATTACK_VERB"];
         }
         i++;
       }
     }
-    // TODO: Add internationalisation to ship picker
     shipPickerDialog.SetActive(show);
   }
 
