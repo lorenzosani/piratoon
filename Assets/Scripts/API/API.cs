@@ -239,7 +239,7 @@ public static class API {
       }
     };
     foreach (string key in keys) {
-      if (data.ContainsKey(key)) {
+      if (data.ContainsKey(key) && data[key].Length > 3) {
         request[key] = data[key];
       }
     }

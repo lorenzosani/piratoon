@@ -54,6 +54,9 @@ public class ShipJourney {
       pathArr[i, 2] = p[i].z;
     }
     path = pathArr;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public List<Vector3> getPath() {
@@ -68,6 +71,9 @@ public class ShipJourney {
 
   public void setDuration(int d) {
     duration = d;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public int getDuration() {
@@ -80,6 +86,9 @@ public class ShipJourney {
 
   public void setDestinationName(string d) {
     destinationName = d;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public int getShipConditionCost() {
