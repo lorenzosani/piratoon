@@ -16,11 +16,15 @@ public class FloatingObject {
   protected DateTime time; // The time when this object appears and is collectable
   [JsonProperty]
   protected float[] position; // The position in the hideout where this appears
+  [JsonProperty]
+  protected int positionId; // Each position has an id, to check that there are not two objs at the same pos
 
-  public FloatingObject(int _id, DateTime _time, Vector3 _position) {
+  public FloatingObject(int _id, DateTime _time, int _posId) {
     id = _id;
     time = _time;
-    position = new float[3] { _position.x, _position.y, _position.z };
+    positionId = _posId;
+    Vector3 posVector = FloatingObjectsPositions.get(positionId);
+    position = new float[3] { posVector.x, posVector.y, posVector.z };
   }
 
   public int getId() {
@@ -33,5 +37,9 @@ public class FloatingObject {
 
   public Vector3 getPosition() {
     return new Vector3(position[0], position[1], position[2]);
+  }
+
+  public int getPositionId() {
+    return positionId;
   }
 }

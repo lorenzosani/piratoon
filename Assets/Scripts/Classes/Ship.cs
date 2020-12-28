@@ -116,11 +116,8 @@ public class Ship {
       // This returns the updated position as the ship navigates
       // First, it gets the current percentage of the path already went through (in seconds)
       int timeNavigating = (int)(DateTime.Now - currentJourney.getStartTime()).TotalSeconds;
-      Debug.Log("Time navigating: " + timeNavigating);
       int totalDuration = currentJourney.getDuration();
-      Debug.Log("Total duration: " + totalDuration);
       int percentageNavigated = (int)timeNavigating * 100 / totalDuration;
-      Debug.Log("Percentage navigated: " + percentageNavigated);
       // Then, it checks on the actual path where that percentage corresponds
       List<Vector3> path = currentJourney.getPath();
       // Compute path length

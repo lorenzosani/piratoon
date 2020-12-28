@@ -125,11 +125,9 @@ public class Village {
       TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(maxMinutes)));
       // Check if other objects have already this position
       int randomPos = rnd.Next(23);
-      Vector3[] positionsUsed = objects.Select(o => o != null ? o.getPosition() : Vector3.zero).ToArray();
-      while (positionsUsed.Contains(FloatingObjectsPositions.get(randomPos))) {
-        randomPos = rnd.Next(23);
-      }
-      FloatingObject obj = new FloatingObject(i, DateTime.Now + time, FloatingObjectsPositions.get(randomPos));
+      int[] positionsUsed = objects.Select(o => o != null ? o.getPositionId() : -1).ToArray();
+      do { randomPos = rnd.Next(23); } while (positionsUsed.Contains(randomPos));
+      FloatingObject obj = new FloatingObject(i, DateTime.Now + time, randomPos);
       objects[i] = obj;
     }
     return objects;

@@ -85,11 +85,9 @@ public class FloatingObjects : MonoBehaviour {
     TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(maxMinutes)));
     // Check if other objects have already this position
     int randomPos = rnd.Next(23);
-    Vector3[] positionsUsed = controller.getUser().getVillage().getFloatingObjects().Select(o => o.getPosition()).ToArray();
-    while (positionsUsed.Contains(FloatingObjectsPositions.get(randomPos))) {
-      randomPos = rnd.Next(23);
-    }
-    FloatingObject newObject = new FloatingObject(id, DateTime.Now + time, FloatingObjectsPositions.get(rnd.Next(23)));
+    int[] positionsUsed = controller.getUser().getVillage().getFloatingObjects().Select(o => o.getPositionId()).ToArray();
+    do { randomPos = rnd.Next(23); } while (positionsUsed.Contains(randomPos));
+    FloatingObject newObject = new FloatingObject(id, DateTime.Now + time, rnd.Next(23));
     // Add the new object to the queue
     controller.getUser().getVillage().replaceFloatingObject(id, newObject);
   }
