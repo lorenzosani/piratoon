@@ -187,12 +187,14 @@ public class Buildings : MonoBehaviour {
 
   void finishBuilding(Building b) {
     loadingBar.SetActive(false);
-    b.setBuilt(true);
     b.increaseLevel();
     // Add building's value to user's bounty
     controller.getUser().addBounty(b.getValue());
     // Spawn the building on the scene
-    if (newBuilding)spawn(b);
+    if (newBuilding || !b.isBuilt()) {
+      spawn(b);
+    }
+    b.setBuilt(true);
     b.startFunctionality(controller);
     // Reset global variables
     currentlyBuilding = null;
