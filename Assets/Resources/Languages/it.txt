@@ -71,3 +71,4 @@ YOUR_H = Il tuo Covo
 NAVIGATE = Naviga
 SHOW = Apri
 SHIP_PICK = Scegli una nave
+SHIPS = Navi

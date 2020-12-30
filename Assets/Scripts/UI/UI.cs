@@ -21,7 +21,7 @@ public class UI : MonoBehaviour {
   public GameObject buttons;
   public Text buildingsButton;
   public Text mapButton;
-  public Text accountButton;
+  public Text shipsButton;
   public GameObject leaderboardButton;
 
   [Header("Message Popup")]
@@ -87,7 +87,7 @@ public class UI : MonoBehaviour {
     // Populate all texts in the device language
     buildingsButton.text = Language.Field["BUILDINGS"];
     mapButton.text = Language.Field["MAP"];
-    accountButton.text = Language.Field["ACCOUNT"];
+    shipsButton.text = Language.Field["SHIPS"];
     accountMenuTitle.text = Language.Field["ACCOUNT"];
     notRegisteredText.text = Language.Field["NOT_REGISTERED"];
     levelText.text = Language.Field["LEVEL"] + ":";
