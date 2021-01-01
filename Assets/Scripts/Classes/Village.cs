@@ -35,10 +35,6 @@ public class Village {
 
   public void addBuilding(Building building) {
     buildings.Add(building);
-    API.SetUserData(new string[] {
-      "Village",
-      "Buildings"
-    });
   }
 
   public List<Building> getBuildings() {
@@ -135,11 +131,5 @@ public class Village {
       objects[i] = obj;
     }
     return objects;
-  }
-
-  public int getWatchtowerLevel() {
-    Building watchtower = getBuildingInfo("Watchtower");
-    if (watchtower == null)return 0;
-    return watchtower.getLevel();
   }
 }
