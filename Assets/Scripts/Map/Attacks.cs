@@ -319,6 +319,9 @@ public class Attacks : MonoBehaviour {
     // Return if the click is on the UI
     if (EventSystem.current.IsPointerOverGameObject())return;
     if (raycastHit) {
+      // Clouds should block the click
+      // Debug.Log(raycastHit.collider.gameObject.layer);
+      // if (raycastHit.collider.gameObject.layer == 11)return;
       string hideoutName = raycastHit.collider.name;
       // Check if the click is on a hideout
       if (hideoutName.Split('_')[0] == "hideout") {
