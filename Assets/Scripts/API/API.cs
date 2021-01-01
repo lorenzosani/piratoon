@@ -140,7 +140,6 @@ public static class API {
   // LOGIN players that are not registered, using locally stored ids
   //*****************************************************************
   public static void NewPlayerLogin(string userId = null) {
-    Debug.Log("NEWPLAYERLOGIN");
     PlayFabClientAPI.LoginWithCustomID(new LoginWithCustomIDRequest {
       CustomId = userId ?? controller.getUser().getId(),
         CreateAccount = true
@@ -151,7 +150,6 @@ public static class API {
   // LOGIN SUCCESSFUL, this is called after
   //*****************************************************************
   static void OnLogin(LoginResult login) {
-    Debug.Log("ONLOGIN");
     // Store the user info
     controller.getUI().showLoadingScreen();
     playFabId = login.PlayFabId;
