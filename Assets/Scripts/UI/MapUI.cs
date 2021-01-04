@@ -4,6 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MapUI : MonoBehaviour {
+  ControllerScript controller;
+
+  [Header("Resources and Bounty")]
+  public GameObject hud;
+  public Text woodValue;
+  public Text stoneValue;
+  public Text goldValue;
+  public Text pearlValue;
 
   [Header("Loading and errors")]
   public GameObject loadingScreen;
@@ -53,6 +61,7 @@ public class MapUI : MonoBehaviour {
   public Sprite[] shipSprites;
 
   void Start() {
+    controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     hideoutLevelTitle.text = Language.Field["USER_LVL"];
     hideoutStrengthTitle.text = Language.Field["STRENGTH"];
     cityLevelTitle.text = Language.Field["CITY_LVL"];
@@ -63,6 +72,15 @@ public class MapUI : MonoBehaviour {
     navigateButton.text = Language.Field["NAVIGATE"].ToUpper();
     showButton.text = Language.Field["SHOW"].ToUpper();
     shipPickerTitle.text = Language.Field["SHIP_PICK"];
+  }
+
+  void Update() {
+    // Update resources on UI
+    int[] resources = controller.getUser().getResources();
+    woodValue.text = formatNumber(resources[0]);
+    stoneValue.text = formatNumber(resources[1]);
+    goldValue.text = formatNumber(resources[2]);
+    pearlValue.text = controller.getUser().getPearl().ToString();
   }
 
   public void showLoadingScreen(bool show = true) {

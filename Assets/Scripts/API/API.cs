@@ -244,7 +244,7 @@ public static class API {
       }
     }
     // Debounce the API call
-    timeToCall = 500;
+    timeToCall = 1000;
     while (timeToCall > 0) {
       await Task.Delay(10);
       timeToCall = timeToCall - 10;

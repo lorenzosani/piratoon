@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Bounty : MonoBehaviour {
@@ -17,7 +18,7 @@ public class Bounty : MonoBehaviour {
   public Slider bountyObject;
 
   void Start() {
-    controller = GetComponent<ControllerScript>();
+    controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     ui = controller.getUI();
     Invoke("CheckBounty", 1.0f);
   }
@@ -44,14 +45,14 @@ public class Bounty : MonoBehaviour {
       currentLevelEnd = getLevelMax(userLevel);
       currentLevelLength = userLevel * 100;
       controller.getUser().increaseLevel(userLevel);
-      if (previousLevel > 0) {
+      if (previousLevel > 0 && SceneManager.GetActiveScene().buildIndex == 0) {
         ui.showPopupMessage(Language.Field["BOUNTY_LEVELUP"] + " " + userLevel + "!");
         ui.playSuccessSound();
       }
     }
     bountyObject.maxValue = currentLevelLength;
     bountyObject.value = currentLevelLength - (currentLevelEnd - value);
-    bountyObject.transform.GetComponentInChildren<Text>().text = ui.formatNumber(value);
+    bountyObject.transform.GetComponentInChildren<Text>().text = formatNumber(value);
     previousBounty = value;
     previousLevel = controller.getUser().getLevel();
   }
@@ -68,5 +69,14 @@ public class Bounty : MonoBehaviour {
 
   int getLevelMax(int level) {
     return (int)((level + 1.0f) * (level / 2.0f) * 100.0f);
+  }
+
+  string formatNumber(int number) {
+    string stringNumber = number.ToString();
+    if (number < 1000)return stringNumber;
+    if (number < 10000)return stringNumber[0] + (stringNumber[1] == '0' ? "" : "." + stringNumber[1]) + "K";
+    if (number < 100000)return stringNumber[0].ToString() + stringNumber[1].ToString() + "K";
+    if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
+    return stringNumber;
   }
 }
