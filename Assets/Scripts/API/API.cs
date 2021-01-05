@@ -29,6 +29,8 @@ public static class API {
     spawner = s;
   }
 
+  static Debouncer debouncer = new Debouncer(600, () => updateUserData());
+
   //*****************************************************************
   // REGISTER a new user
   //*****************************************************************
@@ -212,8 +214,7 @@ public static class API {
   // SAVE user data on the server
   //*****************************************************************
   static Dictionary<string, string> request = new Dictionary<string, string>();
-  static int timeToCall = 0;
-  public async static void SetUserData(string[] keys) {
+  public static void SetUserData(string[] keys) {
     Dictionary<string, string> data = new Dictionary<string, string>() {
       {
       "Buildings",
@@ -243,19 +244,16 @@ public static class API {
         request[key] = data[key];
       }
     }
-    // Debounce the API call
-    timeToCall = 1000;
-    while (timeToCall > 0) {
-      await Task.Delay(10);
-      timeToCall = timeToCall - 10;
-    }
-    // Make the API call
-    if (request.Values.Count() == 0)return;
+    // Debounce API calls
+    debouncer.onChange();
+  }
+
+  static void updateUserData() {
+    Debug.Log("SENT API REQUEST");
     PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
       Data = request, Permission = UserDataPermission.Public
     }, result => {
       request = new Dictionary<string, string>();
-      Debug.Log("Server-side data updated successfully.");
     }, e => OnPlayFabError(e));
   }
 
