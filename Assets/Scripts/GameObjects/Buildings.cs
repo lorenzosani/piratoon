@@ -191,7 +191,7 @@ public class Buildings : MonoBehaviour {
     // Add building's value to user's bounty
     controller.getUser().addBounty(b.getValue());
     // Spawn the building on the scene
-    if (newBuilding || !b.isBuilt())spawn(b);
+    spawn(b);
     b.setBuilt(true);
     b.startFunctionality(controller);
     // Reset global variables
@@ -210,6 +210,8 @@ public class Buildings : MonoBehaviour {
 
   //This instantiates the building on the scene and implements its functionality
   void spawn(Building b) {
+    // Destroy existing building
+    Destroy(GameObject.Find(b.getName()));
     // Instantiate building on the scene
     GameObject buildingObj = (GameObject)Instantiate(b.getPrefab(), b.getPosition(), Quaternion.identity);
     // Set object properties

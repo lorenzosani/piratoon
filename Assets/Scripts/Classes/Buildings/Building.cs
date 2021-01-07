@@ -64,13 +64,10 @@ public class Building {
   }
 
   public GameObject getPrefab() {
-    UnityEngine.Object[] allPrefabs = Resources.LoadAll("Prefabs/" + name + "/", typeof(GameObject));
-    UnityEngine.Object correctPrefab = null;
-    for (int i = 0; i < allPrefabs.Length; i++) {
-      correctPrefab = allPrefabs[i];
-      if (allPrefabs[i].name == name + level.ToString())break;
-    }
-    return level == 0 ? (GameObject)allPrefabs[0] : (GameObject)correctPrefab;
+    GameObject buildingPrefab = (GameObject)Resources.Load("Prefabs/" + name, typeof(GameObject));
+    Sprite buildingImage = Resources.Load<Sprite>("Images/Hideout/Buildings/" + name + "/" + (level > 3 ? 3 : level).ToString());
+    buildingPrefab.GetComponent<SpriteRenderer>().sprite = buildingImage;
+    return buildingPrefab;
   }
 
   public int getValue() {

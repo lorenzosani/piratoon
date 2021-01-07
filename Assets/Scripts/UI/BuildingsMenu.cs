@@ -49,7 +49,7 @@ public class BuildingsMenu : MonoBehaviour {
       int level = !beenBuilt ? level = 1 : building.getLevel() + 1;
       int[] cost = !beenBuilt ? building.getBaseCost() : building.getCost();
       // Show info for the current building
-      populateBuilding(child, level, cost);
+      populateBuilding(child, level, cost, building.getName());
     }
   }
 
@@ -79,7 +79,7 @@ public class BuildingsMenu : MonoBehaviour {
     }
   }
 
-  void populateBuilding(Transform child, int level, int[] cost) {
+  void populateBuilding(Transform child, int level, int[] cost, string buildingName) {
     string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
     int[] resOwned = controller.getUser().getResources();
     bool canAfford = true;
@@ -102,6 +102,9 @@ public class BuildingsMenu : MonoBehaviour {
     }
     // Show level up icon
     if (level > 1)levelUpObject.SetActive(true);
+    // Set the correct image based on level
+    Sprite buildingImage = Resources.Load<Sprite>("Images/Hideout/Buildings/" + buildingName + "/" + (level > 3 ? 3 : level).ToString());
+    child.Find("Image").GetComponent<Image>().sprite = buildingImage;
   }
 
   void lockBuilding(Transform building, int level) {
