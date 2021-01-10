@@ -168,24 +168,26 @@ public static class API {
       GetUserData(keys, result => {
         // Check if data received is valid
         if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}") {
-          // If yes, de-serialize the data
+          // If yes, de-serialize and set the data objects
           User user = JsonConvert.DeserializeObject<User>((string)result.Data["User"].Value);
           Village village = JsonConvert.DeserializeObject<Village>((string)result.Data["Village"].Value);
-          List<Building> buildings = JsonConvert.DeserializeObject<List<Building>>((string)result.Data["Buildings"].Value);
-          // Populate the objects with the retrieved data
-          village.setBuildingsFromList(buildings);
           user.setVillage(village);
           controller.setUser(user);
-          // Download info about the map the user is in
-          if (controller.getUser().getMapId() != null && controller.getUser().getMapId() != "") {
-            GetMapData(controller.getUser().getMapId());
+          // If the user has built buildings, add them too
+          if (result.Data.ContainsKey("Buildings") && result.Data["Buildings"].Value != "{}" && result.Data["Buildings"].Value != "") {
+            List<Building> buildings = JsonConvert.DeserializeObject<List<Building>>((string)result.Data["Buildings"].Value);
+            village.setBuildingsFromList(buildings);
+            spawner.populateVillage(result.Data["Buildings"].Value);
           }
           // Show the village
-          spawner.populateVillage(result.Data["Buildings"].Value);
           spawner.populateFloatingObjects();
           spawner.populateShips();
           controller.getUI().onLogin();
           UpdateBounty(controller.getUser().getBounty());
+          // Download info about the map the user is in
+          if (controller.getUser().getMapId() != null && controller.getUser().getMapId() != "") {
+            GetMapData(controller.getUser().getMapId());
+          }
         } else {
           if (result.Data["User"].Value != "") {
             SetUserData(new string[] {
@@ -249,12 +251,14 @@ public static class API {
   }
 
   static void updateUserData() {
-    Debug.Log("SENT API REQUEST");
-    PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
-      Data = request, Permission = UserDataPermission.Public
-    }, result => {
-      request = new Dictionary<string, string>();
-    }, e => OnPlayFabError(e));
+    if (request.Count > 0) {
+      PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
+        Data = request, Permission = UserDataPermission.Public
+      }, result => {
+        Debug.Log("API UPDATE SUCCESSFUL");
+        request = new Dictionary<string, string>();
+      }, e => OnPlayFabError(e));
+    }
   }
 
   //*****************************************************************

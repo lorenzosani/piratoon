@@ -60,21 +60,18 @@ public class FloatingObjects : MonoBehaviour {
         5
       };
     }
-    // Give the collected resources to the user
+    // Check if the user has enough storage space, if so give him the resources
     int[] spaceLeft = controller.getUser().getStorageSpaceLeft();
+    bool giveResources = false;
     for (int i = 0; i < 3; i++) {
-      if (resources[i] > 0) {
-        if (spaceLeft[i] == 0) {
-          string[] resourceTypes = new string[3] {
-          Language.Field["WOOD"], Language.Field["ROCK"], Language.Field["GOLD"]
-          };
-          controller.getUI().showPopupMessage(
-            resourceTypes[i] + ": " + Language.Field["STORAGE_SPACE"]
-          );
-        } else {
-          controller.getUser().increaseResource(i, resources[i]);
-        }
+      if (resources[i] > 0 && spaceLeft[i] > 0) {
+        giveResources = true;
+        controller.getUser().increaseResource(i, resources[i]);
       }
+    }
+    // If not, show a popup message
+    if (!giveResources) {
+      controller.getUI().showPopupMessage(Language.Field["STORAGE_SPACE"]);
     }
     // Hide the collected object
     GameObject floatingObj = floatingGameObjects[id];
