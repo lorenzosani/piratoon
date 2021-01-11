@@ -217,10 +217,6 @@ public class Buildings : MonoBehaviour {
     // Set object properties
     buildingObj.name = b.getName();
     buildingObj.layer = 9;
-    // Add click listener to some types of buildings
-    if (b.getName() == "Shipyard") {
-      addClickListener(buildingObj, () => ui.showShipyardMenu());
-    }
   }
 
   // Add a click listener to a building and the function it calls
