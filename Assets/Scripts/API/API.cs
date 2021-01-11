@@ -189,14 +189,20 @@ public static class API {
             GetMapData(controller.getUser().getMapId());
           }
         } else {
-          if (result.Data["User"].Value != "") {
+          if (result.Data.ContainsKey("User") && result.Data["User"].Value != "") {
             SetUserData(new string[] {
               "User",
               "Village"
             });
             controller.getUI().hideLoadingScreen();
           } else {
-            Debug.Log("API Error: fetched data is null.");
+            User user = new User(Guid.NewGuid().ToString(), new Village(0));
+            controller.setUser(user);
+            SetUserData(new string[] {
+              "User",
+              "Village"
+            });
+            controller.getUI().Invoke("hideLoadingScreen", 0.5f);
           }
         }
       });

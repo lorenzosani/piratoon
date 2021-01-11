@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ShipyardMenu : MonoBehaviour {
   public Text shipyardMenuTitle;
-  public GameObject shipyardMenuLoading;
   public GameObject shipyardMenuSlots;
+  public GameObject noShipyard;
   public Sprite[] shipSprites;
 
   ControllerScript controller;
@@ -14,7 +14,7 @@ public class ShipyardMenu : MonoBehaviour {
 
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
-    shipyardMenuTitle.text = Language.Field["SHIPYARD"];
+    shipyardMenuTitle.text = Language.Field["SHIPS"];
   }
 
   void Update() {
@@ -25,8 +25,16 @@ public class ShipyardMenu : MonoBehaviour {
 
   public void populateShipyardMenu() {
     Ship[] ships = controller.getUser().getVillage().getShips();
+    Building shipyard = controller.getUser().getVillage().getBuildingInfo("Shipyard");
+    if (shipyard == null) {
+      noShipyard.transform.GetChild(0).GetComponent<Text>().text = Language.Field["NO_SHIPYARD"];
+      shipyardMenuSlots.SetActive(false);
+      noShipyard.SetActive(true);
+      return;
+    }
+
+    int shipyardLevel = shipyard.getLevel();
     string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
-    int shipyardLevel = controller.getUser().getVillage().getBuildingInfo("Shipyard").getLevel();
 
     // Check if any ship is currently being built
     foreach (Ship ship in ships) {
@@ -86,8 +94,6 @@ public class ShipyardMenu : MonoBehaviour {
       }
       i++;
     }
-    shipyardMenuLoading.SetActive(false);
-    shipyardMenuSlots.SetActive(true);
   }
 
   public Text getConstructionTimer(int slotNo) {
