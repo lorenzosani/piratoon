@@ -78,11 +78,9 @@ public static class Mapmaking {
     if (stopped)return;
 
     string cities = JsonConvert.SerializeObject(
-      controller.getMap().getCities(),
-      new JsonSerializerSettings {
+      new Map(mapId, new MapUser[0]).getCities(), new JsonSerializerSettings {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
       });
-
     if (newMap) {
       // Create a new group
       PlayFabGroupsAPI.CreateGroup(new CreateGroupRequest {
@@ -203,6 +201,7 @@ public static class Mapmaking {
   static void UpdateGameObjects(string mapId, int position) {
     controller.getUser().setMapId(mapId);
     controller.getUser().getVillage().setPosition(position);
+    API.GetMapData(mapId);
   }
 
   public static void Stop(bool val = true) {
