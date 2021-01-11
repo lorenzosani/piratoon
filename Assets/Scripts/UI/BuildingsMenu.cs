@@ -103,8 +103,13 @@ public class BuildingsMenu : MonoBehaviour {
     // Show level up icon
     if (level > 1)levelUpObject.SetActive(true);
     // Set the correct image based on level
-    Sprite buildingImage = Resources.Load<Sprite>("Images/Hideout/Buildings/" + buildingName + "/" + (level > 3 ? 3 : level).ToString());
-    child.Find("Image").GetComponent<Image>().sprite = buildingImage;
+    child.Find("Image").GetComponent<Image>().sprite = getBuildingImage(buildingName, level);
+  }
+
+  Sprite getBuildingImage(string name, int level) {
+    return Resources.Load<Sprite>(
+      "Images/Hideout/Buildings/" + name + "/" + (level > 3 ? 3 : level).ToString() + "_UI"
+    );
   }
 
   void lockBuilding(Transform building, int level) {

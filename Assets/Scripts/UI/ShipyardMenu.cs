@@ -32,10 +32,8 @@ public class ShipyardMenu : MonoBehaviour {
       noShipyard.SetActive(true);
       return;
     }
-
     int shipyardLevel = shipyard.getLevel();
     string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
-
     // Check if any ship is currently being built
     foreach (Ship ship in ships) {
       if (ship != null && ((int)(ship.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds) > 0) {
@@ -43,7 +41,6 @@ public class ShipyardMenu : MonoBehaviour {
         break;
       }
     }
-
     // Go through each slot in the menu
     float containerHeight = shipyardMenuSlots.GetComponent<RectTransform>().rect.height;
     float heightTaken = 0;
