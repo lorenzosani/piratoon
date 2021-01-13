@@ -20,6 +20,10 @@ public class City {
   protected int[] resources;
   [JsonProperty]
   protected string owner;
+  [JsonProperty]
+  protected DateTime cooldownEnd;
+  [JsonProperty]
+  protected DateTime lastCollected;
 
   public City(string _name) {
     name = _name;
@@ -27,6 +31,8 @@ public class City {
     hourlyProductionWeights = generateHourlyProductionWeights();
     resources = generateNewResources();
     owner = "";
+    cooldownEnd = DateTime.UtcNow;
+    lastCollected = DateTime.UtcNow;
   }
 
   public string getName() {
@@ -71,18 +77,31 @@ public class City {
 
   public int[] generateNewResources() {
     return new int[3] {
-      hourlyProductionWeights[0] * randomInt(name[0], 5) * 19 * level,
-        hourlyProductionWeights[0] * randomInt(name[1], 5) * 21 * level,
-        hourlyProductionWeights[0] * randomInt(name[2], 2) * 7 * level
+      hourlyProductionWeights[0] * randomInt(name[0], 5) * 3 * level,
+        hourlyProductionWeights[0] * randomInt(name[1], 5) * 4 * level,
+        hourlyProductionWeights[0] * randomInt(name[2], 2) * 2 * level
     };
   }
 
   public int[] getResources() {
-    return resources;
+    int[] totalResources = new int[3];
+    int[] resourcesProduced = getResourcesProducedSinceLastCollected();
+    for (int i = 0; i < 3; i++) {
+      totalResources[i] = resources[i] + resourcesProduced[i];
+      if (totalResources[i] > level * 10000)totalResources[i] = level * 10000;
+    }
+    return totalResources;
+  }
+
+  int[] getResourcesProducedSinceLastCollected() {
+    int[] hourlyProd = getHourlyProduction();
+    int hoursPassed = (System.DateTime.UtcNow - lastCollected).Hours;
+    return new int[3] { hourlyProd[0] * hoursPassed, hourlyProd[1] * hoursPassed, hourlyProd[2] * hoursPassed };
   }
 
   public void setResources(int[] r) {
     resources = r;
+    lastCollected = DateTime.UtcNow;
   }
 
   public void setOwner(string o) {
@@ -91,5 +110,13 @@ public class City {
 
   public string getOwner() {
     return owner;
+  }
+
+  public void setCooldownEnd(DateTime d) {
+    cooldownEnd = d;
+  }
+
+  public DateTime getCooldownEnd() {
+    return cooldownEnd;
   }
 }

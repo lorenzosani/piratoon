@@ -35,11 +35,29 @@ public class Map {
     return cities;
   }
 
+  public City getCity(int i) {
+    return cities[i];
+  }
+
   public City[] generateNewCities(int n) {
     City[] citiesArray = new City[n];
     for (int i = 0; i < n; i++) {
       citiesArray[i] = new City(CityNames.getCity(i));
     }
     return citiesArray;
+  }
+
+  public void setCityConquered(int cityNo, string owner) {
+    City city = cities[cityNo];
+    city.setOwner(owner);
+    city.setCooldownEnd(DateTime.UtcNow.AddHours(24));
+  }
+
+  public int[] getCitiesOwnedBy(string owner) {
+    List<int> citiesOwned = new List<int>();
+    for (int i = 0; i < cities.Length; i++) {
+      if (cities[i].getOwner() == owner)citiesOwned.Add(i);
+    }
+    return citiesOwned.ToArray();
   }
 }

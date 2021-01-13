@@ -60,6 +60,11 @@ public class MapUI : MonoBehaviour {
   public Text shipPickerTitle;
   public Sprite[] shipSprites;
 
+  [Header("Attack Options Popup")]
+  public GameObject attackOptionsPopup;
+  public Text plunderButton;
+  public Text conquerButton;
+
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     hideoutLevelTitle.text = Language.Field["USER_LVL"];
@@ -67,7 +72,7 @@ public class MapUI : MonoBehaviour {
     cityLevelTitle.text = Language.Field["CITY_LVL"];
     cityProductionTitle.text = Language.Field["PROD"];
     cityResourcesTitle.text = Language.Field["RES"];
-    attackButton.text = Language.Field["ATTACK_VERB"];
+    attackButton.text = Language.Field["ATTACK_VERB"].ToUpper();
     ownHideoutTitle.text = Language.Field["YOUR_H"];
     navigateButton.text = Language.Field["NAVIGATE"].ToUpper();
     showButton.text = Language.Field["SHOW"].ToUpper();
@@ -173,5 +178,14 @@ public class MapUI : MonoBehaviour {
 
   public void showOwnHideoutPopup(bool show = true) {
     ownHideoutPopup.SetActive(show);
+  }
+
+  public void showAttackOptions(string cityName) {
+    string message = Language.Field["CITY_REACHED"] + " " + cityName + "." + "\n";
+    string question = Language.Field["CHOICE"];
+    attackOptionsPopup.transform.Find("Text").GetComponent<Text>().text = message + question;
+    plunderButton.text = Language.Field["PLUNDER"].ToUpper();
+    conquerButton.text = Language.Field["CONQUER"].ToUpper();
+    attackOptionsPopup.SetActive(true);
   }
 }

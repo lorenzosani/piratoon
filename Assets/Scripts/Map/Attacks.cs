@@ -151,7 +151,7 @@ public class Attacks : MonoBehaviour {
       Vector3 shipPosition = shipsSpawned[i].transform.position;
       timersSpawned[i].transform.position = new Vector3(shipPosition.x, shipPosition.y + 0.6f, 0.0f);
       // Update the content
-      int timeLeft = (int)(paths[i].remainingDistance / paths[i].speed);
+      int timeLeft = (int)(paths[i].remainingDistance / paths[i].maxSpeed);
       timersSpawned[i].transform.GetChild(0).GetComponent<Text>().text = controller.getUI().formatTime(timeLeft);
     }
   }
@@ -159,18 +159,27 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   // CHECK if any ship has reached its destination
   //*****************************************************************
+  Ship latestShip = null;
+  string latestDestination = "";
   void checkIfDestinationReached() {
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (paths[i] != null && paths[i].reachedEndOfPath && !destinationReached[i]) {
         // Do this when a ship destination is reached
-        string destinationName = controller.getUser().getVillage().getShip(i).getCurrentJourney().getDestinationName();
-        Transform destination = GameObject.Find(destinationName).transform;
+        latestDestination = controller.getUser().getVillage().getShip(i).getCurrentJourney().getDestinationName();
+        Transform destination = GameObject.Find(latestDestination).transform;
         addShipMarker(destination, i);
-        Ship ship = controller.getUser().getVillage().getShip(i);
-        ship.finishJourney(destination.position);
+        latestShip = controller.getUser().getVillage().getShip(i);
+        latestShip.finishJourney(destination.position);
         destinationReached[i] = true;
+        //// TODO: Need to check for a case where two ships arrive almost simultaneously, 
+        //// as it stands the second one would overwrite the first
         // Generate attack outcome
-        if (destinationName.Split('_')[2] != API.playFabId)generateAttackOutcome(ship, destinationName);
+        if (latestDestination.Split('_')[0] == "hideout") {
+          if (latestDestination.Split('_')[2] != API.playFabId)generatePlunderOutcome();
+        } else if (latestDestination.Split('_')[0] == "city") {
+          int cityNo = Int32.Parse(latestDestination.Split('_')[1]);
+          ui.showAttackOptions(CityNames.getCity(cityNo));
+        }
         // Hide the ship on the map and the timer
         Destroy(shipsSpawned[i]);
         Destroy(paths[i]);
@@ -182,16 +191,39 @@ public class Attacks : MonoBehaviour {
   }
 
   //*****************************************************************
-  // Generate the outcome of an attack
+  // Generate the outcome of a plundering attack
   //*****************************************************************
-  void generateAttackOutcome(Ship ship, string enemyName) {
-    int userStrength = 150 * ship.getLevel();
+  public void generatePlunderOutcome() {
+    int userStrength = 150 * latestShip.getLevel();
     // If the user is attacking an enemy hideout
-    if (enemyName.Split('_')[0] == "hideout") {
-      computeHideoutAttack(ship, userStrength, enemyName);
+    if (latestDestination.Split('_')[0] == "hideout") {
+      computeHideoutAttack(latestShip, userStrength, latestDestination);
     } else {
-      computeCityAttack(ship, userStrength, enemyName);
+      computeCityAttack(latestShip, userStrength, latestDestination);
     }
+  }
+
+  //*****************************************************************
+  // Generate the outcome of a city conquest
+  //*****************************************************************
+  public void generateConquestOutcome() {
+    string cityName = latestDestination;
+    int cityNumber = Int32.Parse(cityName.Split('_')[1]);
+    int userStrength = 150 * latestShip.getLevel();
+    Ship ship = latestShip;
+    City city = controller.getMap().getCities()[cityNumber];
+    string outcomeMessage = "";
+    // Get outcome
+    if (getRandomOutcome(userStrength, city.getLevel() * 1)) { // User victory
+      controller.getMap().setCityConquered(cityNumber, API.playFabId);
+      outcomeMessage = String.Format(Language.Field["CITY_CONQUEST"], CityNames.getCity(cityNumber));
+    } else { // User defeat
+      Destroy(shipMarkers[ship.getSlot()]);
+      controller.getUser().getVillage().setShip(null, ship.getSlot());
+      outcomeMessage = Language.Field["ATTACK_DEFEAT"];
+    }
+    // Show outcome message
+    ui.showPopupMessage(outcomeMessage);
   }
 
   //*****************************************************************
@@ -275,9 +307,14 @@ public class Attacks : MonoBehaviour {
       outcomeMessage = String.Format(
         Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
     } else { // User defeat
-      Destroy(shipMarkers[ship.getSlot()]);
-      controller.getUser().getVillage().setShip(null, ship.getSlot());
-      outcomeMessage = Language.Field["ATTACK_DEFEAT"];
+      System.Random rnd = new System.Random();
+      if (rnd.Next(10) > 6) {
+        Destroy(shipMarkers[ship.getSlot()]);
+        controller.getUser().getVillage().setShip(null, ship.getSlot());
+        outcomeMessage = Language.Field["ATTACK_DEFEAT"];
+      } else {
+        outcomeMessage = Language.Field["ATK_DEF_SAVED"];
+      }
     }
     // Show outcome message
     ui.showPopupMessage(outcomeMessage);
@@ -452,7 +489,7 @@ public class Attacks : MonoBehaviour {
     // Add information about the path to the ShipJourney object
     ShipJourney journey = controller.getUser().getVillage().getShip(shipNumber).getCurrentJourney();
     journey.setPath(path);
-    journey.setDuration((int)(paths[shipNumber].remainingDistance / paths[shipNumber].speed));
+    journey.setDuration((int)(paths[shipNumber].remainingDistance / paths[shipNumber].maxSpeed));
     // Then use the LineRenderer to show the path
     lineRenderers[shipNumber].positionCount = path.Count;
     for (int i = 0; i < path.Count; i++) {

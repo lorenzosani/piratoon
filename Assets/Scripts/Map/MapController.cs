@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class MapController : MonoBehaviour {
     moveCameraOverHideout(controller.getUser().getVillage().getPosition());
     ui.showLoadingScreen(false);
     Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
+    InvokeRepeating("checkCityProduction", 0.0f, 10.0f);
   }
 
   //*****************************************************************
@@ -99,5 +101,29 @@ public class MapController : MonoBehaviour {
     ui.showLoadingScreen();
     Destroy(GameObject.Find("GameController"));
     SceneManager.LoadScene("Hideout", LoadSceneMode.Single);
+  }
+
+  //*****************************************************************
+  // CHECK whether resources produced by conquered cities can be collected
+  //*****************************************************************
+  public void checkCityProduction() {
+    // Get all cities owned by the user
+    int[] cities = controller.getMap().getCitiesOwnedBy(API.playFabId);
+    // For each city check whether there are resources to collect
+    foreach (int cityNumber in cities) {
+      City city = controller.getMap().getCity(cityNumber);
+      if (city.getResources().All(x => x <= 0))return;
+      // TODO: Allow collection of each resource type separately
+      // If yes, get the position of the city on the map
+      Vector3 pos = GameObject.Find("city_" + cityNumber).transform.position;
+      // Spawn a new tooltip prefab at that position
+      GameObject cityTooltip = (GameObject)Instantiate(
+        (GameObject)Resources.Load("Prefabs/CityTooltip", typeof(GameObject)),
+        worldSpaceUi.transform,
+        false
+      );
+      cityTooltip.transform.position = new Vector3(pos.x, pos.y + 0.5f, 0.0f);
+    }
+    // TODO: Handle the click on that tooltip in a different function
   }
 }
