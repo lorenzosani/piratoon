@@ -83,7 +83,8 @@ public class MapController : MonoBehaviour {
       city.getName(),
       city.getLevel(),
       city.getHourlyProduction(),
-      city.getResources()
+      city.getResources(),
+      city.getCooldownEnd()
     );
   }
 
@@ -159,6 +160,7 @@ public class MapController : MonoBehaviour {
       city.setResource(resNo, remainingResources);
       controller.getUser().increaseResource(resNo, resourcesToCollect);
       Destroy(cityTooltips[cityNumber]);
+      cityTooltips[cityNumber] = null;
       checkCityProduction();
     });
     obj.layer = 10;

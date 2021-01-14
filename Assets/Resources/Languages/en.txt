@@ -80,3 +80,4 @@ PLUNDER = Plunder
 CONQUER = Conquer
 CITY_CONQUEST = Yay! You conquered the city of {0}. It will now produce resources for you.
 CITY_STORAGE = Your storage doesn't have enough space! Some resources will be left in the city.
+COOLDOWN = You can attack in

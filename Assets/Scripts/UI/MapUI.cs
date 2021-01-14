@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class MapUI : MonoBehaviour {
   ControllerScript controller;
+  DateTime cooldown;
 
   [Header("Resources and Bounty")]
   public GameObject hud;
@@ -39,7 +40,10 @@ public class MapUI : MonoBehaviour {
   [Header("City popup")]
   public GameObject cityPopup;
   public GameObject cityPopupInfo;
-  public GameObject cityPopupLoading;
+  public GameObject cityAttackButton;
+  public GameObject cityCooldown;
+  public Text cooldownTitle;
+  public Text cooldownTimer;
   public Text cityName;
   public Text cityLevel;
   public Text cityWoodProduction;
@@ -86,6 +90,15 @@ public class MapUI : MonoBehaviour {
     stoneValue.text = formatNumber(resources[1]);
     goldValue.text = formatNumber(resources[2]);
     pearlValue.text = controller.getUser().getPearl().ToString();
+    // Set city conquests cooldown timer
+    if (cooldown != null && DateTime.Compare(cooldown, DateTime.UtcNow) > 0) {
+      int timeLeft = (int)(cooldown - System.DateTime.UtcNow).TotalSeconds;
+      if (timeLeft <= 0) {
+        cityCooldown.SetActive(false);
+        cityAttackButton.SetActive(true);
+      }
+      cooldownTimer.text = formatTime(timeLeft);
+    }
   }
 
   public void showLoadingScreen(bool show = true) {
@@ -115,7 +128,7 @@ public class MapUI : MonoBehaviour {
     hideoutPopupInfo.SetActive(true);
   }
 
-  public void showCityPopup(string name, int level, int[] production, int[] resources) {
+  public void showCityPopup(string name, int level, int[] production, int[] resources, DateTime cooldownEnd) {
     // Assign the correct values to the different UI bits
     cityName.text = name;
     cityLevel.text = level.ToString();
@@ -125,6 +138,16 @@ public class MapUI : MonoBehaviour {
     cityWood.text = formatNumber(resources[0]);
     cityStone.text = formatNumber(resources[1]);
     cityGold.text = formatNumber(resources[2]);
+    // Check if the city can be attacked or has just been conquered
+    if (cooldownEnd != null && DateTime.Compare(cooldownEnd, DateTime.UtcNow) > 0) {
+      cooldownTitle.text = Language.Field["COOLDOWN"];
+      cooldown = cooldownEnd;
+      cityAttackButton.SetActive(false);
+      cityCooldown.SetActive(true);
+    } else {
+      cityCooldown.SetActive(false);
+      cityAttackButton.SetActive(true);
+    }
     // Show all the information
     cityPopup.SetActive(true);
   }
@@ -187,5 +210,18 @@ public class MapUI : MonoBehaviour {
     plunderButton.text = Language.Field["PLUNDER"].ToUpper();
     conquerButton.text = Language.Field["CONQUER"].ToUpper();
     attackOptionsPopup.SetActive(true);
+  }
+
+  public string formatTime(int time) {
+    if (time <= 60)return time + Language.Field["SECONDS_FIRST_LETTER"];
+    if (time <= 3600) {
+      int minutes = (int)Math.Floor((double)time / 60);
+      int seconds = time % 60;
+      return minutes + Language.Field["MINUTES_FIRST_LETTER"] + " " + seconds + Language.Field["SECONDS_FIRST_LETTER"];
+    } else {
+      int hours = (int)Math.Floor((double)time / 3600);
+      int minutes = (time - hours * 3600) / 60;
+      return hours + Language.Field["HOURS_FIRST_LETTER"] + " " + minutes + Language.Field["MINUTES_FIRST_LETTER"];
+    }
   }
 }

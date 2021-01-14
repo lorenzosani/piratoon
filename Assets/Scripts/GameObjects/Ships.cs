@@ -41,9 +41,7 @@ public class Ships : MonoBehaviour {
       if (timeLeft <= 0) {
         finishShip(currentlyBuilding);
       }
-      loadingText.text = timeLeft > 60 ?
-        Math.Floor((double)timeLeft / 60) + Language.Field["MINUTES_FIRST_LETTER"] + " " + timeLeft % 60 + Language.Field["SECONDS_FIRST_LETTER"] :
-        timeLeft + Language.Field["SECONDS_FIRST_LETTER"];
+      loadingText.text = ui.formatTime(timeLeft);
     }
   }
 
