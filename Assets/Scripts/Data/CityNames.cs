@@ -112,4 +112,8 @@ public static class CityNames {
   public static string getCity(int i) {
     return cities[i];
   }
+
+  public static int getCitiesNumber() {
+    return cities.Length;
+  }
 }

@@ -79,3 +79,4 @@ CHOICE = Cosa vuoi fare?
 PLUNDER = Saccheggia
 CONQUER = Conquista
 CITY_CONQUEST = Corpo di mille balene, hai conquistato la città di {0}! Adesso produrrà risorse per te.
+CITY_STORAGE = Il tuo magazzino non ha abbastanza spazio! Alcune risorse rimarranno nella città.

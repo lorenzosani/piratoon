@@ -219,15 +219,6 @@ public class Buildings : MonoBehaviour {
     buildingObj.layer = 9;
   }
 
-  // Add a click listener to a building and the function it calls
-  void addClickListener(GameObject obj, Action functionality) {
-    EventTrigger.Entry entry = new EventTrigger.Entry();
-    entry.eventID = EventTriggerType.PointerClick;
-    entry.callback.AddListener(new UnityAction<BaseEventData>((baseData) => functionality()));
-    obj.layer = 10;
-    obj.GetComponent<EventTrigger>().triggers.Add(entry);
-  }
-
   void addBuildingFromServer(Building b) {
     b.setPosition(b.getPrefab().transform.position);
     foreach (Building bu in controller.getUser().getVillage().getBuildings()) {

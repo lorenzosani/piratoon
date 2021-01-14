@@ -114,7 +114,6 @@ public class User {
   }
 
   public void increaseResource(int i, int n) {
-    Debug.Log("RESOURCES TO ADD: " + n);
     resources[i] = (resources[i] + n > storage) ?
       storage : resources[i] + n;
     API.SetUserData(new string[] {
