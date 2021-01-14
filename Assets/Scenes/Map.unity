@@ -9510,6 +9510,10 @@ MonoBehaviour:
   ui: {fileID: 32568835}
   worldSpaceUi: {fileID: 1303680580}
   hideoutsParent: {fileID: 242094589}
+  resourcesIcons:
+  - {fileID: 21300000, guid: 826a44d9825fc619888217dfc2ad381a, type: 3}
+  - {fileID: 21300000, guid: cc31d599cc4020c13b6224d790b06fce, type: 3}
+  - {fileID: 21300000, guid: 55d80ace742068d219e11f00cfa26cb1, type: 3}
 --- !u!114 &846293166
 MonoBehaviour:
   m_ObjectHideFlags: 0

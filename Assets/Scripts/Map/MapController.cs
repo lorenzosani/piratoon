@@ -16,6 +16,7 @@ public class MapController : MonoBehaviour {
   public MapUI ui;
   public GameObject worldSpaceUi;
   public GameObject hideoutsParent;
+  public Sprite[] resourcesIcons;
 
   void Start() {
     ui.showLoadingScreen();
@@ -25,7 +26,7 @@ public class MapController : MonoBehaviour {
     moveCameraOverHideout(controller.getUser().getVillage().getPosition());
     ui.showLoadingScreen(false);
     Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
-    InvokeRepeating("checkCityProduction", 0.0f, 10.0f);
+    InvokeRepeating("checkCityProduction", 0.0f, 5.0f);
   }
 
   //*****************************************************************
@@ -115,42 +116,51 @@ public class MapController : MonoBehaviour {
     // For each city check whether there are resources to collect
     foreach (int cityNumber in cities) {
       City city = controller.getMap().getCity(cityNumber);
-      if (city.getResources().All(x => x <= 0) || cityTooltips[cityNumber] != null)return;
+      int[] resources = city.getResources();
+      if (resources.All(x => x <= 0) || cityTooltips[cityNumber] != null)return;
       // TODO: Allow collection of each resource type separately
       // If yes, get the position of the city on the map
       Vector3 pos = GameObject.Find("city_" + cityNumber).transform.position;
       // Spawn a new tooltip prefab at that position
       cityTooltips[cityNumber] = (GameObject)Instantiate(
-        (GameObject)Resources.Load("Prefabs/CityTooltip", typeof(GameObject)),
-        worldSpaceUi.transform,
-        false
-      );
+        getTooltipPrefab(resources), worldSpaceUi.transform, false);
       cityTooltips[cityNumber].transform.position = new Vector3(pos.x, pos.y + 0.5f, 0.0f);
-      addClickListener(cityTooltips[cityNumber], () => {
-        // Collect the resources
-        int[] resources = city.getResources();
-        int[] freeSpace = controller.getUser().getStorageSpaceLeft();
-        int[] resourcesToCollect = new int[3];
-        int[] remainingResources = new int[3];
-        for (int i = 0; i < 3; i++) {
-          resourcesToCollect[i] = resources[i] < freeSpace[i] ? resources[i] : freeSpace[i];
-          remainingResources[i] = resources[i] - resourcesToCollect[i];
-          controller.getUser().increaseResource(i, resourcesToCollect[i]);
+      // Populate its children with the correct icons and trigger functions
+      int counter = 0;
+      for (int i = 0; i < 3; i++) {
+        if (resources[i] > 0) {
+          GameObject iconObject = cityTooltips[cityNumber].transform.GetChild(counter).gameObject;
+          iconObject.GetComponent<Image>().sprite = resourcesIcons[i];
+          if (i == 0)addClickListener(iconObject, 0, resources, city, cityNumber);
+          if (i == 1)addClickListener(iconObject, 1, resources, city, cityNumber);
+          if (i == 2)addClickListener(iconObject, 2, resources, city, cityNumber);
+          counter++;
         }
-        if (resourcesToCollect.All(x => x <= 0)) {
-          ui.showPopupMessage(Language.Field["CITY_STORAGE"]);
-        } else {
-          Destroy(cityTooltips[cityNumber]);
-        }
-        city.setResources(remainingResources);
-      });
+      }
     }
   }
+  // Generate a resources tooltip based on the type of resources to collect
+  GameObject getTooltipPrefab(int[] resources) {
+    int size = resources.Where(x => x > 0).Count();
+    return (GameObject)Resources.Load("Prefabs/CityTooltip" + size.ToString(), typeof(GameObject));
+  }
   // Add a click listener to a building and the function it calls
-  void addClickListener(GameObject obj, Action functionality) {
+  void addClickListener(GameObject obj, int resNo, int[] resources, City city, int cityNumber) {
     EventTrigger.Entry entry = new EventTrigger.Entry();
     entry.eventID = EventTriggerType.PointerClick;
-    entry.callback.AddListener((baseData) => functionality());
+    entry.callback.AddListener((baseData) => {
+      int freeSpace = controller.getUser().getStorageSpaceLeft()[resNo];
+      if (freeSpace == 0) {
+        ui.showPopupMessage(Language.Field["CITY_STORAGE"]);
+        return;
+      }
+      int resourcesToCollect = resources[resNo] < freeSpace ? resources[resNo] : freeSpace;
+      int remainingResources = resources[resNo] - resourcesToCollect;
+      city.setResource(resNo, remainingResources);
+      controller.getUser().increaseResource(resNo, resourcesToCollect);
+      Destroy(cityTooltips[cityNumber]);
+      checkCityProduction();
+    });
     obj.layer = 10;
     obj.GetComponent<EventTrigger>().triggers.Add(entry);
   }

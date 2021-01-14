@@ -23,7 +23,7 @@ public class City {
   [JsonProperty]
   protected DateTime cooldownEnd;
   [JsonProperty]
-  protected DateTime lastCollected;
+  protected DateTime[] lastCollected;
 
   public City(string _name) {
     name = _name;
@@ -32,7 +32,7 @@ public class City {
     resources = generateNewResources();
     owner = "";
     cooldownEnd = DateTime.UtcNow;
-    lastCollected = DateTime.UtcNow;
+    lastCollected = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
   }
 
   public string getName() {
@@ -95,13 +95,21 @@ public class City {
 
   int[] getResourcesProducedSinceLastCollected() {
     int[] hourlyProd = getHourlyProduction();
-    int hoursPassed = (System.DateTime.UtcNow - lastCollected).Hours;
-    return new int[3] { hourlyProd[0] * hoursPassed, hourlyProd[1] * hoursPassed, hourlyProd[2] * hoursPassed };
+    int[] hoursPassed = new int[3];
+    for (int i = 0; i < 3; i++) {
+      hoursPassed[i] = (System.DateTime.UtcNow - lastCollected[i]).Hours;
+    }
+    return new int[3] { hourlyProd[0] * hoursPassed[0], hourlyProd[1] * hoursPassed[1], hourlyProd[2] * hoursPassed[2] };
+  }
+
+  public void setResource(int i, int n) {
+    resources[i] = n;
+    lastCollected[i] = DateTime.UtcNow;
   }
 
   public void setResources(int[] r) {
     resources = r;
-    lastCollected = DateTime.UtcNow;
+    lastCollected = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
   }
 
   public void setOwner(string o) {
