@@ -16,6 +16,7 @@ public class MapController : MonoBehaviour {
   public MapUI ui;
   public GameObject worldSpaceUi;
   public GameObject hideoutsParent;
+  public Sprite conqueredCityIcon;
   public Sprite[] resourcesIcons;
 
   void Start() {
@@ -26,7 +27,8 @@ public class MapController : MonoBehaviour {
     moveCameraOverHideout(controller.getUser().getVillage().getPosition());
     ui.showLoadingScreen(false);
     Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
-    InvokeRepeating("checkCityProduction", 0.0f, 5.0f);
+    checkCityProduction();
+    InvokeRepeating("checkCityProduction", 5.0f, 5.0f);
   }
 
   //*****************************************************************
@@ -113,16 +115,18 @@ public class MapController : MonoBehaviour {
   // CHECK whether resources produced by conquered cities can be collected
   //*****************************************************************
   public void checkCityProduction() {
+    Debug.Log("CHECKCITYPROD");
     // Get all cities owned by the user
     int[] cities = controller.getMap().getCitiesOwnedBy(API.playFabId);
     // For each city check whether there are resources to collect
     foreach (int cityNumber in cities) {
       City city = controller.getMap().getCity(cityNumber);
+      GameObject cityObject = GameObject.Find("city_" + cityNumber);
+      Vector3 pos = cityObject.transform.position;
+      // Set the correct icon
+      cityObject.GetComponent<SpriteRenderer>().sprite = conqueredCityIcon;
       int[] resources = city.getResources();
       if (resources.All(x => x <= 0) || cityTooltips[cityNumber] != null)return;
-      // TODO: Allow collection of each resource type separately
-      // If yes, get the position of the city on the map
-      Vector3 pos = GameObject.Find("city_" + cityNumber).transform.position;
       // Spawn a new tooltip prefab at that position
       cityTooltips[cityNumber] = (GameObject)Instantiate(
         getTooltipPrefab(resources), worldSpaceUi.transform, false);
