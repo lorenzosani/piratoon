@@ -81,14 +81,24 @@ public class MapController : MonoBehaviour {
     );
   }
   public void showCityInfo(City city) {
-    ui.showCityPopup(
-      city.getName(),
-      city.getLevel(),
-      city.getHourlyProduction(),
-      city.getResources(),
-      city.getCooldownEnd(),
-      city.getOwner()
-    );
+    if (city.getOwner() == API.playFabId) {
+      ui.showConqueredCityPopup(
+        city.getName(),
+        city.getLevel(),
+        city.getHourlyProduction(),
+        city.getResources(),
+        city.getUpgradeCost(),
+        city.getCooldownEnd());
+    } else {
+      ui.showCityPopup(
+        city.getName(),
+        city.getLevel(),
+        city.getHourlyProduction(),
+        city.getResources(),
+        city.getCooldownEnd(),
+        city.getOwner()
+      );
+    }
   }
 
   //*****************************************************************

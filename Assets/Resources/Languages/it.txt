@@ -82,3 +82,6 @@ CITY_CONQUEST = Corpo di mille balene, hai conquistato la città di {0}! Adesso 
 CITY_STORAGE = Il tuo magazzino non ha abbastanza spazio! Alcune risorse rimarranno nella città.
 COOLDOWN = Puoi attaccare in
 OWNED_BY = Conquistata da
+YOU_CONQ = Hai conquistato questa città
+UNATTACKABLE = Inattaccabile per
+UPGRADE_COST = Costo del potenziamento

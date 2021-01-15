@@ -60,4 +60,8 @@ public class Map {
     }
     return citiesOwned.ToArray();
   }
+
+  public void upgradeCity(int i) {
+    cities[i].increaseLevel();
+  }
 }

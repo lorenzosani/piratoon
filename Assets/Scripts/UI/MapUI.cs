@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MapUI : MonoBehaviour {
   ControllerScript controller;
   DateTime cooldown;
+  string formattedCooldown = "";
 
   [Header("Resources and Bounty")]
   public GameObject hud;
@@ -61,6 +62,27 @@ public class MapUI : MonoBehaviour {
   public Text cityProductionTitle;
   public Text cityResourcesTitle;
 
+  [Header("Conquered City popup")]
+  public GameObject conqCityPopup;
+  public Text conqCityUpgradeButtonText;
+  public Text youConqueredText;
+  public Text conqCooldownText;
+  public Text conqCityName;
+  public Text conqCityLevel;
+  public Text conqCityWoodProduction;
+  public Text conqCityStoneProduction;
+  public Text conqCityGoldProduction;
+  public Text conqCityWood;
+  public Text conqCityStone;
+  public Text conqCityGold;
+  public Text conqCityWoodUpgradeCost;
+  public Text conqCityStoneUpgradeCost;
+  public Text conqCityGoldUpgradeCost;
+  public Text conqCityLevelTitle;
+  public Text conqCityProductionTitle;
+  public Text conqCityResourcesTitle;
+  public Text conqCityUpgradeTitle;
+
   [Header("Message Popup")]
   public GameObject messagePopup;
 
@@ -81,6 +103,12 @@ public class MapUI : MonoBehaviour {
     cityLevelTitle.text = Language.Field["CITY_LVL"];
     cityProductionTitle.text = Language.Field["PROD"];
     cityResourcesTitle.text = Language.Field["RES"];
+    conqCityLevelTitle.text = Language.Field["CITY_LVL"];
+    conqCityProductionTitle.text = Language.Field["PROD"];
+    conqCityResourcesTitle.text = Language.Field["RES"];
+    conqCityUpgradeTitle.text = Language.Field["UPGRADE_COST"];
+    youConqueredText.text = Language.Field["YOU_CONQ"];
+    conqCityUpgradeButtonText.text = Language.Field["UPGRADE"].ToUpper();
     attackButton.text = Language.Field["ATTACK_VERB"].ToUpper();
     ownHideoutTitle.text = Language.Field["YOUR_H"];
     navigateButton.text = Language.Field["NAVIGATE"].ToUpper();
@@ -103,6 +131,7 @@ public class MapUI : MonoBehaviour {
         cityAttackButton.SetActive(true);
       }
       cooldownTimer.text = formatTime(timeLeft);
+      conqCooldownText.text = Language.Field["UNATTACKABLE"] + " " + formatTime(timeLeft);
     }
   }
 
@@ -176,6 +205,23 @@ public class MapUI : MonoBehaviour {
       cityPopupLoading.SetActive(false);
       cityPopupInfo.SetActive(true);
     }
+  }
+
+  public void showConqueredCityPopup(string name, int level, int[] production, int[] resources, int[] upgradeCost, DateTime cooldownEnd) {
+    // Populate ui with the correct text
+    cooldown = cooldownEnd;
+    conqCityName.text = name;
+    conqCityLevel.text = level.ToString();
+    conqCityWoodProduction.text = formatNumber(production[0]);
+    conqCityStoneProduction.text = formatNumber(production[1]);
+    conqCityGoldProduction.text = formatNumber(production[2]);
+    conqCityWood.text = formatNumber(resources[0]);
+    conqCityStone.text = formatNumber(resources[1]);
+    conqCityGold.text = formatNumber(resources[2]);
+    conqCityWoodUpgradeCost.text = formatNumber(upgradeCost[0]);
+    conqCityStoneUpgradeCost.text = formatNumber(upgradeCost[1]);
+    conqCityGoldUpgradeCost.text = formatNumber(upgradeCost[2]);
+    conqCityPopup.SetActive(true);
   }
 
   public string formatNumber(int number) {

@@ -508,4 +508,27 @@ public class Attacks : MonoBehaviour {
     );
     shipMarkers[shipNumber].transform.position = new Vector3(place.position.x, place.position.y + 0.6f, 0.0f);
   }
+
+  //*****************************************************************
+  // UPGRADE a city you conquered
+  //*****************************************************************
+  public void upgradeCity() {
+    // Get the city object
+    int cityNumber = Int32.Parse(selectedTarget.Split('_')[1]);
+    City city = controller.getMap().getCity(cityNumber);
+    // Get the upgrade cost
+    int[] upgradeCost = city.getUpgradeCost();
+    int[] userResources = controller.getUser().getResources();
+    int[] remainingResources = new int[3];
+    // Check if user can afford
+    for (int i = 0; i < 3; i++) { remainingResources[i] = userResources[i] - upgradeCost[i]; }
+    if (remainingResources.All(x => x >= 0)) {
+      // If yes, increase level of city and remove resources from player
+      controller.getMap().upgradeCity(cityNumber);
+      controller.getUser().setResources(remainingResources);
+    } else {
+      // Otherwise show an error message
+      ui.showPopupMessage(Language.Field["NOT_RESOURCES"]);
+    }
+  }
 }

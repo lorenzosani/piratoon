@@ -127,4 +127,10 @@ public class City {
   public DateTime getCooldownEnd() {
     return cooldownEnd;
   }
+
+  public int[] getUpgradeCost() {
+    return new int[3] {
+      (level + 1) * 1000, (level + 1) * 1000, (level + 1) * 500
+    };
+  }
 }
