@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,8 +42,11 @@ public class MapUI : MonoBehaviour {
   [Header("City popup")]
   public GameObject cityPopup;
   public GameObject cityPopupInfo;
+  public GameObject cityPopupLoading;
   public GameObject cityAttackButton;
   public GameObject cityCooldown;
+  public GameObject cityOwnerObject;
+  public Text ownedBy;
   public Text cooldownTitle;
   public Text cooldownTimer;
   public Text cityName;
@@ -128,7 +133,7 @@ public class MapUI : MonoBehaviour {
     hideoutPopupInfo.SetActive(true);
   }
 
-  public void showCityPopup(string name, int level, int[] production, int[] resources, DateTime cooldownEnd) {
+  public void showCityPopup(string name, int level, int[] production, int[] resources, DateTime cooldownEnd, string owner) {
     // Assign the correct values to the different UI bits
     cityName.text = name;
     cityLevel.text = level.ToString();
@@ -149,7 +154,28 @@ public class MapUI : MonoBehaviour {
       cityAttackButton.SetActive(true);
     }
     // Show all the information
+    cityPopupLoading.SetActive(true);
+    cityPopupInfo.SetActive(false);
     cityPopup.SetActive(true);
+    // Check if the city is owned by some player
+    if (owner != "") {
+      string ownerUsername = "";
+      API.GetUserData(new List<string>() { "User" }, (result) => {
+        if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}") {
+          // If yes, de-serialize and set the data objects
+          User user = JsonConvert.DeserializeObject<User>((string)result.Data["User"].Value);
+          ownerUsername = user.getUsername();
+          ownedBy.text = Language.Field["OWNED_BY"] + " " + ownerUsername;
+          cityOwnerObject.SetActive(true);
+          cityPopupLoading.SetActive(false);
+          cityPopupInfo.SetActive(true);
+        }
+      }, owner);
+    } else {
+      cityOwnerObject.SetActive(false);
+      cityPopupLoading.SetActive(false);
+      cityPopupInfo.SetActive(true);
+    }
   }
 
   public string formatNumber(int number) {

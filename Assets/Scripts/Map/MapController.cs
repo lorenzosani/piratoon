@@ -84,7 +84,8 @@ public class MapController : MonoBehaviour {
       city.getLevel(),
       city.getHourlyProduction(),
       city.getResources(),
-      city.getCooldownEnd()
+      city.getCooldownEnd(),
+      city.getOwner()
     );
   }
 
