@@ -22,17 +22,28 @@ public class MapLoader : MonoBehaviour {
     }
     if (controller.getMap() == null) {
       controller.getUI().showMapError();
+      controller.getUI().showMapTryAgain(false);
+      if (controller.getUser().getMapId() == null) {
+        Mapmaking.Start();
+      } else {
+        API.GetMapData(controller.getUser().getMapId());
+      }
+    } else {
+      Camera.main.GetComponent<PanAndZoom>().Zoom(Camera.main.orthographicSize, 15);
+      await Task.Delay(200);
+      controller.getUI().showLoadingScreen();
+      SceneManager.LoadScene("Map", LoadSceneMode.Single);
     }
-    Camera.main.GetComponent<PanAndZoom>().Zoom(Camera.main.orthographicSize, 15);
-    await Task.Delay(200);
-    controller.getUI().showLoadingScreen();
-    SceneManager.LoadScene("Map", LoadSceneMode.Single);
   }
 
   //*****************************************************************
   // FETCH a new position and map if the user is not assigned to one
   //*****************************************************************
   public async void reloadMap() {
+    if (controller.getMap() != null) {
+      open();
+      return;
+    }
     controller.getUI().showMapTryAgain(false);
     Mapmaking.Start();
 

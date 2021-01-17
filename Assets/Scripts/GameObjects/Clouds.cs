@@ -17,9 +17,8 @@ public class Clouds : MonoBehaviour {
     // Get the position of the user's hideout
     Vector3 position = MapPositions.get(controller.getUser().getVillage().getPosition());
     // Set the coordinates of the tile above the hideout
-    int tileX = (int)(position.x / X_SIZE) + 1;
-    int tileY = (int)(position.y / Y_SIZE);
-    // TODO: add watchtower level instead of 1
+    int tileX = (int)Math.Round((position.x / X_SIZE) + 1);
+    int tileY = (int)Math.Round((position.y / Y_SIZE));
     removeSurroundingTiles(
       transform.GetChild(0).GetComponent<Tilemap>(), tileX, tileY,
       controller.getUser().getVillage().getWatchtowerLevel()

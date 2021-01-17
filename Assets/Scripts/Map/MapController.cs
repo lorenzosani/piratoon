@@ -125,7 +125,6 @@ public class MapController : MonoBehaviour {
   // CHECK whether resources produced by conquered cities can be collected
   //*****************************************************************
   public void checkCityProduction() {
-    Debug.Log("CHECKCITYPROD");
     // Get all cities owned by the user
     int[] cities = controller.getMap().getCitiesOwnedBy(API.playFabId);
     // For each city check whether there are resources to collect

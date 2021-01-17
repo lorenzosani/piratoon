@@ -311,6 +311,7 @@ public static class API {
         } else UpdateCities(mapId, cities);
         // Save the information in the controller
         controller.setMap(new Map(mapId, players, cities));
+        controller.getUI().showMapTryAgain(true);
       }, e => OnPlayFabError(e));
     }, error => OnPlayFabError(error));
   }
