@@ -62,6 +62,12 @@ public class MapController : MonoBehaviour {
         );
         username.GetComponent<Text>().text = players[i].getUsername();
         username.transform.position = new Vector3(MapPositions.get(i).x, MapPositions.get(i).y + 0.8f, 0.0f);
+        // Show the player's username above clouds
+        if (players[i].getUsername() == controller.getUser().getUsername()) {
+          Canvas canvas = username.AddComponent(typeof(Canvas))as Canvas;
+          canvas.overrideSorting = true;
+          canvas.sortingOrder = 100;
+        }
       }
     }
     AstarPath.active.Scan();
