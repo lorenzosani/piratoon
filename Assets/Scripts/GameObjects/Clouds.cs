@@ -19,14 +19,13 @@ public class Clouds : MonoBehaviour {
     // Set the coordinates of the tile above the hideout
     int tileX = (int)Math.Round((position.x / X_SIZE) + 1);
     int tileY = (int)Math.Round((position.y / Y_SIZE));
-    removeSurroundingTiles(
+    removeClouds(
       transform.GetChild(0).GetComponent<Tilemap>(), tileX, tileY,
       controller.getUser().getVillage().getWatchtowerLevel()
     );
   }
 
-  // TODO: Not necessarily surrounding but remove n tiles in total wherever they are
-  void removeSurroundingTiles(Tilemap tileMap, int xPos, int yPos, int n) {
+  void removeClouds(Tilemap tileMap, int xPos, int yPos, int n) {
     // Handle the case where no watchtower has been built
     if (n == -1 || n == 0) {
       tileMap.SetTile(new Vector3Int(xPos, yPos, 0), null);
@@ -34,13 +33,22 @@ public class Clouds : MonoBehaviour {
       return;
     }
     // If there's a watchtower do this
-    int tilesToBeRemoved = (6 * n) + 3;
+    removeTiles(tileMap, xPos, yPos, (6 * n) + 3, n);
+  }
+
+  void removeTiles(Tilemap tileMap, int xPos, int yPos, int tilesToBeRemoved, int n) {
     for (int x = (-n); x <= n; x++) {
       for (int y = (-n); y <= n; y++) {
         int tileX = xPos + x;
         int tileY = yPos + y;
-        tileMap.SetTile(new Vector3Int(tileX, tileY, 0), null);
+        if (tileMap.GetTile(new Vector3Int(tileX, tileY, 0)) != null) {
+          tileMap.SetTile(new Vector3Int(tileX, tileY, 0), null);
+          tilesToBeRemoved--;
+        }
       }
+    }
+    if (tilesToBeRemoved > 0) {
+      removeTiles(tileMap, xPos, yPos, tilesToBeRemoved, n + 1);
     }
   }
 }
