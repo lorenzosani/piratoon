@@ -10,29 +10,27 @@ using UnityEngine;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class City {
+  public DateTime[] lc = null; // Last Collected (when resources have been last collected)
+  public int[] hpw = null; // Hourly Production Weights (which resources is produced most in this city)
   [JsonProperty]
-  protected string name;
+  public string name;
   [JsonProperty]
-  protected int level;
+  public int level;
   [JsonProperty]
-  protected int[] hourlyProductionWeights;
+  public int[] res; // Resources in the city
   [JsonProperty]
-  protected int[] resources;
+  public string owner;
   [JsonProperty]
-  protected string owner;
-  [JsonProperty]
-  protected DateTime cooldownEnd;
-  [JsonProperty]
-  protected DateTime[] lastCollected;
+  public DateTime cde; // CoolDown End (when the city can be attacked again)
 
   public City(string _name) {
     name = _name;
     level = randomLevel();
-    hourlyProductionWeights = generateHourlyProductionWeights();
-    resources = generateNewResources();
+    hpw = generatehpw();
+    res = generateNewResources();
     owner = "";
-    cooldownEnd = DateTime.UtcNow;
-    lastCollected = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
+    cde = DateTime.UtcNow;
+    lc = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
   }
 
   public string getName() {
@@ -47,8 +45,17 @@ public class City {
     return level;
   }
 
+  public DateTime[] getLastCollected() {
+    return lc;
+  }
+
+  public void setLastCollected(DateTime[] lastCollected) {
+    lc = lastCollected;
+  }
+
   public void increaseLevel() {
     level += 1;
+    API.UpdateCities();
   }
 
   public int randomInt(char seed, int max) {
@@ -64,22 +71,26 @@ public class City {
     return randomInt(name[0], 3);
   }
 
-  public int[] generateHourlyProductionWeights() {
+  public int[] generatehpw() {
     return new int[3] {
       randomInt(name[0], 10), randomInt(name[1], 10), randomInt(name[2], 10)
     };
   }
 
+  public void sethpw() {
+    hpw = generatehpw();
+  }
+
   public int[] getHourlyProduction() {
-    int[] w = hourlyProductionWeights;
+    int[] w = hpw;
     return new int[3] { w[0] * level, w[1] * level, w[2] * level / 3 };
   }
 
   public int[] generateNewResources() {
     return new int[3] {
-      hourlyProductionWeights[0] * randomInt(name[0], 5) * 3 * level,
-        hourlyProductionWeights[0] * randomInt(name[1], 5) * 4 * level,
-        hourlyProductionWeights[0] * randomInt(name[2], 2) * 2 * level
+      hpw[0] * randomInt(name[0], 5) * 3 * level,
+        hpw[0] * randomInt(name[1], 5) * 4 * level,
+        hpw[0] * randomInt(name[2], 2) * 2 * level
     };
   }
 
@@ -87,7 +98,7 @@ public class City {
     int[] totalResources = new int[3];
     int[] resourcesProduced = getResourcesProducedSinceLastCollected();
     for (int i = 0; i < 3; i++) {
-      totalResources[i] = resources[i] + resourcesProduced[i];
+      totalResources[i] = res[i] + resourcesProduced[i];
       if (totalResources[i] > level * 10000)totalResources[i] = level * 10000;
     }
     return totalResources;
@@ -97,23 +108,26 @@ public class City {
     int[] hourlyProd = getHourlyProduction();
     int[] hoursPassed = new int[3];
     for (int i = 0; i < 3; i++) {
-      hoursPassed[i] = (System.DateTime.UtcNow - lastCollected[i]).Hours;
+      hoursPassed[i] = (System.DateTime.UtcNow - lc[i]).Hours;
     }
     return new int[3] { hourlyProd[0] * hoursPassed[0], hourlyProd[1] * hoursPassed[1], hourlyProd[2] * hoursPassed[2] };
   }
 
   public void setResource(int i, int n) {
-    resources[i] = n;
-    lastCollected[i] = DateTime.UtcNow;
+    res[i] = n;
+    lc[i] = DateTime.UtcNow;
+    API.UpdateCities();
   }
 
   public void setResources(int[] r) {
-    resources = r;
-    lastCollected = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
+    res = r;
+    lc = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
+    API.UpdateCities();
   }
 
   public void setOwner(string o) {
     owner = o;
+    API.UpdateCities();
   }
 
   public string getOwner() {
@@ -121,11 +135,12 @@ public class City {
   }
 
   public void setCooldownEnd(DateTime d) {
-    cooldownEnd = d;
+    cde = d;
+    API.UpdateCities();
   }
 
   public DateTime getCooldownEnd() {
-    return cooldownEnd;
+    return cde;
   }
 
   public int[] getUpgradeCost() {

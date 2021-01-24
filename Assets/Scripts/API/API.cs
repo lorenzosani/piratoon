@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using PlayFab.DataModels;
 using PlayFab.GroupsModels;
+using PlayFab.Internal;
 using UnityEngine;
 
 public static class API {
@@ -18,6 +20,7 @@ public static class API {
 
   public static string entityId = string.Empty;
   public static string entityType = string.Empty;
+  public static string mapEntityId = string.Empty;
 
   public static string playFabId = string.Empty;
   static string sessionTicket = string.Empty;
@@ -29,7 +32,12 @@ public static class API {
     spawner = s;
   }
 
+  static City[] citiesUpdated = null;
+  static bool updateLastCollected = false;
   static Debouncer debouncer = new Debouncer(600, () => updateUserData());
+  static Debouncer citiesDebouncer = new Debouncer(600, () => {
+    if (updateLastCollected) { updateCitiesLastCollected(); } else updateCitiesData();
+  });
 
   //*****************************************************************
   // REGISTER a new user
@@ -284,61 +292,200 @@ public static class API {
   // RETRIEVE data about the map the user is in
   //*****************************************************************
   public static void GetMapData(string mapId) {
+    if (mapEntityId == string.Empty) {
+      GetMapEntityId(() => GetMapData(mapId));
+      return;
+    }
+    PlayFabDataAPI.GetObjects(new GetObjectsRequest() {
+      Entity = new PlayFab.DataModels.EntityKey() {
+          Id = mapEntityId, Type = "group"
+        },
+        EscapeObject = true
+    }, r => {
+      // Get the players' and cities' information
+      MapUser[] players = JsonConvert.DeserializeObject<MapUser[]>(r.Objects["players"].EscapedDataObject);
+      GetCities(mapId, players);
+      // Save the information in the controller
+      controller.getUI().showMapTryAgain(true);
+    }, e => OnPlayFabError(e));
+  }
+
+  //*****************************************************************
+  // GET the entity ID of the map, this must be used in every call that changes the map
+  //*****************************************************************
+  static void GetMapEntityId(Action callback) {
     PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
-      GroupName = mapId
+      GroupName = controller.getUser().getMapId()
     }, result => {
-      PlayFabDataAPI.GetObjects(new GetObjectsRequest() {
-        Entity = new PlayFab.DataModels.EntityKey() {
-            Id = result.Group.Id, Type = "group"
-          },
-          EscapeObject = true
-      }, r => {
-        // Get the players' and cities' information
-        MapUser[] players = JsonConvert.DeserializeObject<MapUser[]>(r.Objects["players"].EscapedDataObject);
-        City[] cities = new Map(mapId, players).getCities();
-        // Format all the information
-        if (r.Objects.Keys.Contains("cities0")) {
-          string allCities = (r.Objects["cities0"].EscapedDataObject + r.Objects["cities1"].EscapedDataObject).Trim(new char[] { '"', ' ' });
-          string[] citiesArray = allCities.Split(' ');
-          for (int i = 0; i < citiesArray.Length; i++) {
-            // Cities' info in the format [Owner]:[Resource1],[Resource2],[Resource3]
-            cities[i].setOwner(citiesArray[i].Split(':')[0]);
-            string[] resources = citiesArray[i].Split(':')[1].Split(',');
-            cities[i].setResources(new int[3] {
-              Int32.Parse(resources[0]), Int32.Parse(resources[1]), Int32.Parse(resources[2])
-            });
-          }
-        } else UpdateCities(mapId, cities);
-        // Save the information in the controller
-        controller.setMap(new Map(mapId, players, cities));
-        controller.getUI().showMapTryAgain(true);
-      }, e => OnPlayFabError(e));
+      mapEntityId = result.Group.Id;
+      callback();
     }, error => OnPlayFabError(error));
   }
 
   //*****************************************************************
   // UPDATE information about cities on a map
   //*****************************************************************
-  public static void UpdateCities(string mapId, City[] cities) {
-    string citiesResources0 = "";
-    string citiesResources1 = "";
-    for (int i = 0; i < cities.Length; i++) {
-      if (i < 50) {
-        citiesResources0 = citiesResources0 + cities[i].getOwner() + ":" + string.Join(",", cities[i].getResources()) + " ";
-      } else {
-        citiesResources1 = citiesResources1 + cities[i].getOwner() + ":" + string.Join(",", cities[i].getResources()) + " ";
-      }
+  public static async void CreateNewCitiesOnServer() {
+    citiesUpdated = new Map("", new MapUser[0]).getCities().Take(20).ToArray();
+    updateCitiesData();
+    await Task.Delay(1000);
+    updateCitiesLastCollected();
+  }
+
+  //*****************************************************************
+  // UPDATE information about cities on a map
+  //*****************************************************************
+  public static void UpdateCities(bool lastCollected = false) {
+    if (controller.getMap() != null) {
+      citiesUpdated = controller.getMap().getCities();
+      updateLastCollected = lastCollected;
+      citiesDebouncer.onChange();
+    } else {
+      Debug.Log("Can't update the cities: no Map has been found.");
     }
-    PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
-      GroupName = mapId
-    }, result => {
-      PlayFabClientAPI.ExecuteCloudScript(new PlayFab.ClientModels.ExecuteCloudScriptRequest() {
-        FunctionName = "addCitiesToMap", FunctionParameter = new string[] {
-          result.Group.Id, citiesResources0, citiesResources1
-        }
+  }
+  static void updateCitiesData() {
+    City[] cities = citiesUpdated;
+    string mapId = controller.getUser().getMapId();
+    // Get entity info
+    if (mapEntityId == string.Empty) {
+      GetMapEntityId(() => updateCitiesData());
+      return;
+    }
+    // Initialise file upload
+    PlayFabDataAPI.InitiateFileUploads(
+      new PlayFab.DataModels.InitiateFileUploadsRequest {
+        Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" },
+          FileNames = new List<string> { "citiesData" }
       }, r => {
-        Debug.Log(r.FunctionResult.ToString());
-      }, error => { Debug.Log(error); });
+        // Serialize cities
+        string citiesSerialized = JsonConvert.SerializeObject(cities, new JsonSerializerSettings {
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
+        // Transform cities into bytes
+        byte[] citiesBytes = Encoding.UTF8.GetBytes(citiesSerialized);
+        // Upload bytes as payload
+        PlayFabHttp.SimplePutCall(r.UploadDetails[0].UploadUrl, citiesBytes,
+          risposta => {
+            PlayFabDataAPI.FinalizeFileUploads(new PlayFab.DataModels.FinalizeFileUploadsRequest {
+              Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" },
+                FileNames = new List<string> { "citiesData" },
+            }, yes => {
+              // Confirm completion of file uploadupdateCitiesLastCollected();
+              Debug.Log("Cities updated successfully");
+            }, no => API.OnPlayFabError(no));
+          }, errore => Debug.Log(errore));
+      }, e => {
+        // Abort and retry if something goes wrong
+        if (e.Error == PlayFabErrorCode.EntityFileOperationPending) {
+          PlayFabDataAPI.AbortFileUploads(new PlayFab.DataModels.AbortFileUploadsRequest {
+            Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" },
+              FileNames = new List<string> { "citiesData" },
+          }, res => UpdateCities(), err => API.OnPlayFabError(err));
+        } else API.OnPlayFabError(e);
+      });
+  }
+  static void updateCitiesLastCollected() {
+    DateTime[, ] lastCollectedData = new DateTime[citiesUpdated.Length, 3];
+    for (int i = 0; i < citiesUpdated.Length; i++) {
+      DateTime[] lc = citiesUpdated[i].getLastCollected();
+      lastCollectedData[i, 0] = lc[0];
+      lastCollectedData[i, 1] = lc[1];
+      lastCollectedData[i, 2] = lc[2];
+    }
+    string mapId = controller.getUser().getMapId();
+    // Get entity info
+    if (mapEntityId == string.Empty) {
+      GetMapEntityId(() => updateCitiesLastCollected());
+      return;
+    }
+    // Initialise file upload
+    PlayFabDataAPI.InitiateFileUploads(
+      new PlayFab.DataModels.InitiateFileUploadsRequest {
+        Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" },
+          FileNames = new List<string> { "lastCollectedData" }
+      }, r => {
+        // Serialize cities
+        string dataSerialized = JsonConvert.SerializeObject(lastCollectedData, new JsonSerializerSettings {
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
+        // Upload bytes as payload
+        PlayFabHttp.SimplePutCall(r.UploadDetails[0].UploadUrl, Encoding.UTF8.GetBytes(dataSerialized),
+          risposta => {
+            PlayFabDataAPI.FinalizeFileUploads(new PlayFab.DataModels.FinalizeFileUploadsRequest {
+              Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" },
+                FileNames = new List<string> { "lastCollectedData" },
+            }, yes => {
+              // Confirm completion of file upload
+              Debug.Log("LastCollected data updated successfully");
+            }, no => API.OnPlayFabError(no));
+          }, errore => Debug.Log(errore));
+      }, e => {
+        // Abort and retry if something goes wrong
+        if (e.Error == PlayFabErrorCode.EntityFileOperationPending) {
+          PlayFabDataAPI.AbortFileUploads(new PlayFab.DataModels.AbortFileUploadsRequest {
+            Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" },
+              FileNames = new List<string> { "lastCollectedData" },
+          }, res => UpdateCities(true), err => API.OnPlayFabError(err));
+        } else API.OnPlayFabError(e);
+      });
+  }
+
+  //*****************************************************************
+  // GET up to date information about cities on the map
+  //*****************************************************************
+  public static void GetCities(string mapId, MapUser[] players) {
+    if (mapEntityId == string.Empty) {
+      GetMapEntityId(() => GetCities(mapId, players));
+      return;
+    }
+    // Get the url needed to download the file
+    PlayFabDataAPI.GetFiles(new PlayFab.DataModels.GetFilesRequest {
+      Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" }
+    }, r => {
+      if (r.Metadata.Keys.Contains("citiesData") && r.Metadata.Keys.Contains("lastCollectedData")) {
+        // Get cities data
+        PlayFabHttp.SimpleGetCall(r.Metadata["citiesData"].DownloadUrl,
+          res => {
+            // ATTENTION:
+            // Here we need to manually convert the json to City objects
+            // as the automatic convertion didn't work. Very sad :(
+            ////////////////////////////////////////////
+            // First we're splitting the json in chunks each representing a city
+            string[] jsons = Encoding.UTF8.GetString(res).Split(new [] { "}," }, StringSplitOptions.None);
+            City[] citiesData = new City[jsons.Length];
+            // Get resources' last collected data
+            PlayFabHttp.SimpleGetCall(r.Metadata["lastCollectedData"].DownloadUrl,
+              result => {
+                char[] charsToTrim = new char[5] { '[', ']', '}', '{', '"' };
+                DateTime[, ] lastCollectedData = JsonConvert.DeserializeObject<DateTime[, ]>(Encoding.UTF8.GetString(result));
+                for (int i = 0; i < citiesData.Length; i++) {
+                  // Then, for each city we separate all the info we have about it
+                  string[] city = jsons[i].Split(',');
+                  // And we manually populate a City object with that info
+                  City cityObject = new City(city[0].Split(':')[1].Trim(charsToTrim)) {
+                    level = Int32.Parse(city[1].Split(':')[1].Trim(charsToTrim)),
+                    res = new int[3] {
+                    Int32.Parse(city[2].Split(':')[1].Trim(charsToTrim)),
+                    Int32.Parse(city[3].Trim(charsToTrim)),
+                    Int32.Parse(city[4].Trim(charsToTrim))
+                    },
+                    owner = city[5].Split(':')[1].Trim(charsToTrim),
+                    cde = DateTime.Parse(city[6].Split(new char[1] { ':' }, 2)[1].Trim(charsToTrim)),
+                    lc = new DateTime[] { lastCollectedData[i, 0], lastCollectedData[i, 1], lastCollectedData[i, 2] }
+                  };
+                  // We have to set the Hour Production Weights this way
+                  cityObject.sethpw();
+                  // And then store the newly created city in an array containing all cities
+                  citiesData[i] = cityObject;
+                }
+                // All this is then saved in the controller
+                controller.setMap(new Map(mapId, players, citiesData));
+              }, error => Debug.Log(error));
+          }, err => Debug.Log(err));
+      } else {
+        Debug.Log("Cities can't be retrieved for this map");
+      }
     }, e => API.OnPlayFabError(e));
   }
 

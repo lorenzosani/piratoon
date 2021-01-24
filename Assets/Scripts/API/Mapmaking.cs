@@ -115,6 +115,8 @@ public static class Mapmaking {
         Debug.Log(error);
         Stop();
       });
+      // Create new cities data
+      API.CreateNewCitiesOnServer();
     } else {
       // Add to existing group
       PlayFabGroupsAPI.GetGroup(new GetGroupRequest {
