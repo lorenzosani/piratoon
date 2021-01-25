@@ -304,4 +304,29 @@ public class UI : MonoBehaviour {
     if (number < 1000000)return stringNumber[0].ToString() + stringNumber[1].ToString() + stringNumber[2].ToString() + "K";
     return stringNumber;
   }
+
+  public void showAttacksSuffered(List<AttackOutcome> attacks) {
+    string message = "";
+    for (int i = 0; i < attacks.Count; i++) {
+      // In case of looting suffered
+      AttackOutcome attack = attacks[i];
+      string output = "";
+      if (attack.getType() == 'p') {
+        int[] resStolen = attack.getResources();
+        string target = attack.getTarget() == "hideout" ?
+          Language.Field["YOUR_VILLAGE"] :
+          Language.Field["YOUR_CITY"] + "\"" + attack.getTarget() + "\"";
+        output = string.Format(
+          Language.Field["PLUNDERED"], attack.getAttacker(), target, resStolen[0], resStolen[1], resStolen[2]);
+        message = "\n" + message + output + "\n";
+        // In case a city has been conquered
+      } else {
+        output = string.Format(Language.Field["CONQUERED"], attack.getAttacker(), attack.getTarget());
+      }
+      message = "\n" + message + output + "\n";
+    }
+    // Show the message popup
+    showPopupMessage(message);
+    // TODO: Enable scrolling
+  }
 }

@@ -85,3 +85,7 @@ OWNED_BY = Conquered by
 YOU_CONQ = You conquered this city
 UNATTACKABLE = Unattackable for
 UPGRADE_COST = Upgrade Cost
+PLUNDERED = While away, {0} attacked {1} and stole {2} wood, {3} rock, {4} gold.
+YOUR_VILLAGE = your hideout
+YOUR_CITY = your city
+CONQUERED = While away, {0} conquered your city of {1}.

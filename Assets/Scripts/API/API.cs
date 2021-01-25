@@ -192,6 +192,8 @@ public static class API {
           spawner.populateShips();
           controller.getUI().onLogin();
           UpdateBounty(controller.getUser().getBounty());
+          // Check if the user has been attacked while online
+          if (user.getLatestAttacks().Count > 0)controller.getUI().showAttacksSuffered(user.getLatestAttacks());
           // Download info about the map the user is in
           if (controller.getUser().getMapId() != null && controller.getUser().getMapId() != "") {
             GetMapData(controller.getUser().getMapId());

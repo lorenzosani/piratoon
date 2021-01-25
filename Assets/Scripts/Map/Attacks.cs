@@ -206,17 +206,48 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   // Generate the outcome of a city conquest
   //*****************************************************************
-  public void generateConquestOutcome() {
+  async void generateConquestOutcome() {
+    bool userDataReceived = false;
     string cityName = latestDestination;
     int cityNumber = Int32.Parse(cityName.Split('_')[1]);
     int userStrength = 150 * latestShip.getLevel();
     Ship ship = latestShip;
     City city = controller.getMap().getCities()[cityNumber];
+    User user = null;
     string outcomeMessage = "";
     // Get outcome
     if (getRandomOutcome(userStrength, city.getLevel() * 1)) { // User victory
       controller.getMap().setCityConquered(cityNumber, API.playFabId);
       outcomeMessage = String.Format(Language.Field["CITY_CONQUEST"], CityNames.getCity(cityNumber));
+      // If the city is owned by someone, we need to tell them about the attack
+      if (city.getOwner() != "") {
+        API.GetUserData(
+          new List<string> { "User" },
+          result => {
+            if (result.Data.ContainsKey("User"))user = JsonConvert.DeserializeObject<User>(result.Data["User"].Value);
+            userDataReceived = true;
+          },
+          city.getOwner()
+        );
+        // Wait until that info is received
+        while (!userDataReceived) {
+          await Task.Delay(10);
+        }
+        // Register the attack and update user data
+        user.registerAttack(new AttackOutcome('c', 'v', controller.getUser().getUsername(), city.getName()));
+        PlayFabAdminAPI.UpdateUserData(new UpdateUserDataRequest() {
+          PlayFabId = city.getOwner(), Data = new Dictionary<string, string>() {
+            {
+              "User",
+              JsonConvert.SerializeObject(user, new JsonSerializerSettings {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+              })
+            }
+          }, Permission = UserDataPermission.Public
+        }, result => {
+          Debug.Log("Enemy data updated successfully.");
+        }, e => API.OnPlayFabError(e));
+      }
     } else { // User defeat
       Destroy(shipMarkers[ship.getSlot()]);
       controller.getUser().getVillage().setShip(null, ship.getSlot());
@@ -268,7 +299,9 @@ public class Attacks : MonoBehaviour {
       outcomeMessage = String.Format(
         Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
       // Update the resources of the enemy after the attack
+      // TODO: Together with resources store the outcome of the attack
       user.setResources(enemyResources.Select((elem, index) => elem - resourcesWon[index]).ToArray());
+      user.registerAttack(new AttackOutcome('p', 'v', controller.getUser().getUsername(), "hideout", resourcesWon));
       PlayFabAdminAPI.UpdateUserData(new UpdateUserDataRequest() {
         PlayFabId = enemyName.Split('_')[2], Data = new Dictionary<string, string>() {
           {
@@ -294,18 +327,50 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   // Compute the outcome of an attack to a city
   //*****************************************************************
-  void computeCityAttack(Ship ship, int userStrength, string cityName) {
+  async void computeCityAttack(Ship ship, int userStrength, string cityName) {
+    bool userDataReceived = false;
     City city = controller.getMap().getCities()[Int32.Parse(cityName.Split('_')[1])];
+    // Compute the attack outcome
     string outcomeMessage = "";
     if (getRandomOutcome(userStrength, city.getLevel() * 100)) { // User victory
+      User user = null;
       int[] resourcesWon = new int[3];
       for (int i = 0; i < 3; i++) {
         resourcesWon[i] = (int)city.getResources()[i] / 5 * ship.getLevel();
         controller.getUser().increaseResource(i, resourcesWon[i]);
+        city.setResource(i, city.getResources()[i] - resourcesWon[i]);
       }
-      // TODO: Remove resources from enemy after an attack
       outcomeMessage = String.Format(
         Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
+      // If the city is owned by someone, we need to tell them about the attack
+      if (city.getOwner() != "") {
+        API.GetUserData(
+          new List<string> { "User" },
+          result => {
+            if (result.Data.ContainsKey("User"))user = JsonConvert.DeserializeObject<User>(result.Data["User"].Value);
+            userDataReceived = true;
+          },
+          city.getOwner()
+        );
+        // Wait until that info is received
+        while (!userDataReceived) {
+          await Task.Delay(10);
+        }
+        // Register the attack and update user data
+        user.registerAttack(new AttackOutcome('p', 'v', controller.getUser().getUsername(), city.getName(), resourcesWon));
+        PlayFabAdminAPI.UpdateUserData(new UpdateUserDataRequest() {
+          PlayFabId = city.getOwner(), Data = new Dictionary<string, string>() {
+            {
+              "User",
+              JsonConvert.SerializeObject(user, new JsonSerializerSettings {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+              })
+            }
+          }, Permission = UserDataPermission.Public
+        }, result => {
+          Debug.Log("Enemy data updated successfully.");
+        }, e => API.OnPlayFabError(e));
+      }
     } else { // User defeat
       System.Random rnd = new System.Random();
       if (rnd.Next(10) > 6) {

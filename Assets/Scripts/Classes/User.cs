@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ public class User {
   int pearl; // The amount of premium pearls owned by the user
   [JsonProperty]
   int storage; // The max storage space for each resource
+  [JsonProperty]
+  List<AttackOutcome> latestAttacks; // The latest incoming attacks to the user by other players
 
   public User(string _id, Village _village) {
     id = _id;
@@ -41,6 +44,7 @@ public class User {
     };
     pearl = 5;
     storage = 700;
+    latestAttacks = new List<AttackOutcome>();
   }
 
   public string getId() {
@@ -139,5 +143,17 @@ public class User {
     API.SetUserData(new string[] {
       "User"
     });
+  }
+
+  public void registerAttack(AttackOutcome ao) {
+    latestAttacks.Add(ao);
+  }
+
+  public void resetAttacks() {
+    latestAttacks = new List<AttackOutcome>();
+  }
+
+  public List<AttackOutcome> getLatestAttacks() {
+    return latestAttacks;
   }
 }

@@ -85,3 +85,7 @@ OWNED_BY = Conquistata da
 YOU_CONQ = Hai conquistato questa città
 UNATTACKABLE = Inattaccabile per
 UPGRADE_COST = Costo del potenziamento
+PLUNDERED = Mentre non c'eri, {0} ha attaccato {1} e rubato {2} legna, {3} roccia, {4} oro.
+YOUR_VILLAGE = il tuo villaggio
+YOUR_CITY = la tua città
+CONQUERED = Mentre non c'eri, {0} ha conquistato la tua città di {1}.
