@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UI : MonoBehaviour {
+  [Header("General")]
+  public GameObject darkBackground;
+  public GameObject buildingsMenu;
+
   [Header("Resources and Bounty")]
   public GameObject hud;
   public Text woodValue;
@@ -123,6 +127,15 @@ public class UI : MonoBehaviour {
     stoneValue.text = formatNumber(resources[1]);
     goldValue.text = formatNumber(resources[2]);
     pearlValue.text = controller.getUser().getPearl().ToString();
+    // Show darkerBackground if a menu is open
+    darkBackground.SetActive(
+      buildingsMenu.activeSelf ||
+      leaderboardMenu.activeSelf ||
+      shipyardMenu.activeSelf ||
+      messagePopup.activeSelf ||
+      mapErrorMessage.activeSelf ||
+      shipInfo.activeSelf
+    );
   }
 
   public void showPopupMessage(string message) {
