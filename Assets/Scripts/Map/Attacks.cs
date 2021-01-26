@@ -512,7 +512,7 @@ public class Attacks : MonoBehaviour {
       int prefabNumber = ship.getLevel() < 7 ? ship.getLevel() : 6;
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
         (GameObject)Resources.Load("Prefabs/Ship" + prefabNumber, typeof(GameObject)),
-        currentShipPosition,
+        getNearestSeaPosition(currentShipPosition),
         Quaternion.identity
       );
       paths[shipNumber] = shipsSpawned[shipNumber].GetComponent<ShipPath>();
@@ -532,6 +532,18 @@ public class Attacks : MonoBehaviour {
     // The ship starts the navigation towards the destination specified by ShipJourney
     startNavigation(shipNumber);
     showPath(shipNumber);
+  }
+
+  //*****************************************************************
+  // RETURNS the closest position that happens to be on the sea, from any given position
+  //*****************************************************************
+  Vector3 getNearestSeaPosition(Vector3 pos) {
+    NNInfo nn = AstarPath.active.GetNearest(pos, NNConstraint.Default);
+    if (nn.node != null) {
+      return (Vector3)nn.node.position;
+    } else {
+      return pos;
+    }
   }
 
   //*****************************************************************
