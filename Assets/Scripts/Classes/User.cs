@@ -151,6 +151,9 @@ public class User {
 
   public void resetAttacks() {
     latestAttacks = new List<AttackOutcome>();
+    API.SetUserData(new string[] {
+      "User"
+    });
   }
 
   public List<AttackOutcome> getLatestAttacks() {

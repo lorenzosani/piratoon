@@ -193,7 +193,10 @@ public static class API {
           controller.getUI().onLogin();
           UpdateBounty(controller.getUser().getBounty());
           // Check if the user has been attacked while online
-          if (user.getLatestAttacks().Count > 0)controller.getUI().showAttacksSuffered(user.getLatestAttacks());
+          if (user.getLatestAttacks().Count > 0) {
+            controller.getUI().showAttacksSuffered(user.getLatestAttacks());
+            controller.getUser().resetAttacks();
+          }
           // Download info about the map the user is in
           if (controller.getUser().getMapId() != null && controller.getUser().getMapId() != "") {
             GetMapData(controller.getUser().getMapId());
@@ -328,7 +331,7 @@ public static class API {
   // UPDATE information about cities on a map
   //*****************************************************************
   public static async void CreateNewCitiesOnServer() {
-    citiesUpdated = new Map("", new MapUser[0]).getCities().Take(20).ToArray();
+    citiesUpdated = new Map("", new MapUser[0]).getCities();
     updateCitiesData();
     await Task.Delay(1000);
     updateCitiesLastCollected();

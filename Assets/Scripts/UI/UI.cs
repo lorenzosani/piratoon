@@ -318,7 +318,6 @@ public class UI : MonoBehaviour {
           Language.Field["YOUR_CITY"] + "\"" + attack.getTarget() + "\"";
         output = string.Format(
           Language.Field["PLUNDERED"], attack.getAttacker(), target, resStolen[0], resStolen[1], resStolen[2]);
-        message = "\n" + message + output + "\n";
         // In case a city has been conquered
       } else {
         output = string.Format(Language.Field["CONQUERED"], attack.getAttacker(), attack.getTarget());
@@ -327,6 +326,5 @@ public class UI : MonoBehaviour {
     }
     // Show the message popup
     showPopupMessage(message);
-    // TODO: Enable scrolling
   }
 }
