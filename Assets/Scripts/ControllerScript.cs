@@ -13,6 +13,7 @@ public class ControllerScript : MonoBehaviour {
 
   Buildings spawner;
   UI ui;
+  Tutorial tutorial;
 
   string email;
   public bool rememberLoginDetails = true;
@@ -20,6 +21,7 @@ public class ControllerScript : MonoBehaviour {
 
   void Awake() {
     spawner = GetComponent<Buildings>();
+    tutorial = GetComponent<Tutorial>();
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
     user = new User(Guid.NewGuid().ToString(), new Village(0));
 
@@ -47,6 +49,8 @@ public class ControllerScript : MonoBehaviour {
     API.StoreRegistered(false);
     API.StorePlayerId(user.getId());
     API.NewPlayerLogin();
+    // Show the tutorial the first time the user logs in
+    tutorial.showTutorial();
   }
 
   public void retryConnection() {

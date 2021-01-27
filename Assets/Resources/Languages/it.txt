@@ -89,3 +89,7 @@ PLUNDERED = Mentre non c'eri, {0} ha attaccato {1} e rubato {2} legna, {3} rocci
 YOUR_VILLAGE = il tuo villaggio
 YOUR_CITY = la tua città
 CONQUERED = Mentre non c'eri, {0} ha conquistato la tua città di {1}.
+AHOY = Ahoy pirata!
+FIRST_P = Sei una delle prime persone a giocare a Piratoon, complimenti!
+BETA = Questa è la versiona BETA del gioco. Se qualcosa non funziona, o se hai dei suggerimenti, facci sapere usando il pulsante evidenziato.
+LOVE = Più cose ci fai notare e più sei speciale!
