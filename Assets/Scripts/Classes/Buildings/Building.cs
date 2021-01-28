@@ -71,7 +71,7 @@ public class Building {
   }
 
   public int getValue() {
-    return value * level;
+    return value * (level + 1);
   }
 
   public void setValue(int v) {
@@ -80,6 +80,10 @@ public class Building {
 
   public int getFutureValue() {
     return value * (level + 1);
+  }
+
+  public int getConstructionDuration() {
+    return getValue() * (getLevel() + 1);
   }
 
   public int[] getBaseCost() {

@@ -34,12 +34,15 @@ public class Buildings : MonoBehaviour {
 
   void Update() {
     if (currentlyBuilding != null && SceneManager.GetActiveScene().name == "Hideout") {
-      int totalTime = currentlyBuilding.getFutureValue() / 4;
+      int totalTime = currentlyBuilding.getConstructionDuration();
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
       if (timeLeft <= 0) {
         finishBuilding(currentlyBuilding);
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
+      Debug.Log("SliderVal: " + ((int)100 - (timeLeft * 100 / totalTime)).ToString());
+      Debug.Log("TimeLeft: " + timeLeft.ToString());
+      Debug.Log("TotalTime: " + totalTime.ToString());
       loadingText.text = ui.formatTime(timeLeft);
     }
   }
