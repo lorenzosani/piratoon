@@ -98,6 +98,8 @@ public class BuildingsMenu : MonoBehaviour {
       textObj.text = controller.getUI().formatNumber(cost[i]);
       if (!canAfford) {
         textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
+      } else {
+        textObj.color = new Color(1.0f, 1.00f, 1.00f, 1.0f);
       }
     }
     // Show level up icon

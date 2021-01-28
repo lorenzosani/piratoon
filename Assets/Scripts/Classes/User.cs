@@ -42,7 +42,7 @@ public class User {
       700,
       100
     };
-    pearl = 5;
+    pearl = 25;
     storage = 700;
     latestAttacks = new List<AttackOutcome>();
   }
@@ -127,6 +127,10 @@ public class User {
 
   public int getPearl() {
     return pearl;
+  }
+
+  public void setPearl(int p) {
+    pearl = p;
   }
 
   public int getBounty() {

@@ -103,3 +103,5 @@ TAP_H = Premi sul Quartier Generale per iniziarne la costruzione!
 GREAT = Perfetto!
 SPEED_UP = Ci vorrà un po' di tempo, ma possiamo velocizzare la costruzione pagando con delle perle.
 SURE = Perfetto!
+NOT_PEARL = Purtroppo non hai abbastanza perle per questo...
+PAY_PEARL = Vuoi pagare {0} perle per finire questo edificio?

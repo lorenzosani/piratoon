@@ -22,6 +22,7 @@ public class Buildings : MonoBehaviour {
 
   public FloatingObjects floatScript;
   public GameObject loadingBar;
+  public GameObject finishBuildingPopup;
   public bool checkHeadquarter;
 
   //*****************************************************************
@@ -40,9 +41,6 @@ public class Buildings : MonoBehaviour {
         finishBuilding(currentlyBuilding);
       }
       loadingSlider.value = (int)100 - (timeLeft * 100 / totalTime);
-      Debug.Log("SliderVal: " + ((int)100 - (timeLeft * 100 / totalTime)).ToString());
-      Debug.Log("TimeLeft: " + timeLeft.ToString());
-      Debug.Log("TotalTime: " + totalTime.ToString());
       loadingText.text = ui.formatTime(timeLeft);
     }
   }
@@ -188,7 +186,7 @@ public class Buildings : MonoBehaviour {
     }
   }
 
-  void finishBuilding(Building b) {
+  public void finishBuilding(Building b) {
     loadingBar.SetActive(false);
     b.increaseLevel();
     // Add building's value to user's bounty
@@ -200,6 +198,33 @@ public class Buildings : MonoBehaviour {
     // Reset global variables
     currentlyBuilding = null;
     newBuilding = true;
+  }
+
+  public void showPearlsConfirmation() {
+    // Get the cost in pearls
+    int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+    int cost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+    // Populate the popup
+    Transform textObj = finishBuildingPopup.transform.Find("Text");
+    textObj.GetComponent<Text>().text = String.Format(Language.Field["PAY_PEARL"], cost.ToString());
+    Transform buttonObj = finishBuildingPopup.transform.Find("Button");
+    buttonObj.Find("Cost").GetComponent<Text>().text = cost.ToString();
+    // Show the popup
+    finishBuildingPopup.SetActive(true);
+  }
+
+  public void buildWithPearls() {
+    // Get the cost in pearls
+    int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+    int cost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+    // Check if the user has enough pearls
+    if (cost > controller.getUser().getPearl()) {
+      // Show message stating there are not enough pearls
+      controller.getUI().showPopupMessage(Language.Field["NOT_PEARL"]);
+      return;
+    }
+    controller.getUser().setPearl(controller.getUser().getPearl() - cost);
+    finishBuilding(currentlyBuilding);
   }
 
   //This starts the construction of a building
