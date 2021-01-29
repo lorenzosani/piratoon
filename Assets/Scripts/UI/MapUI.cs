@@ -284,6 +284,14 @@ public class MapUI : MonoBehaviour {
     attackOptionsPopup.SetActive(true);
   }
 
+  public void showPlunderInfo() {
+    showPopupMessage(Language.Field["PLUNDER_INFO"]);
+  }
+
+  public void showConquerInfo() {
+    showPopupMessage(Language.Field["CONQUER_INFO"]);
+  }
+
   public string formatTime(int time) {
     if (time <= 60)return time + Language.Field["SECONDS_FIRST_LETTER"];
     if (time <= 3600) {

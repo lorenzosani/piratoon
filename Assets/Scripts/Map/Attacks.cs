@@ -372,14 +372,7 @@ public class Attacks : MonoBehaviour {
         }, e => API.OnPlayFabError(e));
       }
     } else { // User defeat
-      System.Random rnd = new System.Random();
-      if (rnd.Next(10) > 6) {
-        Destroy(shipMarkers[ship.getSlot()]);
-        controller.getUser().getVillage().setShip(null, ship.getSlot());
-        outcomeMessage = Language.Field["ATTACK_DEFEAT"];
-      } else {
-        outcomeMessage = Language.Field["ATK_DEF_SAVED"];
-      }
+      outcomeMessage = Language.Field["ATK_DEF_SAVED"];
     }
     // Show outcome message
     ui.showPopupMessage(outcomeMessage);
