@@ -306,7 +306,7 @@ public class Buildings : MonoBehaviour {
   void onBuildingClick(Vector3 position) {
     Vector2 position2d = new Vector2(position.x, position.y);
     RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
-    if (EventSystem.current.IsPointerOverGameObject())return;
+    if (IsPointerOverUIObject())return;
     if (raycastHit) {
       string hitName = raycastHit.collider.name;
       List<Building> buildings = controller.getUser().getVillage().getBuildings();
@@ -315,6 +315,16 @@ public class Buildings : MonoBehaviour {
         ui.showBuildingInfo(hitName);
       }
     }
+  }
+
+  bool IsPointerOverUIObject() {
+    if (EventSystem.current.IsPointerOverGameObject())
+      return true;
+    if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began) {
+      if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+        return true;
+    }
+    return false;
   }
 
   void playBuildingSound() {

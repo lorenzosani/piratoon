@@ -93,7 +93,7 @@ public class Ships : MonoBehaviour {
   void onShipClick(Vector3 position) {
     Vector2 position2d = new Vector2(position.x, position.y);
     RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
-    if (EventSystem.current.IsPointerOverGameObject())return;
+    if (IsPointerOverUIObject())return;
     if (raycastHit) {
       Debug.Log(raycastHit.collider.name);
       string shipName = raycastHit.collider.name;
@@ -102,6 +102,16 @@ public class Ships : MonoBehaviour {
         ui.showShipInfo(Int32.Parse(shipName.Split('_')[1]));
       }
     }
+  }
+
+  bool IsPointerOverUIObject() {
+    if (EventSystem.current.IsPointerOverGameObject())
+      return true;
+    if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began) {
+      if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+        return true;
+    }
+    return false;
   }
 
   // Populate the variables for this script at launch

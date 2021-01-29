@@ -237,13 +237,13 @@ public class PanAndZoom : MonoBehaviour {
 
     /// <summary> Checks if the the current input is over canvas UI </summary>
     public bool IsPointerOverUIObject() {
-
-        if (EventSystem.current == null)return false;
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-        return results.Count > 0;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return true;
+        if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began) {
+            if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+                return true;
+        }
+        return false;
     }
 
     /// <summary> Cancels camera movement for the current motion. Resets to use camera at the end of the touch motion.</summary>

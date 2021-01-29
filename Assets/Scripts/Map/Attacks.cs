@@ -412,7 +412,7 @@ public class Attacks : MonoBehaviour {
     Vector2 position2d = new Vector2(position.x, position.y);
     RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
     // Return if the click is on the UI
-    if (EventSystem.current.IsPointerOverGameObject())return;
+    if (IsPointerOverUIObject())return;
     if (raycastHit) {
       // Clouds should block the click
       // Debug.Log(raycastHit.collider.gameObject.layer);
@@ -442,6 +442,16 @@ public class Attacks : MonoBehaviour {
         onCityClick(position);
       }
     }
+  }
+
+  bool IsPointerOverUIObject() {
+    if (EventSystem.current.IsPointerOverGameObject())
+      return true;
+    if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began) {
+      if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+        return true;
+    }
+    return false;
   }
 
   //*****************************************************************
