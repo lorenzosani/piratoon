@@ -374,4 +374,8 @@ public class UI : MonoBehaviour {
       "Images/Hideout/Buildings/" + name + "/" + (level > 3 ? 3 : level).ToString() + "_UI"
     );
   }
+
+  public void showBuildingDescription(string buildingName) {
+    showPopupMessage(Language.Field[buildingName.ToUpper() + "_DESC"]);
+  }
 }
