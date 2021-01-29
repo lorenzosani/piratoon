@@ -93,7 +93,9 @@ public class Ships : MonoBehaviour {
   void onShipClick(Vector3 position) {
     Vector2 position2d = new Vector2(position.x, position.y);
     RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
+    if (EventSystem.current.IsPointerOverGameObject())return;
     if (raycastHit) {
+      Debug.Log(raycastHit.collider.name);
       string shipName = raycastHit.collider.name;
       // Check if the click is on a hideout
       if (shipName.Split('_')[0] == "ship") {

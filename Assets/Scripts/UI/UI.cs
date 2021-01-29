@@ -81,6 +81,10 @@ public class UI : MonoBehaviour {
   public Text tryAgainText;
   public GameObject tryAgainLoading;
 
+  [Header("Building info popup")]
+  public GameObject buildingInfoPopup;
+  public Buildings buildingsScript;
+
   ControllerScript controller;
   bool leaderboardLoaded = false;
 
@@ -339,5 +343,35 @@ public class UI : MonoBehaviour {
     }
     // Show the message popup
     showPopupMessage(message);
+  }
+
+  public void showBuildingInfo(string buildingName) {
+    Building building = controller.getUser().getVillage().getBuildingInfo(buildingName);
+    // Populate the title with the building name (internationalised)
+    Transform titleObj = buildingInfoPopup.transform.Find("BuildingName");
+    titleObj.GetComponent<Text>().text = Language.Field[buildingName.ToUpper()];
+    // Populate the current image and next level image (if none, same)
+    Transform imageCurrent = buildingInfoPopup.transform.Find("ImageNow");
+    Transform imageNext = buildingInfoPopup.transform.Find("ImageAfter");
+    imageCurrent.GetComponent<Image>().sprite = getBuildingImage(buildingName, building.getLevel());
+    imageNext.GetComponent<Image>().sprite = getBuildingImage(buildingName, building.getLevel() + 1);
+    // Populate level with building's level + next level
+    Transform lvlCurrent = buildingInfoPopup.transform.Find("LevelNow");
+    Transform lvlNext = buildingInfoPopup.transform.Find("LevelAfter");
+    lvlCurrent.GetComponent<Text>().text = Language.Field["LEVEL_SHORT"] + " " + building.getLevel().ToString();
+    lvlNext.GetComponent<Text>().text = Language.Field["LEVEL_SHORT"] + " " + (building.getLevel() + 1).ToString();
+    // Populate building description
+    Transform description = buildingInfoPopup.transform.Find("Description");
+    description.GetComponent<Text>().text = Language.Field[buildingName.ToUpper() + "_DESC"];
+    // Internationalisation of button text
+    Transform upgradeBtn = buildingInfoPopup.transform.Find("Upgrade");
+    upgradeBtn.GetChild(0).GetComponent<Text>().text = Language.Field["UPGRADE"].ToUpper();
+    buildingInfoPopup.SetActive(true);
+  }
+
+  Sprite getBuildingImage(string name, int level) {
+    return Resources.Load<Sprite>(
+      "Images/Hideout/Buildings/" + name + "/" + (level > 3 ? 3 : level).ToString() + "_UI"
+    );
   }
 }

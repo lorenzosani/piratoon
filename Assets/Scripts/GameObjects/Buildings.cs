@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -34,6 +35,7 @@ public class Buildings : MonoBehaviour {
   }
 
   void Update() {
+    detectClick();
     if (currentlyBuilding != null && SceneManager.GetActiveScene().name == "Hideout") {
       int totalTime = currentlyBuilding.getConstructionDuration();
       int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
@@ -290,6 +292,29 @@ public class Buildings : MonoBehaviour {
     }
     controller.getUser().setResources(remainingResources);
     return true;
+  }
+
+  void detectClick() {
+    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
+      onBuildingClick(Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position));
+    } else if (Input.GetMouseButtonUp(0)) {
+      onBuildingClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+    }
+  }
+
+  // HANDLE clicks or taps on a building
+  void onBuildingClick(Vector3 position) {
+    Vector2 position2d = new Vector2(position.x, position.y);
+    RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
+    if (EventSystem.current.IsPointerOverGameObject())return;
+    if (raycastHit) {
+      string hitName = raycastHit.collider.name;
+      List<Building> buildings = controller.getUser().getVillage().getBuildings();
+      string[] buildingNames = buildings.Select(b => b.getName()).ToArray();
+      if (buildingNames.Contains(hitName)) {
+        ui.showBuildingInfo(hitName);
+      }
+    }
   }
 
   void playBuildingSound() {

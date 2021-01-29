@@ -26,8 +26,9 @@ public class BuildingsMenu : MonoBehaviour {
       if (buildingName == "Inventor" || buildingName == "Watchtower") {
         Building headquarter = village.getBuildingInfo("Headquarter");
         // Lock buildings
-        if ((headquarter == null || headquarter.getLevel() < 5) && buildingName == "Inventor") {
-          lockBuilding(child, 5);
+        // TODO: Once inventor is implemented allow unlocking at level 5
+        if ((headquarter == null || headquarter.getLevel() < 30) && buildingName == "Inventor") {
+          lockBuilding(child, 30);
           continue;
         }
         if ((headquarter == null || headquarter.getLevel() < 3) && buildingName == "Watchtower") {
