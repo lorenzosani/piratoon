@@ -26,6 +26,8 @@ public class Buildings : MonoBehaviour {
   public GameObject finishBuildingPopup;
   public bool checkHeadquarter;
 
+  TouchPhase lastTouchPhase = TouchPhase.Ended;
+
   //*****************************************************************
   // START and UPDATE methods
   //*****************************************************************
@@ -295,10 +297,13 @@ public class Buildings : MonoBehaviour {
   }
 
   void detectClick() {
-    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
+    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && lastTouchPhase != TouchPhase.Moved) {
       onBuildingClick(Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position));
-    } else if (Input.GetMouseButtonUp(0)) {
+    } else if (Input.GetMouseButtonUp(0) && Input.touchCount == 0) {
       onBuildingClick(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+    }
+    if (Input.touchCount > 0 && Input.GetTouch(0).phase != lastTouchPhase) {
+      lastTouchPhase = Input.GetTouch(0).phase;
     }
   }
 
@@ -320,9 +325,10 @@ public class Buildings : MonoBehaviour {
   bool IsPointerOverUIObject() {
     if (EventSystem.current.IsPointerOverGameObject())
       return true;
-    if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began) {
-      if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
+      if (EventSystem.current.currentSelectedGameObject) {
         return true;
+      }
     }
     return false;
   }

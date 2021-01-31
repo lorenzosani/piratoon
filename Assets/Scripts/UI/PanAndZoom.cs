@@ -239,9 +239,10 @@ public class PanAndZoom : MonoBehaviour {
     public bool IsPointerOverUIObject() {
         if (EventSystem.current.IsPointerOverGameObject())
             return true;
-        if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began) {
-            if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
+            if (EventSystem.current.currentSelectedGameObject) {
                 return true;
+            }
         }
         return false;
     }
