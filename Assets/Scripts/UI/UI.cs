@@ -366,6 +366,12 @@ public class UI : MonoBehaviour {
     // Internationalisation of button text
     Transform upgradeBtn = buildingInfoPopup.transform.Find("Upgrade");
     upgradeBtn.GetChild(0).GetComponent<Text>().text = Language.Field["UPGRADE"].ToUpper();
+    // Set upgrade cost
+    int[] upgradeCost = building.getCost();
+    Transform resources = buildingInfoPopup.transform.Find("Resources");
+    resources.Find("Wood").GetComponent<Text>().text = formatNumber(upgradeCost[0]);
+    resources.Find("Stone").GetComponent<Text>().text = formatNumber(upgradeCost[1]);
+    resources.Find("Gold").GetComponent<Text>().text = formatNumber(upgradeCost[2]);
     buildingInfoPopup.SetActive(true);
   }
 
