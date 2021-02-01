@@ -1059,7 +1059,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -49.999817}
+  m_AnchoredPosition: {x: 0, y: -49.999756}
   m_SizeDelta: {x: -60, y: -160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!61 &80371821
@@ -11147,10 +11147,8 @@ MonoBehaviour:
     type: 3}
   lineRendererPrefab: {fileID: 5705463010423057507, guid: 8baeefe82df404f729cc66aa57678543,
     type: 3}
-  markerPrefabs:
-  - {fileID: 6355611002519294999, guid: 078adb02bb98bc1fabf473308965c095, type: 3}
-  - {fileID: 5413082544946662896, guid: cf3ad10a0b087fae2853d26b1e1a214f, type: 3}
-  - {fileID: 7734300883919977496, guid: 4d3b01683439f55eab439b6c5da55c38, type: 3}
+  shipMarkerIcon: {fileID: 6355611002519294999, guid: 078adb02bb98bc1fabf473308965c095,
+    type: 3}
   worldSpaceUi: {fileID: 1303680580}
 --- !u!114 &846293167
 MonoBehaviour:

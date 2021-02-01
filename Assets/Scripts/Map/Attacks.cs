@@ -16,7 +16,7 @@ public class Attacks : MonoBehaviour {
 
   public GameObject timerPrefab;
   public GameObject lineRendererPrefab;
-  public GameObject[] markerPrefabs;
+  public GameObject shipMarkerIcon;
   public GameObject worldSpaceUi;
 
   ControllerScript controller;
@@ -583,11 +583,11 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   void addShipMarker(Transform place, int shipNumber) {
     shipMarkers[shipNumber] = (GameObject)Instantiate(
-      markerPrefabs[shipNumber],
+      shipMarkerIcon,
       worldSpaceUi.transform,
       false
     );
-    shipMarkers[shipNumber].transform.position = new Vector3(place.position.x, place.position.y + 0.6f, 0.0f);
+    shipMarkers[shipNumber].transform.position = new Vector3(place.position.x + 0.35f, place.position.y - 0.25f, 0.0f);
   }
 
   //*****************************************************************
