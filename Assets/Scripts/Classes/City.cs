@@ -45,6 +45,10 @@ public class City {
     return level;
   }
 
+  public void setLevel(int l) {
+    level = l;
+  }
+
   public DateTime[] getLastCollected() {
     return lc;
   }
@@ -116,27 +120,27 @@ public class City {
   public void setResource(int i, int n) {
     res[i] = n;
     lc[i] = DateTime.UtcNow;
-    API.UpdateCities();
+    API.UpdateCities(true);
   }
 
-  public void setResources(int[] r) {
+  public void setResources(int[] r, bool updateData = true) {
     res = r;
     lc = new DateTime[] { DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow };
-    API.UpdateCities();
+    if (updateData)API.UpdateCities(true);
   }
 
-  public void setOwner(string o) {
+  public void setOwner(string o, bool updateData = true) {
     owner = o;
-    API.UpdateCities();
+    if (updateData)API.UpdateCities();
   }
 
   public string getOwner() {
     return owner;
   }
 
-  public void setCooldownEnd(DateTime d) {
+  public void setCooldownEnd(DateTime d, bool updateData = true) {
     cde = d;
-    API.UpdateCities();
+    if (updateData)API.UpdateCities();
   }
 
   public DateTime getCooldownEnd() {

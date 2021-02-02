@@ -20,7 +20,7 @@ public class Map {
   public Map(string _id, MapUser[] _players, City[] _cities = null) {
     id = _id;
     players = _players;
-    cities = cities ?? generateNewCities(103);
+    cities = _cities ?? generateNewCities(103);
   }
 
   public string getId() {
