@@ -117,3 +117,4 @@ STORAGE_DESC = Il deposito ti permette di immagazzinare risorse. Potenzialo per 
 WATCHTOWER_DESC = La Torre di Avvistamento ti permette di scrutare i mari attorno al tuo covo.Potenziala per aumentare il suo raggio e scoprire nuovi posti da esplorare!
 WOODCUTTER_DESC = Il Taglialegna spacca i tronchi degli alberi sulla tua isola. Ti permette di avere una continua produzione di legna.
 ANCHORED = Una delle tue navi è ormeggiata qui.
+PAY_JOURNEY = Vuoi pagare {0} perle per arrivare a destinazione?

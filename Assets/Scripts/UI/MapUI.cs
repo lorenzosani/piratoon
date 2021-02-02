@@ -96,6 +96,10 @@ public class MapUI : MonoBehaviour {
   public Text plunderButton;
   public Text conquerButton;
 
+  [Header("Ship SpeedUp")]
+  public GameObject speedUpPopup;
+  public Attacks attacksScript;
+
   void Start() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     hideoutLevelTitle.text = Language.Field["USER_LVL"];
@@ -303,5 +307,30 @@ public class MapUI : MonoBehaviour {
       int minutes = (time - hours * 3600) / 60;
       return hours + Language.Field["HOURS_FIRST_LETTER"] + " " + minutes + Language.Field["MINUTES_FIRST_LETTER"];
     }
+  }
+
+  public void showSpeedUpPopup(int shipNumber) {
+    int cost = attacksScript.getSpeedUpCost(shipNumber);
+    // Set text on the popup
+    speedUpPopup.transform.Find("Text").GetComponent<Text>().text = string.Format(Language.Field["PAY_JOURNEY"], cost.ToString());
+    // Set confirmation callback function
+    Button confirmButton = speedUpPopup.transform.Find("Button").GetComponent<Button>();
+    speedUpPopup.transform.Find("Button").Find("Cost").GetComponent<Text>().text = cost.ToString();
+    confirmButton.onClick.RemoveAllListeners();
+    confirmButton.onClick.AddListener(() => {
+      speedUpPopup.SetActive(false);
+      // Check if the user has enough pearls
+      if (cost > controller.getUser().getPearl()) {
+        // Show message stating there are not enough pearls
+        showPopupMessage(Language.Field["NOT_PEARL"]);
+        return;
+      }
+      Debug.Log(cost);
+      Debug.Log(controller.getUser().getPearl() - cost);
+      controller.getUser().setPearl(controller.getUser().getPearl() - cost);
+      attacksScript.speedUpShip(shipNumber);
+    });
+    // Show popup
+    speedUpPopup.SetActive(true);
   }
 }

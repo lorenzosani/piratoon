@@ -152,7 +152,7 @@ public class Attacks : MonoBehaviour {
       timersSpawned[i].transform.position = new Vector3(shipPosition.x, shipPosition.y + 0.6f, 0.0f);
       // Update the content
       int timeLeft = (int)(paths[i].remainingDistance / paths[i].maxSpeed);
-      timersSpawned[i].transform.GetChild(0).GetComponent<Text>().text = controller.getUI().formatTime(timeLeft);
+      timersSpawned[i].transform.Find("Text").GetComponent<Text>().text = controller.getUI().formatTime(timeLeft);
     }
   }
 
@@ -529,6 +529,13 @@ public class Attacks : MonoBehaviour {
         false
       );
       timersSpawned[shipNumber].transform.position = new Vector3(timerPosition.x, timerPosition.y + 0.6f, 0.0f);
+      // Add speed up function 
+      Button speedUpButton = timersSpawned[shipNumber].transform.Find("SpeedUp").GetComponent<Button>();
+      int timeLeft = (int)(paths[shipNumber].remainingDistance / paths[shipNumber].maxSpeed);
+      int speedUpCost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+      speedUpButton.onClick.AddListener(() => {
+        ui.showSpeedUpPopup(shipNumber);
+      });
       updateTimers();
       // Remove ship marker
       Destroy(shipMarkers[shipNumber]);
@@ -536,6 +543,16 @@ public class Attacks : MonoBehaviour {
     // The ship starts the navigation towards the destination specified by ShipJourney
     startNavigation(shipNumber);
     showPath(shipNumber);
+  }
+
+  public int getSpeedUpCost(int shipNumber) {
+    int timeLeft = (int)(paths[shipNumber].remainingDistance / paths[shipNumber].maxSpeed);
+    int cost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+    return cost < 1 ? 1 : cost;
+  }
+
+  public void speedUpShip(int shipNumber) {
+    paths[shipNumber].maxSpeed = 2;
   }
 
   //*****************************************************************

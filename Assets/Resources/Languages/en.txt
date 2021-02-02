@@ -117,3 +117,4 @@ STORAGE_DESC = The Storage building is where all of your resources are kept. Upg
 WATCHTOWER_DESC = The Watchtower allows you to discover the seas around your hideout. Upgrade it to increase its range and become capable of exploring new places.
 WOODCUTTER_DESC = The Woodcutter chops logs from the trees on your island. It provides you with a steady production of wooden planks.
 ANCHORED = One of your ships is anchored here.
+PAY_JOURNEY = Do you want to pay {0} pearls to finish this journey?
