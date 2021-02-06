@@ -20,20 +20,10 @@ public class MapLoader : MonoBehaviour {
       controller.getUI().showPopupMessage(Language.Field["MAP_REGISTER"]);
       return;
     }
-    if (controller.getMap() == null) {
-      controller.getUI().showMapError();
-      controller.getUI().showMapTryAgain(false);
-      if (controller.getUser().getMapId() == null) {
-        Mapmaking.Start();
-      } else {
-        API.GetMapData(controller.getUser().getMapId());
-      }
-    } else {
-      Camera.main.GetComponent<PanAndZoom>().Zoom(Camera.main.orthographicSize, 15);
-      await Task.Delay(200);
-      controller.getUI().showLoadingScreen();
-      SceneManager.LoadScene("Map", LoadSceneMode.Single);
-    }
+    Camera.main.GetComponent<PanAndZoom>().Zoom(Camera.main.orthographicSize, 15);
+    await Task.Delay(200);
+    controller.getUI().showLoadingScreen();
+    SceneManager.LoadScene("Map", LoadSceneMode.Single);
   }
 
   //*****************************************************************

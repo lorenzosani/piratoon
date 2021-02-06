@@ -9,7 +9,7 @@ public class Clouds : MonoBehaviour {
   float X_SIZE = 0;
   float Y_SIZE = 0;
 
-  void Start() {
+  public void startRemoval() {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     // Get grid size, which is used to compute which tiles should be hidden
     X_SIZE = GetComponent<Grid>().cellSize.x;
@@ -29,7 +29,11 @@ public class Clouds : MonoBehaviour {
     // Handle the case where no watchtower has been built
     if (n == -1 || n == 0) {
       tileMap.SetTile(new Vector3Int(xPos, yPos, 0), null);
-      tileMap.SetTile(new Vector3Int(xPos - 1, yPos, 0), null);
+      if (tileMap.GetTile(new Vector3Int(xPos + 1, yPos, 0)) != null) {
+        tileMap.SetTile(new Vector3Int(xPos + 1, yPos, 0), null);
+      } else {
+        tileMap.SetTile(new Vector3Int(xPos - 1, yPos, 0), null);
+      }
       return;
     }
     // If there's a watchtower do this

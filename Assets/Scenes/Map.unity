@@ -11355,6 +11355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae7134ff856039cebd1d8fea0cc7331, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clouds: {fileID: 1483725028}
   ui: {fileID: 32568835}
   worldSpaceUi: {fileID: 1303680580}
   hideoutsParent: {fileID: 242094589}

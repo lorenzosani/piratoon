@@ -201,10 +201,6 @@ public static class API {
             controller.getUI().showAttacksSuffered(user.getLatestAttacks());
             controller.getUser().resetAttacks();
           }
-          // Download info about the map the user is in
-          if (controller.getUser().getMapId() != null && controller.getUser().getMapId() != "") {
-            GetMapData(controller.getUser().getMapId());
-          }
         } else {
           if (result.Data.ContainsKey("User") && result.Data["User"].Value != "") {
             SetUserData(new string[] {
@@ -314,8 +310,6 @@ public static class API {
       // Get the players' and cities' information
       MapUser[] players = JsonConvert.DeserializeObject<MapUser[]>(r.Objects["players"].EscapedDataObject);
       GetCities(mapId, players);
-      // Save the information in the controller
-      controller.getUI().showMapTryAgain(true);
     }, e => OnPlayFabError(e));
   }
 

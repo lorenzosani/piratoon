@@ -13,6 +13,7 @@ public class MapController : MonoBehaviour {
   ControllerScript controller;
   GameObject[] cityTooltips = new GameObject[CityNames.getCitiesNumber()];
 
+  public Clouds clouds;
   public MapUI ui;
   public GameObject worldSpaceUi;
   public GameObject hideoutsParent;
@@ -22,13 +23,15 @@ public class MapController : MonoBehaviour {
   void Start() {
     ui.showLoadingScreen();
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
-
-    populateMap();
-    moveCameraOverHideout(controller.getUser().getVillage().getPosition());
-    ui.showLoadingScreen(false);
-    Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
-    checkCityProduction();
-    InvokeRepeating("checkCityProduction", 5.0f, 5.0f);
+    // Download map data
+    if (controller.getMap() == null) {
+      if (controller.getUser().getMapId() == null) {
+        Mapmaking.Start();
+      } else {
+        API.GetMapData(controller.getUser().getMapId());
+      }
+    }
+    showMap();
   }
 
   //*****************************************************************
@@ -36,6 +39,22 @@ public class MapController : MonoBehaviour {
   //*****************************************************************
   public MapUI getUI() {
     return ui;
+  }
+
+  //*****************************************************************
+  // PREPARE the map to be shown
+  //*****************************************************************
+  async void showMap() {
+    while (controller.getMap() == null || controller.getUser().getMapId() == null) {
+      await Task.Delay(500);
+    }
+    populateMap();
+    moveCameraOverHideout(controller.getUser().getVillage().getPosition());
+    clouds.startRemoval();
+    ui.showLoadingScreen(false);
+    Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
+    checkCityProduction();
+    InvokeRepeating("checkCityProduction", 5.0f, 5.0f);
   }
 
   //*****************************************************************
