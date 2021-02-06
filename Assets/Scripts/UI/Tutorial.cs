@@ -11,6 +11,7 @@ public class Tutorial : MonoBehaviour {
   public GameObject step3;
   public GameObject step4;
   public GameObject step5;
+  public GameObject step6;
 
   public void showTutorial() {
     showStep1();
@@ -75,11 +76,22 @@ public class Tutorial : MonoBehaviour {
     setActiveStep(5);
   }
 
+  public void showStep6() {
+    string step6Text =
+      Language.Field["BRILLIANT"] + "\n" +
+      Language.Field["TUTOREG"];
+    Transform textObj = step6.transform.Find("Text");
+    textObj.GetComponent<Text>().text = step6Text;
+    mainButtons.SetActive(true);
+    setActiveStep(6);
+  }
+
   void setActiveStep(int n) {
     step1.SetActive(n == 1);
     step2.SetActive(n == 2);
     step3.SetActive(n == 3);
     step4.SetActive(n == 4);
     step5.SetActive(n == 5);
+    step6.SetActive(n == 6);
   }
 }

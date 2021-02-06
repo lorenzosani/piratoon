@@ -325,8 +325,6 @@ public class MapUI : MonoBehaviour {
         showPopupMessage(Language.Field["NOT_PEARL"]);
         return;
       }
-      Debug.Log(cost);
-      Debug.Log(controller.getUser().getPearl() - cost);
       controller.getUser().setPearl(controller.getUser().getPearl() - cost);
       attacksScript.speedUpShip(shipNumber);
     });

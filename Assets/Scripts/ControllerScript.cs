@@ -74,6 +74,10 @@ public class ControllerScript : MonoBehaviour {
     });
   }
 
+  public void openURL(string url) {
+    Application.OpenURL(url);
+  }
+
   //*****************************************************************
   // GETTERS and SETTERS methods
   //*****************************************************************

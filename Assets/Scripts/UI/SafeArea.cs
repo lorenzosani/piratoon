@@ -7,7 +7,7 @@ public class SafeArea : MonoBehaviour {
     RectTransform Panel = null;
     Rect LastSafeArea = new Rect(0, 0, 0, 0);
 
-    void Awake() {
+    void Start() {
         Panel = GetComponent<RectTransform>();
         applySafeArea(Screen.safeArea);
     }
