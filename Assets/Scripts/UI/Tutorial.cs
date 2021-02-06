@@ -12,6 +12,8 @@ public class Tutorial : MonoBehaviour {
   public GameObject step4;
   public GameObject step5;
   public GameObject step6;
+  public GameObject step7;
+  public GameObject step8;
 
   public void showTutorial() {
     showStep1();
@@ -78,12 +80,32 @@ public class Tutorial : MonoBehaviour {
 
   public void showStep6() {
     string step6Text =
-      Language.Field["BRILLIANT"] + "\n" +
-      Language.Field["TUTOREG"];
+      Language.Field["BRILLIANT"] + "\n\n" +
+      Language.Field["CALL_PIRATE"] + "\n\n" +
+      Language.Field["BECOME"];
     Transform textObj = step6.transform.Find("Text");
     textObj.GetComponent<Text>().text = step6Text;
-    mainButtons.SetActive(true);
     setActiveStep(6);
+  }
+
+  public void showStep7() {
+    string step7Text =
+      Language.Field["FOLLOW_TIPS"] + "\n\n" +
+      Language.Field["TIP_ONE"] + "\n\n" +
+      Language.Field["TIP_TWO"] + "\n\n" +
+      Language.Field["TIP_THREE"];
+    Transform textObj = step7.transform.Find("Text");
+    textObj.GetComponent<Text>().text = step7Text;
+    setActiveStep(7);
+  }
+
+  public void showStep8() {
+    string step8Text =
+      Language.Field["TUTOREG"];
+    Transform textObj = step8.transform.Find("Text");
+    textObj.GetComponent<Text>().text = step8Text;
+    mainButtons.SetActive(true);
+    setActiveStep(8);
   }
 
   void setActiveStep(int n) {
@@ -93,5 +115,7 @@ public class Tutorial : MonoBehaviour {
     step4.SetActive(n == 4);
     step5.SetActive(n == 5);
     step6.SetActive(n == 6);
+    step7.SetActive(n == 7);
+    step8.SetActive(n == 8);
   }
 }
