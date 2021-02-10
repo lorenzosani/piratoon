@@ -366,6 +366,12 @@ public class UI : MonoBehaviour {
     // Internationalisation of button text
     Transform upgradeBtn = buildingInfoPopup.transform.Find("Upgrade");
     upgradeBtn.GetChild(0).GetComponent<Text>().text = Language.Field["UPGRADE"].ToUpper();
+    // Set button functionality
+    Buildings spawner = GameObject.Find("GameController").GetComponent<Buildings>();
+    Button btn = upgradeBtn.GetComponent<Button>();
+    btn.onClick.RemoveAllListeners();
+    btn.onClick.AddListener(() => spawner.main(buildingName));
+    btn.onClick.AddListener(() => buildingInfoPopup.SetActive(false));
     // Set upgrade cost
     int[] upgradeCost = building.getCost();
     Transform resources = buildingInfoPopup.transform.Find("Resources");

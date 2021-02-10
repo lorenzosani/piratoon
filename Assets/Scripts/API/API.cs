@@ -511,7 +511,8 @@ public static class API {
               }, error => Debug.Log(error));
           }, err => Debug.Log(err));
       } else {
-        Debug.Log("Cities can't be retrieved for this map");
+        Debug.Log("Cities can't be retrieved for this map. Creating new ones.");
+        CreateNewCitiesOnServer();
       }
     }, e => API.OnPlayFabError(e));
   }

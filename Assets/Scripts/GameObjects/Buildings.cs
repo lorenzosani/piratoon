@@ -148,8 +148,11 @@ public class Buildings : MonoBehaviour {
 
   // Shows spawned floating objects
   public void populateFloatingObjects() {
+    int MAX_OBJS_TO_SHOW = 4;
     FloatingObject[] floatingObjects = controller.getUser().getVillage().getFloatingObjects();
-    for (int i = 0; i < floatingObjects.Length; i++) {
+    if (floatingObjects.Length > MAX_OBJS_TO_SHOW)
+      controller.getUser().getVillage().setFloatingObjects(floatingObjects.Take(4).ToArray());
+    for (int i = 0; i < MAX_OBJS_TO_SHOW; i++) {
       if (DateTime.Compare(floatingObjects[i].getTime(), DateTime.Now) < 0) {
         floatScript.spawn(floatingObjects[i]);
       }
@@ -221,6 +224,7 @@ public class Buildings : MonoBehaviour {
     // Get the cost in pearls
     int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
     int cost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+    cost = cost < 1 ? 1 : cost;
     // Check if the user has enough pearls
     if (cost > controller.getUser().getPearl()) {
       // Show message stating there are not enough pearls
@@ -316,7 +320,7 @@ public class Buildings : MonoBehaviour {
       string hitName = raycastHit.collider.name;
       List<Building> buildings = controller.getUser().getVillage().getBuildings();
       string[] buildingNames = buildings.Select(b => b.getName()).ToArray();
-      if (buildingNames.Contains(hitName)) {
+      if (buildingNames.Contains(hitName) && controller.getUser().getVillage().getBuildingInfo(hitName).isBuilt()) {
         ui.showBuildingInfo(hitName);
       }
     }
@@ -324,6 +328,8 @@ public class Buildings : MonoBehaviour {
 
   bool IsPointerOverUIObject() {
     if (EventSystem.current.IsPointerOverGameObject())
+      return true;
+    if (EventSystem.current.IsPointerOverGameObject(0))
       return true;
     if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
       if (EventSystem.current.currentSelectedGameObject) {

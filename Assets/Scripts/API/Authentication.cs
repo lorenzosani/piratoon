@@ -187,7 +187,7 @@ public class Authentication : MonoBehaviour {
 
   void populateAccountInfo() {
     Text onLoginText = onLoginPage.GetComponentInChildren(typeof(Text), true)as Text;
-    onLoginText.text = "Hello " + API.GetUsername() + "!";
+    onLoginText.text = Language.Field["HELLO"] + " " + API.GetUsername() + "!";
   }
 
   bool isEmpty(string value) {

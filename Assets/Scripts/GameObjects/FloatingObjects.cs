@@ -40,26 +40,8 @@ public class FloatingObjects : MonoBehaviour {
   // This runs when the user collects a floating object
   public void collect(int id) {
     // Check how many resources the object is worth
-    int[] resources;
-    if (id < 4) {
-      resources = new int[3] {
-        10,
-        0,
-        0
-      };
-    } else if (id < 6) {
-      resources = new int[3] {
-        20,
-        20,
-        0
-      };
-    } else {
-      resources = new int[3] {
-        30,
-        30,
-        5
-      };
-    }
+    int[, ] resPerType = new int[4, 3] { { 20, 0, 0 }, { 30, 30, 0 }, { 50, 50, 5 }, { 0, 20, 0 } };
+    int[] resources = new int[3] { resPerType[id, 0], resPerType[id, 1], resPerType[id, 2] };
     // Check if the user has enough storage space, if so give him the resources
     int[] spaceLeft = controller.getUser().getStorageSpaceLeft();
     bool giveResources = false;
@@ -77,9 +59,8 @@ public class FloatingObjects : MonoBehaviour {
     GameObject floatingObj = floatingGameObjects[id];
     floatingObj.SetActive(false);
     // Generate a new object to replace the collected one in the queue
-    int maxMinutes = (int)((TimeSpan.FromHours(16) - TimeSpan.FromHours(0)).TotalMinutes);
     System.Random rnd = new System.Random();
-    TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(maxMinutes)));
+    TimeSpan time = TimeSpan.FromHours(0).Add(TimeSpan.FromMinutes(rnd.Next(30)));
     // Check if other objects have already this position
     int randomPos = rnd.Next(23);
     int[] positionsUsed = controller.getUser().getVillage().getFloatingObjects().Select(o => o.getPositionId()).ToArray();

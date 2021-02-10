@@ -133,6 +133,13 @@ public class Village {
     return objects;
   }
 
+  public void setFloatingObjects(FloatingObject[] flo) {
+    floatingObjects = flo;
+    API.SetUserData(new string[] {
+      "Village"
+    });
+  }
+
   public int getWatchtowerLevel() {
     Building wt = getBuildingInfo("Watchtower");
     return wt == null ? -1 : wt.getLevel();
