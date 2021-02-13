@@ -127,3 +127,4 @@ TIP_ONE = 1 - Improve your hideout with more and better buildings
 TIP_TWO = 2 - Build ships to explore the sea
 TIP_THREE = 3 - Attack cities and other pirates' hideouts to steal their resources
 HELLO = Hello
+SOON = Coming soon

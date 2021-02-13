@@ -28,16 +28,15 @@ public class BuildingsMenu : MonoBehaviour {
         // Lock buildings
         // TODO: Once inventor is implemented allow unlocking at level 5
         if ((headquarter == null || headquarter.getLevel() < 30) && buildingName == "Inventor") {
-          lockBuilding(child, 30);
+          lockBuilding(child);
           continue;
         }
-        if ((headquarter == null || headquarter.getLevel() < 3) && buildingName == "Watchtower") {
-          lockBuilding(child, 3);
+        if ((headquarter == null || headquarter.getLevel() < 2) && buildingName == "Watchtower") {
+          lockBuilding(child, 2);
           continue;
         }
         // Unlock buildings
-        if (headquarter != null && headquarter.getLevel() == 5 && buildingName == "Inventor")unlockBuilding(child);
-        if (headquarter != null && headquarter.getLevel() == 3 && buildingName == "Watchtower")unlockBuilding(child);
+        if (headquarter != null && headquarter.getLevel() == 2 && buildingName == "Watchtower")unlockBuilding(child);
       }
       // All other buildings are unlocked from the start
       Building building = village.getBuildingInfo(buildingName);
@@ -115,7 +114,7 @@ public class BuildingsMenu : MonoBehaviour {
     );
   }
 
-  void lockBuilding(Transform building, int level) {
+  void lockBuilding(Transform building, int level = -1) {
     // Get child objects
     Button btn = building.GetComponent<Button>();
     Color titleColor = building.Find("Title").GetComponent<Text>().color;
@@ -125,7 +124,8 @@ public class BuildingsMenu : MonoBehaviour {
     btn.interactable = false;
     titleColor.a = 0.66f;
     building.Find("Title").GetComponent<Text>().color = titleColor;
-    levelText.text = Language.Field["LEVEL_UNLOCK"] + " " + level;
+    // If level is -1, just put 'coming soon'
+    levelText.text = level == -1 ? Language.Field["SOON"] : Language.Field["LEVEL_UNLOCK"] + " " + level;
     resources.SetActive(false);
   }
 

@@ -216,9 +216,10 @@ public class Attacks : MonoBehaviour {
     User user = null;
     string outcomeMessage = "";
     // Get outcome
-    if (getRandomOutcome(userStrength, city.getLevel() * 1)) { // User victory
+    if (getRandomOutcome(userStrength, city.getLevel() * 200)) { // User victory
       controller.getMap().setCityConquered(cityNumber, API.playFabId);
       outcomeMessage = String.Format(Language.Field["CITY_CONQUEST"], CityNames.getCity(cityNumber));
+      controller.getUser().addBounty(city.getLevel() * 200);
       // If the city is owned by someone, we need to tell them about the attack
       if (city.getOwner() != "") {
         API.GetUserData(
@@ -296,10 +297,11 @@ public class Attacks : MonoBehaviour {
         resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
         controller.getUser().increaseResource(i, resourcesWon[i]);
       }
+      // Add bounty equal to the village strength
+      controller.getUser().addBounty(enemyStrength);
       outcomeMessage = String.Format(
         Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
       // Update the resources of the enemy after the attack
-      // TODO: Together with resources store the outcome of the attack
       user.setResources(enemyResources.Select((elem, index) => elem - resourcesWon[index]).ToArray());
       user.registerAttack(new AttackOutcome('p', 'v', controller.getUser().getUsername(), "hideout", resourcesWon));
       PlayFabAdminAPI.UpdateUserData(new UpdateUserDataRequest() {
@@ -340,6 +342,8 @@ public class Attacks : MonoBehaviour {
         controller.getUser().increaseResource(i, resourcesWon[i]);
         city.setResource(i, city.getResources()[i] - resourcesWon[i]);
       }
+      // Add bounty equal to the village strength
+      controller.getUser().addBounty(city.getLevel() * 100);
       outcomeMessage = String.Format(
         Language.Field["ATTACK_VICTORY"], resourcesWon[0], resourcesWon[1], resourcesWon[2]);
       // If the city is owned by someone, we need to tell them about the attack
@@ -604,7 +608,12 @@ public class Attacks : MonoBehaviour {
       worldSpaceUi.transform,
       false
     );
-    shipMarkers[shipNumber].transform.position = new Vector3(place.position.x + 0.35f, place.position.y - 0.25f, 0.0f);
+    // Position of the marker depends on whether there are other ships already in that city
+    int shipsInPlace = 0;
+    foreach (Ship ship in controller.getUser().getVillage().getShips()) {
+      if (ship != null && ship.getSlot() != shipNumber && ship.getCurrentPosition() == place.position)shipsInPlace++;
+    }
+    shipMarkers[shipNumber].transform.position = new Vector3(place.position.x + 0.35f + (0.20f * (shipsInPlace)), place.position.y - 0.25f, 0.0f);
   }
 
   //*****************************************************************

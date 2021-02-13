@@ -231,7 +231,8 @@ public class UI : MonoBehaviour {
   }
 
   public void populateLeaderboard(List<PlayFab.ClientModels.PlayerLeaderboardEntry> leaderboard, string type) {
-    float ENTRY_HEIGHT = 55.0f;
+    localLoading.SetActive(false);
+    float ENTRY_HEIGHT = (float)((localLeaderboard.GetComponent<RectTransform>().rect.height - 25) / 20);
     RectTransform DEFAULT_RECT = leaderboardEntryPrefab.GetComponent<RectTransform>();
     if (type == "local") {
       localLoading.SetActive(false);
@@ -248,10 +249,10 @@ public class UI : MonoBehaviour {
       // Set its top margin based on the position
       RectTransform transf = entry.GetComponent<RectTransform>();
       Vector3 position = transf.anchoredPosition;
-      position.y = -(ENTRY_HEIGHT * i) - 45;
+      position.y = -(ENTRY_HEIGHT * i) - ENTRY_HEIGHT + 10;
       transf.anchoredPosition = position;
+      transf.sizeDelta = new Vector2(transf.sizeDelta.x, ENTRY_HEIGHT - 10);
       // Set all the info from the list entry
-
       foreach (Transform child in entry.transform) {
         child.GetComponent<Text>().text = (
           child.name == "Position" ?

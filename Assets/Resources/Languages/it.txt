@@ -127,3 +127,4 @@ TIP_ONE = 1 - Potenzia il tuo covo con edifici migliori
 TIP_TWO = 2 - Costruisci navi per esplorare
 TIP_THREE = 3 - Attacca città e i covi di altri pirati, per rubare le loro risorse
 HELLO = Ciao
+SOON = Presto disponibile

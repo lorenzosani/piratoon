@@ -35,7 +35,7 @@ public class Bounty : MonoBehaviour {
       updateBountyUI(bounty);
     }
     // If the bounty has changed, update bounty progress on UI
-    if (bounty != previousBounty && bounty != 0)updateBountyUI(bounty);
+    if (bounty != previousBounty && bounty != 0 && SceneManager.GetActiveScene().name == "Hideout")updateBountyUI(bounty);
     Invoke("CheckBounty", 1.0f);
   }
 
