@@ -34,7 +34,7 @@ public static class API {
 
   static City[] citiesUpdated = null;
   static bool updateLastCollected = false;
-  static Debouncer debouncer = new Debouncer(600, () => updateUserData());
+  static Debouncer debouncer = new Debouncer(600, () => updateUserData(playFabId));
   static Debouncer citiesDebouncer = new Debouncer(600, () => {
     if (updateLastCollected) {
       updateCitiesLastCollected();
@@ -179,7 +179,7 @@ public static class API {
       // Retrieve all the data (village, buildings etc.) and show it in the game
       GetUserData(keys, result => {
         // Check if data received is valid
-        if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}") {
+        if (result != null && result.Data.ContainsKey("User")) {
           // If yes, de-serialize and set the data objects
           User user = JsonConvert.DeserializeObject<User>((string)result.Data["User"].Value);
           Village village = JsonConvert.DeserializeObject<Village>((string)result.Data["Village"].Value);
@@ -202,21 +202,7 @@ public static class API {
             controller.getUser().resetAttacks();
           }
         } else {
-          if (result.Data.ContainsKey("User") && result.Data["User"].Value != "") {
-            SetUserData(new string[] {
-              "User",
-              "Village"
-            });
-            controller.getUI().hideLoadingScreen();
-          } else {
-            User user = new User(Guid.NewGuid().ToString(), new Village(0));
-            controller.setUser(user);
-            SetUserData(new string[] {
-              "User",
-              "Village"
-            });
-            controller.getUI().Invoke("hideLoadingScreen", 0.5f);
-          }
+          OnPlayFabError(null, true);
         }
       });
     } else {
@@ -269,14 +255,19 @@ public static class API {
     debouncer.onChange();
   }
 
-  static void updateUserData() {
-    if (request.Count > 0) {
-      PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest() {
-        Data = request, Permission = UserDataPermission.Public
+  async static void updateUserData(string userId) {
+    bool updatedSuccessfully = false;
+    if (request.Count > 0 && userId == playFabId) {
+      PlayFabAdminAPI.UpdateUserData(new PlayFab.AdminModels.UpdateUserDataRequest() {
+        Data = request, Permission = PlayFab.AdminModels.UserDataPermission.Public, PlayFabId = userId
       }, result => {
         Debug.Log("API UPDATE SUCCESSFUL");
+        updatedSuccessfully = true;
         request = new Dictionary<string, string>();
       }, e => OnPlayFabError(e));
+      // If response not received, try again
+      await Task.Delay(1000);
+      if (!updatedSuccessfully)updateUserData(userId);
     }
   }
 

@@ -44,13 +44,7 @@ public static class Mapmaking {
         fetchedMapId = result.Data["currentMap"];
         fetchedPosition = Int32.Parse(result.Data["availablePosition"]);
         Debug.Log("Fetched id: " + fetchedMapId);
-        Debug.Log("Fetched position: " + fetchedPosition);
-        if (fetchedPosition > 33) {
-          Debug.Log("Position is bigger than 33");
-          CreateNewMap();
-        } else {
-          AddToMap(fetchedMapId, fetchedPosition);
-        }
+        AddToMap(fetchedMapId);
       },
       error => {
         Debug.Log(error);
@@ -65,15 +59,14 @@ public static class Mapmaking {
   static void CreateNewMap() {
     Debug.Log("********CREATE MAP***********"); // TO BE REMOVED
     string mapId = Guid.NewGuid().ToString();
-    int position = 0;
 
-    AddToMap(mapId, position, true);
+    AddToMap(mapId, true);
   }
 
   //*****************************************************************
   // ADD player to a playfab group holding a info about a map
   //*****************************************************************
-  static void AddToMap(string mapId, int position, bool newMap = false) {
+  static void AddToMap(string mapId, bool newMap = false) {
     Debug.Log("********ADD TO MAP " + mapId + "***********"); // TO BE REMOVED
     if (stopped)return;
 
@@ -88,7 +81,7 @@ public static class Mapmaking {
       }, result => {
         PlayFabClientAPI.ExecuteCloudScript(new PlayFab.ClientModels.ExecuteCloudScriptRequest() {
           FunctionName = "addToGroup", FunctionParameter = new string[] {
-            result.Group.Id, API.entityId, position.ToString(), controller.getUser().getUsername(), API.playFabId, cities
+            result.Group.Id, API.entityId, "0", controller.getUser().getUsername(), API.playFabId, cities
           }
         }, r => {
           if (r.Error != null) {
@@ -101,10 +94,11 @@ public static class Mapmaking {
               '}'
             })
           );
-          Debug.Log("Fetched position: " + Position);
-          if (Position > 33) {
+          if (Position == -1 || Position > 33) {
+            Debug.Log("Position unavailable, creating new map");
             CreateNewMap();
           } else {
+            Debug.Log("Adding player at position: " + Position);
             UpdateTitleData(mapId, Position, newMap);
           };
         }, e => {
@@ -126,7 +120,7 @@ public static class Mapmaking {
           FunctionName = "addToGroup", FunctionParameter = new string[] {
             result.Group.Id,
               API.entityId,
-              position.ToString(),
+              "0",
               controller.getUser().getUsername(),
               API.playFabId,
               "none"
@@ -136,16 +130,17 @@ public static class Mapmaking {
             Debug.Log(r.Error.StackTrace);
             Stop();
           }
-          Debug.Log(r.FunctionResult.ToString());
           int Position = Int32.Parse(
             r.FunctionResult.ToString().Split(':')[1].Trim(new char[] {
               ' ',
               '}'
             })
           );
-          if (Position > 33) {
+          if (Position == -1 || Position > 33) {
+            Debug.Log("Position unavailable, creating new map");
             CreateNewMap();
           } else {
+            Debug.Log("Adding player at position: " + Position);
             UpdateTitleData(mapId, Position, newMap);
           };
         }, e => {

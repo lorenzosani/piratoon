@@ -6,7 +6,7 @@ public static class MapPositions {
     new Vector3(-28.3f, 16.03f, 0f),
     new Vector3(-22.18f, 10.14f, 0f),
     new Vector3(-29.08f, 4.84f, 0f),
-    new Vector3(-33.68f, -2f, 0f),
+    new Vector3(-33.00f, -2f, 0f),
     new Vector3(-30.3f, -11.83f, 0f),
     new Vector3(-21.43f, -5.45f, 0f),
     new Vector3(-18.87f, -13.69f, 0f),
