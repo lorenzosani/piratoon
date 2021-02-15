@@ -49,7 +49,7 @@ public class Map {
 
   public void setCityConquered(int cityNo, string owner) {
     City city = cities[cityNo];
-    city.setOwner(owner);
+    city.setOwner(owner, true);
     city.setCooldownEnd(DateTime.UtcNow.AddHours(24));
   }
 

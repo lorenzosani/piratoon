@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class MapUI : MonoBehaviour {
   ControllerScript controller;
-  DateTime cooldown;
   string formattedCooldown = "";
 
   [Header("Resources and Bounty")]
@@ -127,16 +126,6 @@ public class MapUI : MonoBehaviour {
     stoneValue.text = formatNumber(resources[1]);
     goldValue.text = formatNumber(resources[2]);
     pearlValue.text = controller.getUser().getPearl().ToString();
-    // Set city conquests cooldown timer
-    if (cooldown != null && DateTime.Compare(cooldown, DateTime.UtcNow) > 0) {
-      int timeLeft = (int)(cooldown - System.DateTime.UtcNow).TotalSeconds;
-      if (timeLeft <= 0) {
-        cityCooldown.SetActive(false);
-        cityAttackButton.SetActive(true);
-      }
-      cooldownTimer.text = formatTime(timeLeft);
-      conqCooldownText.text = Language.Field["UNATTACKABLE"] + " " + formatTime(timeLeft);
-    }
   }
 
   public void showLoadingScreen(bool show = true) {
@@ -166,32 +155,36 @@ public class MapUI : MonoBehaviour {
     hideoutPopupInfo.SetActive(true);
   }
 
-  public void showCityPopup(string name, int level, int[] production, int[] resources, DateTime cooldownEnd, string owner) {
-    // Assign the correct values to the different UI bits
-    cityName.text = name;
-    cityLevel.text = level.ToString();
+  public void showCityPopup(City city) {
+    // Show the popup
+    cityPopupLoading.SetActive(true);
+    cityPopupInfo.SetActive(false);
+    cityPopup.SetActive(true);
+    // Assign the correct values to the different UI parts
+    int[] production = city.getHourlyProduction();
+    int[] resources = city.getResources();
+    cityName.text = city.getName();
+    cityLevel.text = city.getLevel().ToString();
     cityWoodProduction.text = formatNumber(production[0]);
     cityStoneProduction.text = formatNumber(production[1]);
     cityGoldProduction.text = formatNumber(production[2]);
     cityWood.text = formatNumber(resources[0]);
     cityStone.text = formatNumber(resources[1]);
     cityGold.text = formatNumber(resources[2]);
-    // Check if the city can be attacked or has just been conquered
-    if (cooldownEnd != null && DateTime.Compare(cooldownEnd, DateTime.UtcNow) > 0) {
-      cooldownTitle.text = Language.Field["COOLDOWN"];
-      cooldown = cooldownEnd;
-      cityAttackButton.SetActive(false);
-      cityCooldown.SetActive(true);
-    } else {
-      cityCooldown.SetActive(false);
-      cityAttackButton.SetActive(true);
-    }
-    // Show all the information
-    cityPopupLoading.SetActive(true);
-    cityPopupInfo.SetActive(false);
-    cityPopup.SetActive(true);
     // Check if the city is owned by some player
-    if (owner != "") {
+    if (city.getOwner() != "") {
+      // Check if the city can be attacked or has just been conquered
+      DateTime cooldownEnd = city.getCooldownEnd();
+      if (cooldownEnd != null && DateTime.Compare(cooldownEnd, DateTime.UtcNow) > 0) {
+        cooldownTitle.text = Language.Field["COOLDOWN"];
+        int timeLeft = (int)(city.getCooldownEnd() - System.DateTime.UtcNow).TotalSeconds;
+        cooldownTimer.text = Language.Field["UNATTACKABLE"] + " " + formatTime(timeLeft);
+        cityAttackButton.SetActive(false);
+        cityCooldown.SetActive(true);
+      } else {
+        cityCooldown.SetActive(false);
+        cityAttackButton.SetActive(true);
+      }
       string ownerUsername = "";
       API.GetUserData(new List<string>() { "User" }, (result) => {
         if (result != null && result.Data.ContainsKey("User") && result.Data["User"].Value != "{}") {
@@ -203,7 +196,7 @@ public class MapUI : MonoBehaviour {
           cityPopupLoading.SetActive(false);
           cityPopupInfo.SetActive(true);
         }
-      }, owner);
+      }, city.getOwner());
     } else {
       cityOwnerObject.SetActive(false);
       cityPopupLoading.SetActive(false);
@@ -211,11 +204,20 @@ public class MapUI : MonoBehaviour {
     }
   }
 
-  public void showConqueredCityPopup(string name, int level, int[] production, int[] resources, int[] upgradeCost, DateTime cooldownEnd) {
+  public void showConqueredCityPopup(City city) {
+    // Set city cooldown timer
+    if (city.getCooldownEnd() != null && DateTime.Compare(city.getCooldownEnd(), DateTime.UtcNow) > 0) {
+      int timeLeft = (int)(city.getCooldownEnd() - System.DateTime.UtcNow).TotalSeconds;
+      conqCooldownText.text = Language.Field["UNATTACKABLE"] + " " + formatTime(timeLeft);
+    } else {
+      conqCooldownText.text = "";
+    }
     // Populate ui with the correct text
-    cooldown = cooldownEnd;
-    conqCityName.text = name;
-    conqCityLevel.text = level.ToString();
+    int[] production = city.getHourlyProduction();
+    int[] resources = city.getResources();
+    int[] upgradeCost = city.getUpgradeCost();
+    conqCityName.text = city.getName();
+    conqCityLevel.text = city.getLevel().ToString();
     conqCityWoodProduction.text = formatNumber(production[0]);
     conqCityStoneProduction.text = formatNumber(production[1]);
     conqCityGoldProduction.text = formatNumber(production[2]);

@@ -220,8 +220,10 @@ public class Attacks : MonoBehaviour {
       controller.getMap().setCityConquered(cityNumber, API.playFabId);
       outcomeMessage = String.Format(Language.Field["CITY_CONQUEST"], CityNames.getCity(cityNumber));
       controller.getUser().addBounty(city.getLevel() * 200);
+      // This updates the map
+      mapController.reRenderCities();
       // If the city is owned by someone, we need to tell them about the attack
-      if (city.getOwner() != "") {
+      if (city.getOwner() != "" && city.getOwner() != API.playFabId) {
         API.GetUserData(
           new List<string> { "User" },
           result => {

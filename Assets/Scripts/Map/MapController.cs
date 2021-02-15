@@ -53,8 +53,8 @@ public class MapController : MonoBehaviour {
     clouds.startRemoval();
     ui.showLoadingScreen(false);
     Camera.main.GetComponent<PanAndZoom>().Zoom(2, 5);
-    checkCityProduction();
-    InvokeRepeating("checkCityProduction", 5.0f, 5.0f);
+    reRenderCities();
+    InvokeRepeating("reRenderCities", 5.0f, 5.0f);
   }
 
   //*****************************************************************
@@ -107,22 +107,9 @@ public class MapController : MonoBehaviour {
   }
   public void showCityInfo(City city) {
     if (city.getOwner() == API.playFabId) {
-      ui.showConqueredCityPopup(
-        city.getName(),
-        city.getLevel(),
-        city.getHourlyProduction(),
-        city.getResources(),
-        city.getUpgradeCost(),
-        city.getCooldownEnd());
+      ui.showConqueredCityPopup(city);
     } else {
-      ui.showCityPopup(
-        city.getName(),
-        city.getLevel(),
-        city.getHourlyProduction(),
-        city.getResources(),
-        city.getCooldownEnd(),
-        city.getOwner()
-      );
+      ui.showCityPopup(city);
     }
   }
 
@@ -149,18 +136,17 @@ public class MapController : MonoBehaviour {
   //*****************************************************************
   // CHECK whether resources produced by conquered cities can be collected
   //*****************************************************************
-  public void checkCityProduction() {
+  public void reRenderCities() {
     // Get all cities owned by the user
     int[] cities = controller.getMap().getCitiesOwnedBy(API.playFabId);
-    // For each city check whether there are resources to collect
     foreach (int cityNumber in cities) {
       City city = controller.getMap().getCity(cityNumber);
       GameObject cityObject = GameObject.Find("city_" + cityNumber);
       Vector3 pos = cityObject.transform.position;
-      // Set the correct icon
+      // For each city, set the correct icon
       cityObject.GetComponent<SpriteRenderer>().sprite = conqueredCityIcon;
       int[] resources = city.getResources();
-      if (resources.All(x => x <= 0) || cityTooltips[cityNumber] != null)return;
+      if (resources.All(x => x <= 0) || cityTooltips[cityNumber] != null)continue;
       // Spawn a new tooltip prefab at that position
       cityTooltips[cityNumber] = (GameObject)Instantiate(
         getTooltipPrefab(resources), worldSpaceUi.transform, false);
@@ -200,7 +186,7 @@ public class MapController : MonoBehaviour {
       controller.getUser().increaseResource(resNo, resourcesToCollect);
       Destroy(cityTooltips[cityNumber]);
       cityTooltips[cityNumber] = null;
-      checkCityProduction();
+      reRenderCities();
     });
     obj.layer = 10;
     obj.GetComponent<EventTrigger>().triggers.Add(entry);
