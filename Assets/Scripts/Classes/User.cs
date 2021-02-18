@@ -129,6 +129,10 @@ public class User {
     return pearl;
   }
 
+  public void increasePearl(int p) {
+    pearl += p;
+  }
+
   public void setPearl(int p) {
     pearl = p;
   }
