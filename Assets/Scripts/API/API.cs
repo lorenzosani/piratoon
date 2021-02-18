@@ -35,6 +35,7 @@ public static class API {
   static City[] citiesUpdated = null;
   static bool updateLastCollected = false;
   static Debouncer debouncer = new Debouncer(600, () => updateUserData(playFabId));
+  static Debouncer bountyDebouncer = new Debouncer(1000, () => debouncedUpdateBounty());
   static Debouncer citiesDebouncer = new Debouncer(600, () => {
     if (updateLastCollected) {
       updateCitiesLastCollected();
@@ -251,7 +252,7 @@ public static class API {
         request[key] = data[key];
       }
     }
-    // Debounce API calls
+    // Debounce API call
     debouncer.onChange();
   }
 
@@ -511,18 +512,15 @@ public static class API {
   //*****************************************************************
   // SAVE the player's bounty, which is taken care separately (because of leaderboard)
   //*****************************************************************
-  static int timeToCallBounty = 0;
-  static int latestBountyValue = 0;
-  public async static void UpdateBounty(int value) {
-    // Debounce the API call
-    timeToCallBounty = 500;
-    latestBountyValue = value;
-    while (timeToCallBounty > 0) {
-      await Task.Delay(10);
-      timeToCallBounty = timeToCallBounty - 10;
-    }
+  static int latestBountyValue = -1;
+  public static void UpdateBounty(int value) {
     // Make the api call
-    if (IsRegistered() && controller.getUser().getUsername() != null) {
+    latestBountyValue = value;
+    bountyDebouncer.onChange();
+  }
+
+  public static void debouncedUpdateBounty() {
+    if (IsRegistered() && controller.getUser().getUsername() != null && latestBountyValue != -1) {
       PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest {
           Statistics = new List<StatisticUpdate> {
             new StatisticUpdate {
