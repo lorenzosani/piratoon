@@ -99,6 +99,7 @@ public class ShipyardMenu : MonoBehaviour {
     foreach (Transform slot in shipyardMenuSlots.transform) {
       if (i == slotNo) {
         timer = slot.Find("Description").Find("Timer").gameObject;
+        slot.Find("Description").Find("SpeedUp").gameObject.SetActive(true);
         timer.SetActive(true);
         break;
       }
@@ -107,7 +108,35 @@ public class ShipyardMenu : MonoBehaviour {
     return timer.GetComponent<Text>();
   }
 
-  public void setConstructionFinished() {
+  public void setConstructionFinished(int slotNo) {
     currentlyBuilding = false;
+    // Show the next level for this ship
+    Ship[] ships = controller.getUser().getVillage().getShips();
+    int i = 0;
+    foreach (Transform slot in shipyardMenuSlots.transform) {
+      if (i == slotNo) {
+        slot.Find("Image").GetComponent<Image>().sprite = (shipSprites[ships[i].getLevel() < 7 ? ships[i].getLevel() : 6]);
+        slot.Find("Description").Find("Button").Find("Text").GetComponent<Text>().text = Language.Field["UPGRADE"];
+        slot.Find("Description").Find("Button").gameObject.SetActive(true);
+        slot.Find("Description").Find("Timer").gameObject.SetActive(false);
+        slot.Find("Description").Find("SpeedUp").gameObject.SetActive(false);
+      }
+      // Add correct price
+      string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
+      int[] cost = ships[i] == null ? new int[3] { 100 + (200 * i), 50 + (100 * i), 50 + (100 * i) } : ships[i].getCost();
+      int[] resOwned = controller.getUser().getResources();
+      for (int j = 0; j < 3; j++) {
+        Text textObj = slot.Find("Description").Find("Cost").Find(resourcesNames[j]).gameObject.GetComponent<Text>();
+        textObj.text = controller.getUI().formatNumber(cost[j]);
+        // Set price as red if user can't afford
+        if (cost[0] > resOwned[0] || cost[1] > resOwned[1] || cost[2] > resOwned[2]) {
+          textObj.color = new Color(1.0f, 0.66f, 0.66f, 1.0f);
+          slot.Find("Description").Find("Button").gameObject.SetActive(false);
+        } else {
+          textObj.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+      }
+      i++;
+    }
   }
 }

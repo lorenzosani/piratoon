@@ -25,6 +25,7 @@ public class Ships : MonoBehaviour {
 
   public ShipyardMenu shipyardMenu;
   public GameObject[] shipPrefabs;
+  public GameObject finishShipPopup;
 
   //*****************************************************************
   // START and UPDATE methods
@@ -130,7 +131,7 @@ public class Ships : MonoBehaviour {
     s.setBuilt(true);
     spawn(s);
     currentlyBuilding = null;
-    shipyardMenu.setConstructionFinished();
+    shipyardMenu.setConstructionFinished(s.getSlot());
   }
 
   //This starts the construction of a building
@@ -189,6 +190,34 @@ public class Ships : MonoBehaviour {
     }
     controller.getUser().setResources(remainingResources);
     return true;
+  }
+
+  public void showPearlsConfirmation() {
+    // Get the cost in pearls
+    int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+    int cost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+    // Populate the popup
+    Transform textObj = finishShipPopup.transform.Find("Text");
+    textObj.GetComponent<Text>().text = String.Format(Language.Field["PAY_PEARL"], cost.ToString());
+    Transform buttonObj = finishShipPopup.transform.Find("Button");
+    buttonObj.Find("Cost").GetComponent<Text>().text = cost.ToString();
+    // Show the popup
+    finishShipPopup.SetActive(true);
+  }
+
+  public void buildWithPearls() {
+    // Get the cost in pearls
+    int timeLeft = (int)(currentlyBuilding.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds;
+    int cost = (int)Math.Pow(Math.Pow(timeLeft / 60, 2), (double)1 / 3);
+    cost = cost < 1 ? 1 : cost;
+    // Check if the user has enough pearls
+    if (cost > controller.getUser().getPearl()) {
+      // Show message stating there are not enough pearls
+      controller.getUI().showPopupMessage(Language.Field["NOT_PEARL"]);
+      return;
+    }
+    controller.getUser().setPearl(controller.getUser().getPearl() - cost);
+    finishShip(currentlyBuilding);
   }
 
   void playBuildingSound() {
