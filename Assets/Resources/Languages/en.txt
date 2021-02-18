@@ -128,3 +128,4 @@ TIP_TWO = 2 - Build ships to explore the sea
 TIP_THREE = 3 - Attack cities and other pirates' hideouts to steal their resources
 HELLO = Hello
 SOON = Coming soon
+UPGRADING = This ship is currently being upgraded! Please wait until the upgrade is complete or use another ship.
