@@ -294,11 +294,10 @@ public class Attacks : MonoBehaviour {
     }
     // If victory, compute the resources won
     if (getRandomOutcome(userStrength, enemyStrength)) {
-      int[] resourcesWon = new int[3];
-      for (int i = 0; i < 3; i++) {
-        resourcesWon[i] = (int)enemyResources[i] / 5 * ship.getLevel();
-        controller.getUser().increaseResource(i, resourcesWon[i]);
-      }
+      int[] resourcesWon = computeResourceWon(enemyResources, userStrength, enemyStrength);
+      controller.getUser().increaseResource(0, resourcesWon[0]);
+      controller.getUser().increaseResource(1, resourcesWon[1]);
+      controller.getUser().increaseResource(2, resourcesWon[2]);
       // Add bounty equal to the village strength
       controller.getUser().addBounty(enemyStrength);
       outcomeMessage = String.Format(
@@ -338,9 +337,8 @@ public class Attacks : MonoBehaviour {
     string outcomeMessage = "";
     if (getRandomOutcome(userStrength, city.getLevel() * 100)) { // User victory
       User user = null;
-      int[] resourcesWon = new int[3];
+      int[] resourcesWon = computeResourceWon(city.getResources(), userStrength, city.getLevel() * 100);
       for (int i = 0; i < 3; i++) {
-        resourcesWon[i] = (int)city.getResources()[i] / 5 * ship.getLevel();
         controller.getUser().increaseResource(i, resourcesWon[i]);
         city.setResource(i, city.getResources()[i] - resourcesWon[i]);
       }
@@ -382,6 +380,14 @@ public class Attacks : MonoBehaviour {
     }
     // Show outcome message
     ui.showPopupMessage(outcomeMessage);
+  }
+
+  int[] computeResourceWon(int[] res, int userStrength, int enemyStrength) {
+    double scalar = 0.2 * (userStrength / enemyStrength) + 0.2;
+    if (scalar < 0.2)scalar = 0.2;
+    if (scalar > 1)scalar = 1;
+    return new int[3] {
+      (int)(res[0] * scalar), (int)(res[1] * scalar), (int)(res[2] * scalar) };
   }
 
   //*****************************************************************
@@ -504,6 +510,11 @@ public class Attacks : MonoBehaviour {
   public void spawnShip(int shipNumber) {
     Ship ship = controller.getUser().getVillage().getShip(shipNumber);
     Vector3 currentShipPosition = ship.getCurrentPosition();
+    // Check if the ship is undergoing upgrading and can't navigate
+    if (ship.getCompletionTime() > DateTime.UtcNow) {
+      ui.showPopupMessage(Language.Field["UPGRADING"]);
+      return;
+    }
     // Create ShipJourney object and add it to the ship
     if (selectedTarget != null) {
       if (getNavigationTarget(shipNumber).position == currentShipPosition) {
