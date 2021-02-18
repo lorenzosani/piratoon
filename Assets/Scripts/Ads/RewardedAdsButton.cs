@@ -50,6 +50,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
       // Reward the user for watching the ad to completion.
       if (pearlsNumber > 0) {
         controller.getUser().increasePearl(pearlsNumber);
+        controller.getUI().showPopupMessage(string.Format(Language.Field["REWARD"], pearlsNumber.ToString()));
       }
     } else if (showResult == ShowResult.Skipped) {
       // Do not reward the user for skipping the ad.

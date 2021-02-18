@@ -95,7 +95,6 @@ public class ShipyardMenu : MonoBehaviour {
 
   public Text getConstructionTimer(int slotNo) {
     GameObject timer = null;
-
     int i = 0;
     foreach (Transform slot in shipyardMenuSlots.transform) {
       if (i == slotNo) {
