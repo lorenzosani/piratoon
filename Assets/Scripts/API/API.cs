@@ -431,20 +431,16 @@ public static class API {
   // GET up to date information about cities on the map
   //*****************************************************************
   public static void GetCities(string mapId, MapUser[] players) {
-    Debug.Log(1);
     if (mapEntityId == string.Empty) {
       GetMapEntityId(() => GetCities(mapId, players));
       return;
     }
-    Debug.Log(2);
     // Get the url needed to download the file
     PlayFabDataAPI.GetFiles(new PlayFab.DataModels.GetFilesRequest {
       Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" }
     }, r => {
-      Debug.Log(3);
       if (r.Metadata.Keys.Contains("citiesData") && r.Metadata.Keys.Contains("lastCollectedData")) {
         // Get cities data
-        Debug.Log(4);
         PlayFabHttp.SimpleGetCall(r.Metadata["citiesData"].DownloadUrl,
           res => {
             // ATTENTION:
@@ -452,20 +448,17 @@ public static class API {
             // as the automatic convertion didn't work. Very sad :(
             ////////////////////////////////////////////
             // First we're splitting the json in chunks each representing a city
-            Debug.Log(5);
             string[] jsons = Encoding.UTF8.GetString(res).Split(new [] { "}," }, StringSplitOptions.None);
             City[] citiesData = new City[jsons.Length];
             // Get resources' last collected data
             PlayFabHttp.SimpleGetCall(r.Metadata["lastCollectedData"].DownloadUrl,
               async result => {
-                Debug.Log(6);
                 // If not all data is obtained, retry
                 if (result.Length < 9000) {
                   await Task.Delay(1000);
                   GetCities(mapId, players);
                   return;
                 }
-                Debug.Log(7);
                 List<string> errors = new List<string>();
                 Debug.Log(result.Length);
                 Debug.Log(Encoding.UTF8.GetString(result));
@@ -477,7 +470,6 @@ public static class API {
                     Converters = { new Newtonsoft.Json.Converters.IsoDateTimeConverter() }
                 });
                 foreach (string error in errors)Debug.Log(error);
-                Debug.Log(8);
                 char[] charsToTrim = new char[5] { '[', ']', '}', '{', '"' };
                 for (int i = 0; i < citiesData.Length; i++) {
                   // Then, for each city we separate all the info we have about it
@@ -496,8 +488,8 @@ public static class API {
                   cityObject.sethpw();
                   // And then store the newly created city in an array containing all cities
                   citiesData[i] = cityObject;
+                  if (i % 5 == 0)Debug.Log("City " + i + " loaded");
                 }
-                Debug.Log(9);
                 // All this is then saved in the controller
                 controller.setMap(new Map(mapId, players, citiesData));
               }, error => Debug.Log(error));

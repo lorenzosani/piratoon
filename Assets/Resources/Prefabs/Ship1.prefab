@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 341994963171954877}
   - component: {fileID: 94760401919217755}
   - component: {fileID: -2980594781673395405}
+  - component: {fileID: 7638139947427477144}
   m_Layer: 0
   m_Name: Ship1
   m_TagString: Untagged
@@ -210,3 +211,25 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
+--- !u!114 &7638139947427477144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341994963171954876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  smoothType: 0
+  subdivisions: 0
+  iterations: 2
+  strength: 0.5
+  uniformLength: 0
+  maxSegmentLength: 2
+  bezierTangentLength: 1
+  offset: 0.2
+  factor: 0.1

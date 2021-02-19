@@ -109,20 +109,24 @@ public class ShipyardMenu : MonoBehaviour {
   }
 
   public void setConstructionFinished(Ship ship) {
+    Debug.Log("1");
     currentlyBuilding = false;
     int i = 0;
     foreach (Transform slot in shipyardMenuSlots.transform) {
       if (i == ship.getSlot()) {
+        Debug.Log("2");
         slot.Find("Image").GetComponent<Image>().sprite = (shipSprites[ship.getLevel() < 7 ? ship.getLevel() : 6]);
         slot.Find("Description").Find("Button").Find("Text").GetComponent<Text>().text = Language.Field["UPGRADE"];
         slot.Find("Description").Find("Button").gameObject.SetActive(true);
         slot.Find("Description").Find("Timer").gameObject.SetActive(false);
         slot.Find("Description").Find("SpeedUp").gameObject.SetActive(false);
       }
+      Debug.Log("3");
       // Add correct price
       string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
       int[] cost = ship.getCost();
       int[] resOwned = controller.getUser().getResources();
+      Debug.Log("4");
       for (int j = 0; j < 3; j++) {
         Text textObj = slot.Find("Description").Find("Cost").Find(resourcesNames[j]).gameObject.GetComponent<Text>();
         textObj.text = controller.getUI().formatNumber(cost[j]);
@@ -134,6 +138,7 @@ public class ShipyardMenu : MonoBehaviour {
           textObj.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         }
       }
+      Debug.Log("5");
       i++;
     }
   }

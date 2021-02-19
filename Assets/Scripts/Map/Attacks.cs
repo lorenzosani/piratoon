@@ -106,31 +106,31 @@ public class Attacks : MonoBehaviour {
   // CHANGE the ship orientation based on its navigation direction
   //*****************************************************************
   void detectDirection() {
-    float THRESHOLD = 0.001f;
     for (int i = 0; i < SHIPS_MAX_NUMBER; i++) {
       if (shipsSpawned[i] == null)continue;
       // Get the sprite renderer
       SpriteRenderer sr = shipsSpawned[i].transform.GetChild(0).GetComponent<SpriteRenderer>();
       Vector3 speed = paths[i].desiredVelocity;
+      float threshold = paths[i].maxSpeed / 2.0f;
       string direction = "/S";
-      if (speed.x <= THRESHOLD && speed.x >= -THRESHOLD) {
-        if (speed.y >= THRESHOLD) {
+      if (speed.x <= threshold && speed.x >= -threshold) {
+        if (speed.y >= threshold) {
           direction = "/N";
         } else {
           direction = "/S";
         }
-      } else if (speed.x >= THRESHOLD) {
-        if (speed.y >= -THRESHOLD && speed.y <= THRESHOLD) {
+      } else if (speed.x >= threshold) {
+        if (speed.y >= -threshold && speed.y <= threshold) {
           direction = "/E";
-        } else if (speed.y >= THRESHOLD) {
+        } else if (speed.y >= threshold) {
           direction = "/NE";
         } else {
           direction = "/SE";
         }
       } else {
-        if (speed.y >= -THRESHOLD && speed.y <= THRESHOLD) {
+        if (speed.y >= -threshold && speed.y <= threshold) {
           direction = "/W";
-        } else if (speed.y >= THRESHOLD) {
+        } else if (speed.y >= threshold) {
           direction = "/NW";
         } else {
           direction = "/SW";
