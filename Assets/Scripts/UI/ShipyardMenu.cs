@@ -108,14 +108,12 @@ public class ShipyardMenu : MonoBehaviour {
     return timer.GetComponent<Text>();
   }
 
-  public void setConstructionFinished(int slotNo) {
+  public void setConstructionFinished(Ship ship) {
     currentlyBuilding = false;
-    // Show the next level for this ship
-    Ship[] ships = controller.getUser().getVillage().getShips();
     int i = 0;
     foreach (Transform slot in shipyardMenuSlots.transform) {
-      if (i == slotNo) {
-        slot.Find("Image").GetComponent<Image>().sprite = (shipSprites[ships[i].getLevel() < 7 ? ships[i].getLevel() : 6]);
+      if (i == ship.getSlot()) {
+        slot.Find("Image").GetComponent<Image>().sprite = (shipSprites[ship.getLevel() < 7 ? ship.getLevel() : 6]);
         slot.Find("Description").Find("Button").Find("Text").GetComponent<Text>().text = Language.Field["UPGRADE"];
         slot.Find("Description").Find("Button").gameObject.SetActive(true);
         slot.Find("Description").Find("Timer").gameObject.SetActive(false);
@@ -123,7 +121,7 @@ public class ShipyardMenu : MonoBehaviour {
       }
       // Add correct price
       string[] resourcesNames = new string[3] { "Wood", "Stone", "Gold" };
-      int[] cost = ships[i] == null ? new int[3] { 100 + (200 * i), 50 + (100 * i), 50 + (100 * i) } : ships[i].getCost();
+      int[] cost = ship.getCost();
       int[] resOwned = controller.getUser().getResources();
       for (int j = 0; j < 3; j++) {
         Text textObj = slot.Find("Description").Find("Cost").Find(resourcesNames[j]).gameObject.GetComponent<Text>();

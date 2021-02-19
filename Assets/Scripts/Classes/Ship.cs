@@ -170,6 +170,10 @@ public class Ship {
 
   public void setBuilt(bool b) {
     built = b;
+    if (b)completionTime = DateTime.UtcNow;
+    API.SetUserData(new string[] {
+      "Village"
+    });
   }
 
   public bool isBuilt() {

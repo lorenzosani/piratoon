@@ -387,7 +387,8 @@ public class Attacks : MonoBehaviour {
     if (scalar < 0.2)scalar = 0.2;
     if (scalar > 1)scalar = 1;
     return new int[3] {
-      (int)(res[0] * scalar), (int)(res[1] * scalar), (int)(res[2] * scalar) };
+      (int)(res[0] * scalar), (int)(res[1] * scalar), (int)(res[2] * scalar)
+    };
   }
 
   //*****************************************************************
@@ -533,7 +534,7 @@ public class Attacks : MonoBehaviour {
       int prefabNumber = ship.getLevel() < 7 ? ship.getLevel() : 6;
       shipsSpawned[shipNumber] = (GameObject)Instantiate(
         (GameObject)Resources.Load("Prefabs/Ship" + prefabNumber, typeof(GameObject)),
-        getNearestSeaPosition(currentShipPosition),
+        getNearestSeaPosition(currentShipPosition, getNavigationTarget(shipNumber).position),
         Quaternion.identity
       );
       paths[shipNumber] = shipsSpawned[shipNumber].GetComponent<ShipPath>();
@@ -575,7 +576,9 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   // RETURNS the closest position that happens to be on the sea, from any given position
   //*****************************************************************
-  Vector3 getNearestSeaPosition(Vector3 pos) {
+  Vector3 getNearestSeaPosition(Vector3 startPos, Vector3 endPos) {
+    Vector3 direction = (startPos - endPos).normalized;
+    Vector3 pos = startPos - (direction / 4.0f);
     NNInfo nn = AstarPath.active.GetNearest(pos, NNConstraint.Default);
     if (nn.node != null) {
       return (Vector3)nn.node.position;

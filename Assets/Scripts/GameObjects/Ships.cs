@@ -131,7 +131,7 @@ public class Ships : MonoBehaviour {
     s.setBuilt(true);
     spawn(s);
     currentlyBuilding = null;
-    shipyardMenu.setConstructionFinished(s.getSlot());
+    shipyardMenu.setConstructionFinished(s);
   }
 
   //This starts the construction of a building
