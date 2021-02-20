@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,6 +13,7 @@ using PlayFab.DataModels;
 using PlayFab.GroupsModels;
 using PlayFab.Internal;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public static class API {
   public static string androidId = string.Empty;
@@ -430,6 +432,8 @@ public static class API {
   //*****************************************************************
   // GET up to date information about cities on the map
   //*****************************************************************
+  static string[] cities = null;
+  static string lastCollected = null;
   public static void GetCities(string mapId, MapUser[] players) {
     if (mapEntityId == string.Empty) {
       GetMapEntityId(() => GetCities(mapId, players));
@@ -438,67 +442,91 @@ public static class API {
     // Get the url needed to download the file
     PlayFabDataAPI.GetFiles(new PlayFab.DataModels.GetFilesRequest {
       Entity = new PlayFab.DataModels.EntityKey { Id = mapEntityId, Type = "group" }
-    }, r => {
+    }, async r => {
       if (r.Metadata.Keys.Contains("citiesData") && r.Metadata.Keys.Contains("lastCollectedData")) {
         // Get cities data
-        PlayFabHttp.SimpleGetCall(r.Metadata["citiesData"].DownloadUrl,
-          res => {
-            // ATTENTION:
-            // Here we need to manually convert the json to City objects
-            // as the automatic convertion didn't work. Very sad :(
-            ////////////////////////////////////////////
-            // First we're splitting the json in chunks each representing a city
-            string[] jsons = Encoding.UTF8.GetString(res).Split(new [] { "}," }, StringSplitOptions.None);
-            City[] citiesData = new City[jsons.Length];
-            // Get resources' last collected data
-            PlayFabHttp.SimpleGetCall(r.Metadata["lastCollectedData"].DownloadUrl,
-              async result => {
-                // If not all data is obtained, retry
-                if (result.Length < 9000) {
-                  await Task.Delay(1000);
-                  GetCities(mapId, players);
-                  return;
-                }
-                List<string> errors = new List<string>();
-                Debug.Log(result.Length);
-                Debug.Log(Encoding.UTF8.GetString(result));
-                DateTime[, ] lastCollectedData = JsonConvert.DeserializeObject<DateTime[, ]>(Encoding.UTF8.GetString(result), new JsonSerializerSettings {
-                  Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) {
-                      errors.Add(args.ErrorContext.Error.Message);
-                      args.ErrorContext.Handled = true;
-                    },
-                    Converters = { new Newtonsoft.Json.Converters.IsoDateTimeConverter() }
-                });
-                foreach (string error in errors)Debug.Log(error);
-                char[] charsToTrim = new char[5] { '[', ']', '}', '{', '"' };
-                for (int i = 0; i < citiesData.Length; i++) {
-                  // Then, for each city we separate all the info we have about it
-                  string[] city = jsons[i].Split(',');
-                  // And we manually populate a City object with that info
-                  City cityObject = new City(city[0].Split(':')[1].Trim(charsToTrim));
-                  cityObject.setLevel(Int32.Parse(city[1].Split(':')[1].Trim(charsToTrim)));
-                  cityObject.setResources(new int[3] {
-                    Int32.Parse(city[2].Split(':')[1].Trim(charsToTrim)),
-                      Int32.Parse(city[3].Trim(charsToTrim)),
-                      Int32.Parse(city[4].Trim(charsToTrim))
-                  }, false);
-                  cityObject.setOwner(city[5].Split(':')[1].Trim(charsToTrim), false);
-                  cityObject.setCooldownEnd(DateTime.Parse(city[6].Split(new char[1] { ':' }, 2)[1].Trim(charsToTrim)), false);
-                  cityObject.setLastCollected(new DateTime[] { lastCollectedData[i, 0], lastCollectedData[i, 1], lastCollectedData[i, 2] });
-                  cityObject.sethpw();
-                  // And then store the newly created city in an array containing all cities
-                  citiesData[i] = cityObject;
-                  if (i % 5 == 0)Debug.Log("City " + i + " loaded");
-                }
-                // All this is then saved in the controller
-                controller.setMap(new Map(mapId, players, citiesData));
-              }, error => Debug.Log(error));
-          }, err => Debug.Log(err));
+        fetchCitiesFile(r.Metadata["citiesData"].DownloadUrl);
+        // Get resources' last collected data
+        fetchLastCollectedFile(r.Metadata["lastCollectedData"].DownloadUrl);
+        Debug.Log(2);
+        // Check if both datasets are retrieved, if not wait.
+        while (cities == null || lastCollected == null) {
+          await Task.Delay(100);
+        }
+        // If both are received check their integrity
+        if (cities.Length != 103 || lastCollected.Length < 9400) {
+          // If integrity is compromised, retry
+          GetCities(mapId, players);
+          return;
+        }
+        // Otherwise, deserialize both datasets
+        City[] citiesData = new City[cities.Length];
+        List<string> errors = new List<string>();
+        DateTime[, ] lastCollectedData = JsonConvert.DeserializeObject<DateTime[, ]>(lastCollected, new JsonSerializerSettings {
+          Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) {
+              errors.Add(args.ErrorContext.Error.Message);
+              args.ErrorContext.Handled = true;
+            },
+            Converters = { new Newtonsoft.Json.Converters.IsoDateTimeConverter() }
+        });
+        foreach (string error in errors)Debug.Log(error);
+        // Compile and store data
+        char[] charsToTrim = new char[5] { '[', ']', '}', '{', '"' };
+        for (int i = 0; i < citiesData.Length; i++) {
+          // Then, for each city we separate all the info we have about it
+          string[] city = cities[i].Split(',');
+          // And we manually populate a City object with that info
+          City cityObject = new City(city[0].Split(':')[1].Trim(charsToTrim));
+          cityObject.setLevel(Int32.Parse(city[1].Split(':')[1].Trim(charsToTrim)));
+          cityObject.setResources(new int[3] {
+            Int32.Parse(city[2].Split(':')[1].Trim(charsToTrim)),
+              Int32.Parse(city[3].Trim(charsToTrim)),
+              Int32.Parse(city[4].Trim(charsToTrim))
+          }, false);
+          cityObject.setOwner(city[5].Split(':')[1].Trim(charsToTrim), false);
+          cityObject.setCooldownEnd(DateTime.Parse(city[6].Split(new char[1] { ':' }, 2)[1].Trim(charsToTrim)), false);
+          cityObject.setLastCollected(new DateTime[] { lastCollectedData[i, 0], lastCollectedData[i, 1], lastCollectedData[i, 2] });
+          cityObject.sethpw();
+          // And then store the newly created city in an array containing all cities
+          citiesData[i] = cityObject;
+        }
+        // All this is then saved in the controller
+        controller.setMap(new Map(mapId, players, citiesData));
       } else {
         Debug.Log("Cities can't be retrieved for this map. Creating new ones.");
         CreateNewCitiesOnServer();
       }
     }, e => API.OnPlayFabError(e));
+  }
+  public static async void fetchCitiesFile(string url) {
+    UnityWebRequest www = UnityWebRequest.Get(url);
+    www.SendWebRequest();
+    int timeout = 10000;
+    while (!www.isDone && timeout > 0) {
+      if (www.isNetworkError || www.isHttpError) {
+        OnPlayFabError(null);
+        Debug.Log(www.error);
+        return;
+      }
+      await Task.Delay(100);
+      timeout = timeout - 100;
+    }
+    if (timeout > 0)cities = Encoding.UTF8.GetString(www.downloadHandler.data).Split(new [] { "}," }, StringSplitOptions.None);
+  }
+  public static async void fetchLastCollectedFile(string url) {
+    UnityWebRequest www = UnityWebRequest.Get(url);
+    www.SendWebRequest();
+    int timeout = 10000;
+    while (!www.isDone && timeout > 0) {
+      if (www.isNetworkError || www.isHttpError) {
+        OnPlayFabError(null);
+        Debug.Log(www.error);
+        return;
+      }
+      await Task.Delay(100);
+      timeout = timeout - 100;
+    }
+    if (timeout > 0)lastCollected = Encoding.UTF8.GetString(www.downloadHandler.data);
   }
 
   //*****************************************************************
