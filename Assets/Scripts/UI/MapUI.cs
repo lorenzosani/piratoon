@@ -163,6 +163,12 @@ public class MapUI : MonoBehaviour {
     // Assign the correct values to the different UI parts
     int[] production = city.getHourlyProduction();
     int[] resources = city.getResources();
+    for (int i = 0; i < 3; i++) {
+      if (resources[i] < 0) {
+        resources[i] = 0;
+        city.setResource(i, 0);
+      }
+    }
     cityName.text = city.getName();
     cityLevel.text = city.getLevel().ToString();
     cityWoodProduction.text = formatNumber(production[0]);
