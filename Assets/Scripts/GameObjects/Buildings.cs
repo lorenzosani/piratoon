@@ -326,17 +326,12 @@ public class Buildings : MonoBehaviour {
     }
   }
 
-  bool IsPointerOverUIObject() {
-    if (EventSystem.current.IsPointerOverGameObject())
-      return true;
-    if (EventSystem.current.IsPointerOverGameObject(0))
-      return true;
-    if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) {
-      if (EventSystem.current.currentSelectedGameObject) {
-        return true;
-      }
-    }
-    return false;
+  private bool IsPointerOverUIObject() {
+    PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+    eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+    List<RaycastResult> results = new List<RaycastResult>();
+    EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+    return results.Count > 0;
   }
 
   void playBuildingSound() {
