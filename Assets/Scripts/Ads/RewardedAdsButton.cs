@@ -17,7 +17,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
   ControllerScript controller;
 
   [Header("Reward")]
-  public int pearlsNumber = 0;
+  public int pearlsNumber = 3;
 
   void Start() {
     myButton = GetComponent<Button>();
@@ -33,6 +33,8 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
 
   // Implement a function for showing a rewarded video ad:
   void ShowRewardedVideo() {
+    Advertisement.RemoveListener(this);
+    Advertisement.AddListener(this);
     Advertisement.Show(mySurfacingId);
   }
 
@@ -58,6 +60,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
     } else if (showResult == ShowResult.Failed) {
       Debug.LogWarning("The ad did not finish due to an error.");
     }
+    Advertisement.RemoveListener(this);
   }
 
   public void OnUnityAdsDidError(string message) {
