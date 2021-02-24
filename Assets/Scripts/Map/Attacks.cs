@@ -505,7 +505,7 @@ public class Attacks : MonoBehaviour {
   //*****************************************************************
   // SET which ship is going to attack and start the navigation
   //*****************************************************************
-  public void spawnShip(int shipNumber) {
+  public async void spawnShip(int shipNumber) {
     Ship ship = controller.getUser().getVillage().getShip(shipNumber);
     Vector3 currentShipPosition = ship.getCurrentPosition();
     // Check if the ship is undergoing upgrading and can't navigate
@@ -513,11 +513,30 @@ public class Attacks : MonoBehaviour {
       ui.showPopupMessage(Language.Field["UPGRADING"]);
       return;
     }
+    // If the ship has arrived, not spawn it but show marker
+    Transform destination = getNavigationTarget(shipNumber);
+    // Here I check the actual distance between ship and destination, if smaller than 0.05 the ship is arrived
+    if (Mathf.Abs(destination.position.x - currentShipPosition.x) <= 0.05f && Mathf.Abs(destination.position.y - currentShipPosition.y) <= 0.05f) {
+      string latestDestination = ship.getCurrentJourney().getDestinationName();
+      addShipMarker(destination, shipNumber);
+      ship.finishJourney(destination.position);
+      destinationReached[shipNumber] = true;
+      //// TODO: Need to check for a case where two ships arrive almost simultaneously, 
+      //// as it stands the second one would overwrite the first
+      // Generate attack outcome after 1s, so the page loads properly in the meantime
+      await Task.Delay(2000);
+      if (latestDestination.Split('_')[0] == "hideout") {
+        if (latestDestination.Split('_')[2] != API.playFabId) {
+          generatePlunderOutcome();
+        }
+      } else if (latestDestination.Split('_')[0] == "city") {
+        int cityNo = Int32.Parse(latestDestination.Split('_')[1]);
+        ui.showAttackOptions(CityNames.getCity(cityNo));
+      }
+      return;
+    }
     // Create ShipJourney object and add it to the ship
     if (selectedTarget != null) {
-      if (getNavigationTarget(shipNumber).position == currentShipPosition) {
-        return;
-      }
       ShipJourney journey = new ShipJourney(
         currentShipPosition,
         getNavigationTarget(shipNumber).position,
