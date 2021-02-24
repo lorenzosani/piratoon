@@ -95,16 +95,8 @@ public static class API {
         TitleId = "E206C",
         Password = password
     }, result => {
-      // Once logged in, retrieve all the user's info
-      PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
-        StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
-        StoreUsername(r.AccountInfo.Username);
-        StoreRegistered(true);
-        OnLogin(result);
-        callback("SUCCESS");
-      }, e => {
-        OnPlayFabError(e);
-      });
+      OnLogin(result);
+      callback("SUCCESS");
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
@@ -130,16 +122,8 @@ public static class API {
         TitleId = "E206C",
         Password = password
     }, result => {
-      // Once logged in, retrieve all the user's info
-      PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
-        StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
-        StoreUsername(r.AccountInfo.Username);
-        StoreRegistered(true);
-        OnLogin(result);
-        callback("SUCCESS");
-      }, e => {
-        OnPlayFabError(e);
-      });
+      OnLogin(result);
+      callback("SUCCESS");
     }, error => {
       if (error.ErrorDetails != null) {
         List<string> message;
@@ -194,11 +178,18 @@ public static class API {
             village.setBuildingsFromList(buildings);
             spawner.populateVillage(result.Data["Buildings"].Value);
           }
+          PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), r => {
+            StorePlayerId(r.AccountInfo.CustomIdInfo.CustomId);
+            StoreUsername(r.AccountInfo.Username);
+            StoreRegistered(true);
+            UpdateBounty(controller.getUser().getBounty());
+          }, e => {
+            OnPlayFabError(e);
+          });
           // Show the village
           spawner.populateFloatingObjects();
           spawner.populateShips();
           controller.getUI().onLogin();
-          UpdateBounty(controller.getUser().getBounty());
           // Check if the user has been attacked while online
           if (user.getLatestAttacks().Count > 0) {
             controller.getUI().showAttacksSuffered(user.getLatestAttacks());

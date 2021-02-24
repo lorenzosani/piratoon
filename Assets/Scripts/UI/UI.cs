@@ -218,7 +218,7 @@ public class UI : MonoBehaviour {
   }
 
   public void setUsername() {
-    accountMenuUsername.text = API.GetUsername();
+    accountMenuUsername.text = controller.getUser().getUsername();
   }
 
   public void onLogin() {

@@ -462,7 +462,7 @@ public class Attacks : MonoBehaviour {
     eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
     List<RaycastResult> results = new List<RaycastResult>();
     EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-    return results.Count > 0;
+    return results.Count > 0 || EventSystem.current.currentSelectedGameObject != null;
   }
 
   //*****************************************************************

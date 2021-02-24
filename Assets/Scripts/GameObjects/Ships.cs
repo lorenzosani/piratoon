@@ -63,9 +63,8 @@ public class Ships : MonoBehaviour {
         JsonConvert.SerializeObject(ship),
         new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace }
       );
-      newShip.setCurrentPosition(new Vector3(1000, 1000, 1000));
     }
-    // Check if user can afford the building, if yes pay
+    // Check if user can afford the ship, if yes pay
     if (!canAfford(newShip)) {
       ui.showPopupMessage(Language.Field["NOT_RESOURCES"]);
       return;
@@ -110,7 +109,7 @@ public class Ships : MonoBehaviour {
     eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
     List<RaycastResult> results = new List<RaycastResult>();
     EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-    return results.Count > 0;
+    return results.Count > 0 || EventSystem.current.currentSelectedGameObject != null;
   }
 
   // Populate the variables for this script at launch
