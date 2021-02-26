@@ -109,9 +109,15 @@ public class BuildingsMenu : MonoBehaviour {
   }
 
   Sprite getBuildingImage(string name, int level) {
-    return Resources.Load<Sprite>(
-      "Images/Hideout/Buildings/" + name + "/" + (level > 3 ? 3 : level).ToString() + "_UI"
-    );
+    Sprite image = null;
+    level = level <= 0 ? 1 : level;
+    while (image == null) {
+      image = Resources.Load<Sprite>(
+        "Images/Hideout/Buildings/" + name + "/" + level.ToString() + "_UI"
+      );
+      level = level - 1;
+    }
+    return image;
   }
 
   void lockBuilding(Transform building, int level = -1) {

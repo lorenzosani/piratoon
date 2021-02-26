@@ -65,7 +65,12 @@ public class Building {
 
   public GameObject getPrefab() {
     GameObject buildingPrefab = (GameObject)Resources.Load("Prefabs/" + name, typeof(GameObject));
-    Sprite buildingImage = Resources.Load<Sprite>("Images/Hideout/Buildings/" + name + "/" + (level > 3 ? 3 : level).ToString());
+    Sprite buildingImage = null;
+    int buildingLevel = level <= 0 ? 1 : level;
+    while (buildingImage == null) {
+      buildingImage = Resources.Load<Sprite>("Images/Hideout/Buildings/" + name + "/" + buildingLevel.ToString());
+      buildingLevel = buildingLevel - 1;
+    }
     buildingPrefab.GetComponent<SpriteRenderer>().sprite = buildingImage;
     return buildingPrefab;
   }
