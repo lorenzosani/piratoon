@@ -24503,7 +24503,7 @@ GameObject:
   - component: {fileID: 1303680584}
   - component: {fileID: 1303680583}
   - component: {fileID: 1303680582}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: World Space UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}

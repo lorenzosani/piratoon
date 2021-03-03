@@ -563,10 +563,7 @@ public class Attacks : MonoBehaviour {
         false
       );
       timersSpawned[shipNumber].transform.position = new Vector3(timerPosition.x, timerPosition.y + 0.6f, 0.0f);
-      // Show timer on top of other ui and clouds
-      Canvas canvas = timersSpawned[shipNumber].AddComponent(typeof(Canvas))as Canvas;
-      canvas.overrideSorting = true;
-      canvas.sortingOrder = 101;
+      timersSpawned[shipNumber].layer = 5;
       // Add speed up function 
       Button speedUpButton = timersSpawned[shipNumber].transform.Find("SpeedUp").GetComponent<Button>();
       int timeLeft = (int)(paths[shipNumber].remainingDistance / paths[shipNumber].maxSpeed);
