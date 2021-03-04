@@ -130,3 +130,4 @@ HELLO = Ciao
 SOON = Presto disponibile
 UPGRADING = Stai potenziando questa nave al momento! Attendi che il potenziamento sia completo o usa un'altra nave.
 REWARD = Hai ottenuto {0} perle!
+BUILT = Hai costruito {0}!

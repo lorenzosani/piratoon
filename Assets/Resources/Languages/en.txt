@@ -130,3 +130,4 @@ HELLO = Hello
 SOON = Coming soon
 UPGRADING = This ship is currently being upgraded! Please wait until the upgrade is complete or use another ship.
 REWARD = You gained {0} pearls!
+BUILT = You finished building the {0}

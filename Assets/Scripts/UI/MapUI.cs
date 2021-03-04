@@ -321,9 +321,13 @@ public class MapUI : MonoBehaviour {
     int cost = attacksScript.getSpeedUpCost(shipNumber);
     // Set text on the popup
     speedUpPopup.transform.Find("Text").GetComponent<Text>().text = string.Format(Language.Field["PAY_JOURNEY"], cost.ToString());
+    // If cost lower than 4, show also the option of watching a video to complete
+    Transform buttons = speedUpPopup.transform.Find(cost <= 4 ? "PearlsAndVideo" : "OnlyPearls");
+    speedUpPopup.transform.Find(cost <= 4 ? "PearlsAndVideo" : "OnlyPearls").gameObject.SetActive(true);
+    speedUpPopup.transform.Find(cost > 4 ? "PearlsAndVideo" : "OnlyPearls").gameObject.SetActive(false);
     // Set confirmation callback function
-    Button confirmButton = speedUpPopup.transform.Find("Button").GetComponent<Button>();
-    speedUpPopup.transform.Find("Button").Find("Cost").GetComponent<Text>().text = cost.ToString();
+    Button confirmButton = buttons.Find("PearlsButton").GetComponent<Button>();
+    buttons.Find("PearlsButton").Find("Cost").GetComponent<Text>().text = cost.ToString();
     confirmButton.onClick.RemoveAllListeners();
     confirmButton.onClick.AddListener(() => {
       speedUpPopup.SetActive(false);
@@ -336,6 +340,12 @@ public class MapUI : MonoBehaviour {
       controller.getUser().setPearl(controller.getUser().getPearl() - cost);
       attacksScript.speedUpShip(shipNumber);
     });
+    // If video button is shown, add its functionality too
+    if (cost <= 4) {
+      ShipSpeedUpButton videoBtn = buttons.Find("VideoButton").GetComponent<ShipSpeedUpButton>();
+      videoBtn.setShipNumber(shipNumber);
+      videoBtn.setAttacksScript(attacksScript);
+    }
     // Show popup
     speedUpPopup.SetActive(true);
   }

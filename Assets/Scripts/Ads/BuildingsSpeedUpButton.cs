@@ -3,7 +3,7 @@ using UnityEngine.Advertisements;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
+public class BuildingsSpeedUpButton : MonoBehaviour, IUnityAdsListener {
 
 #if UNITY_IOS
   private string gameId = "4016688";
@@ -14,16 +14,14 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
 #endif
 
   Button myButton;
+  string buildingName = "";
   ControllerScript controller;
-
-  [Header("Reward")]
-  public int pearlsNumber = 3;
 
   void Start() {
     myButton = GetComponent<Button>();
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     // Set interactivity to be dependent on the Ad Unit or legacy Placement’s status:
-    gameObject.SetActive(Advertisement.IsReady(mySurfacingId));
+    myButton.interactable = Advertisement.IsReady(mySurfacingId);
     // Map the ShowRewardedVideo function to the button’s click listener:
     if (myButton)myButton.onClick.AddListener(ShowRewardedVideo);
     // Initialize the Ads listener and service:
@@ -41,7 +39,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
   public void OnUnityAdsReady(string surfacingId) {
     // If the ready Ad Unit or legacy Placement is rewarded, activate the button: 
     if (surfacingId == mySurfacingId) {
-      gameObject.SetActive(true);
+      myButton.interactable = true;
     }
   }
 
@@ -49,10 +47,11 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
     // Define conditional logic for each ad completion status:
     if (showResult == ShowResult.Finished) {
       // Reward the user for watching the ad to completion.
-      if (pearlsNumber > 0) {
-        controller.getUser().increasePearl(pearlsNumber);
-        controller.getUI().showPopupMessage(string.Format(Language.Field["REWARD"], pearlsNumber.ToString()));
-      }
+      Debug.Log(0);
+      GameObject.Find("GameController").GetComponent<Buildings>().buildWithVideo();
+      Debug.Log(1);
+      if (buildingName != "")controller.getUI().showPopupMessage(string.Format(Language.Field["BUILT"], buildingName));
+      Debug.Log(2);
     } else if (showResult == ShowResult.Skipped) {
       // Do not reward the user for skipping the ad.
       Debug.LogWarning("The ad did not finish.");
@@ -68,5 +67,9 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
 
   public void OnUnityAdsDidStart(string surfacingId) {
     // Optional actions to take when the end-users triggers an ad.
+  }
+
+  public void setBuildingName(string b) {
+    buildingName = b;
   }
 }
