@@ -41,28 +41,17 @@ public class Attacks : MonoBehaviour {
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
     mapController = GetComponent<MapController>();
     ui = mapController.getUI();
-    InvokeRepeating("checkIfDestinationReached", 0.5f, 0.5f);
+  }
 
+  public void populateShips() {
     // Populate ships on the map
     Ship[] ships = controller.getUser().getVillage().getShips();
     for (int i = 0; i < ships.Length; i++) {
       if (ships[i] != null) {
-        if (ships[i].getCurrentJourney() != null) {
-          spawnShip(i);
-        } else {
-          // Mark village/city where they're parked
-          Vector3 position = ships[i].getCurrentPosition();
-          Vector2 position2d = new Vector2(position.x, position.y);
-          RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
-          if (raycastHit) {
-            string hideoutName = raycastHit.collider.name;
-            if (hideoutName.Split('_')[0] == "hideout" || hideoutName.Split('_')[0] == "city") {
-              addShipMarker(GameObject.Find(hideoutName).transform, i);
-            }
-          }
-        }
+        spawnShip(i);
       }
     }
+    InvokeRepeating("checkIfDestinationReached", 0.5f, 0.5f);
   }
 
   //*****************************************************************
@@ -486,12 +475,47 @@ public class Attacks : MonoBehaviour {
   // GET the selected target position towards which a ship will navigate
   //*****************************************************************
   Transform getNavigationTarget(int i) {
+    Debug.Log(0);
+    Transform destination = null;
+    Ship ship = controller.getUser().getVillage().getShip(i);
     if (selectedTarget == null) {
-      Ship ship = controller.getUser().getVillage().getShip(i);
-      return GameObject.Find(ship.getCurrentJourney().getDestinationName()).transform;
+      Debug.Log(1);
+      if (ship.getCurrentJourney() != null) {
+        Debug.Log(2);
+        destination = GameObject.Find(ship.getCurrentJourney().getDestinationName()).transform;
+        Debug.Log(3);
+      } else {
+        Debug.Log(4);
+        // Mark village/city where they're parked
+        Vector3 position = ship.getCurrentPosition();
+        Vector2 position2d = new Vector2(position.x, position.y);
+        RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
+        if (raycastHit) {
+          Debug.Log(5);
+          string hideoutName = raycastHit.collider.name;
+          Debug.Log(hideoutName);
+          if (hideoutName.Split('_')[0] == "hideout" || hideoutName.Split('_')[0] == "city") {
+            Debug.Log(6);
+            destination = GameObject.Find(hideoutName).transform;
+          }
+        }
+      }
     } else {
-      return GameObject.Find(selectedTarget).transform;
+      Debug.Log(7);
+      destination = GameObject.Find(selectedTarget).transform;
     }
+    Debug.Log(8);
+    // If destination is a hideout, make sure you arrive from the correct direction
+    if (destination.gameObject.name.Split('_')[0] == "hideout") {
+      Debug.Log(9);
+      GameObject arrivalObj = new GameObject();
+      Debug.Log(10);
+      arrivalObj.transform.position = getNearestSeaPosition(destination.position, ship.getCurrentPosition());
+      Debug.Log(11);
+      destination = arrivalObj.transform;
+    }
+    Debug.Log(12);
+    return destination;
   }
 
   //*****************************************************************
@@ -517,7 +541,6 @@ public class Attacks : MonoBehaviour {
     Transform destination = getNavigationTarget(shipNumber);
     // Here I check the actual distance between ship and destination, if smaller than 0.05 the ship is arrived
     if (Mathf.Abs(destination.position.x - currentShipPosition.x) <= 0.05f && Mathf.Abs(destination.position.y - currentShipPosition.y) <= 0.05f) {
-      string latestDestination = ship.getCurrentJourney().getDestinationName();
       addShipMarker(destination, shipNumber);
       ship.finishJourney(destination.position);
       destinationReached[shipNumber] = true;
@@ -525,12 +548,12 @@ public class Attacks : MonoBehaviour {
       //// as it stands the second one would overwrite the first
       // Generate attack outcome after 1s, so the page loads properly in the meantime
       await Task.Delay(2000);
-      if (latestDestination.Split('_')[0] == "hideout") {
-        if (latestDestination.Split('_')[2] != API.playFabId) {
+      if (destination.gameObject.name.Split('_')[0] == "hideout") {
+        if (destination.gameObject.name.Split('_')[2] != API.playFabId) {
           generatePlunderOutcome();
         }
-      } else if (latestDestination.Split('_')[0] == "city") {
-        int cityNo = Int32.Parse(latestDestination.Split('_')[1]);
+      } else if (destination.gameObject.name.Split('_')[0] == "city") {
+        int cityNo = Int32.Parse(destination.gameObject.name.Split('_')[1]);
         ui.showAttackOptions(CityNames.getCity(cityNo));
       }
       return;

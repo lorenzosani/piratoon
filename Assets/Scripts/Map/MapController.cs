@@ -49,6 +49,7 @@ public class MapController : MonoBehaviour {
       await Task.Delay(500);
     }
     populateMap();
+    GetComponent<Attacks>().populateShips();
     moveCameraOverHideout(controller.getUser().getVillage().getPosition());
     clouds.startRemoval();
     ui.showLoadingScreen(false);
