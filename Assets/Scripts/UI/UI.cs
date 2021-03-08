@@ -7,6 +7,8 @@ public class UI : MonoBehaviour {
   [Header("General")]
   public GameObject darkBackground;
   public GameObject buildingsMenu;
+  public GameObject finishBuildingPopup;
+  public GameObject buildingInfo;
 
   [Header("Resources and Bounty")]
   public GameObject hud;
@@ -73,6 +75,7 @@ public class UI : MonoBehaviour {
   public GameObject shipyardMenu;
   public GameObject shipInfo;
   public Sprite[] shipSprites;
+  public GameObject finishShipPopup;
 
   [Header("Map error dialog")]
   public GameObject mapErrorMessage;
@@ -84,6 +87,16 @@ public class UI : MonoBehaviour {
   [Header("Building info popup")]
   public GameObject buildingInfoPopup;
   public Buildings buildingsScript;
+
+  [Header("Shop Menu")]
+  public GameObject shopMenu;
+  public Text shopMenuTitle;
+  public Text morePearls;
+  public Text watchVideo;
+  public Text moreResources;
+  public Text moreWood;
+  public Text moreStone;
+  public Text moreGold;
 
   ControllerScript controller;
   bool leaderboardLoaded = false;
@@ -119,6 +132,13 @@ public class UI : MonoBehaviour {
     absLeadBounty.text = Language.Field["BOUNTY"];
     mapErrorText.text = Language.Field["MAP_ERROR"];
     tryAgainText.text = Language.Field["TRY_AGAIN"];
+    shopMenuTitle.text = Language.Field["SHOP"];
+    morePearls.text = Language.Field["SHOP_PEARLS"];
+    watchVideo.text = Language.Field["WATCH"];
+    moreResources.text = Language.Field["SHOP_RESOURCES"];
+    moreWood.text = Language.Field["SHOP_WOOD"];
+    moreStone.text = Language.Field["SHOP_STONE"];
+    moreGold.text = Language.Field["SHOP_GOLD"];
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n" + Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 5.0f);
     setUsername();
@@ -138,7 +158,11 @@ public class UI : MonoBehaviour {
       shipyardMenu.activeSelf ||
       messagePopup.activeSelf ||
       mapErrorMessage.activeSelf ||
-      shipInfo.activeSelf
+      shipInfo.activeSelf ||
+      shopMenu.activeSelf ||
+      finishShipPopup.activeSelf ||
+      finishBuildingPopup.activeSelf ||
+      buildingInfo.activeSelf
     );
   }
 

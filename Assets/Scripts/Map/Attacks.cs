@@ -475,46 +475,33 @@ public class Attacks : MonoBehaviour {
   // GET the selected target position towards which a ship will navigate
   //*****************************************************************
   Transform getNavigationTarget(int i) {
-    Debug.Log(0);
     Transform destination = null;
     Ship ship = controller.getUser().getVillage().getShip(i);
     if (selectedTarget == null) {
-      Debug.Log(1);
       if (ship.getCurrentJourney() != null) {
-        Debug.Log(2);
         destination = GameObject.Find(ship.getCurrentJourney().getDestinationName()).transform;
-        Debug.Log(3);
       } else {
-        Debug.Log(4);
         // Mark village/city where they're parked
         Vector3 position = ship.getCurrentPosition();
         Vector2 position2d = new Vector2(position.x, position.y);
         RaycastHit2D raycastHit = Physics2D.Raycast(position2d, Vector2.zero);
         if (raycastHit) {
-          Debug.Log(5);
           string hideoutName = raycastHit.collider.name;
           Debug.Log(hideoutName);
           if (hideoutName.Split('_')[0] == "hideout" || hideoutName.Split('_')[0] == "city") {
-            Debug.Log(6);
             destination = GameObject.Find(hideoutName).transform;
           }
         }
       }
     } else {
-      Debug.Log(7);
       destination = GameObject.Find(selectedTarget).transform;
     }
-    Debug.Log(8);
     // If destination is a hideout, make sure you arrive from the correct direction
     if (destination.gameObject.name.Split('_')[0] == "hideout") {
-      Debug.Log(9);
       GameObject arrivalObj = new GameObject();
-      Debug.Log(10);
       arrivalObj.transform.position = getNearestSeaPosition(destination.position, ship.getCurrentPosition());
-      Debug.Log(11);
       destination = arrivalObj.transform;
     }
-    Debug.Log(12);
     return destination;
   }
 
