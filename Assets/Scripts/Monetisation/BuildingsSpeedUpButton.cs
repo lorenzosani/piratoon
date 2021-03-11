@@ -47,11 +47,8 @@ public class BuildingsSpeedUpButton : MonoBehaviour, IUnityAdsListener {
     // Define conditional logic for each ad completion status:
     if (showResult == ShowResult.Finished) {
       // Reward the user for watching the ad to completion.
-      Debug.Log(0);
       GameObject.Find("GameController").GetComponent<Buildings>().buildWithVideo();
-      Debug.Log(1);
       if (buildingName != "")controller.getUI().showPopupMessage(string.Format(Language.Field["BUILT"], buildingName));
-      Debug.Log(2);
     } else if (showResult == ShowResult.Skipped) {
       // Do not reward the user for skipping the ad.
       Debug.LogWarning("The ad did not finish.");

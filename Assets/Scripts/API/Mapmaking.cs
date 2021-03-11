@@ -21,8 +21,10 @@ public static class Mapmaking {
   };
 
   static ControllerScript controller;
-  public static void RegisterScripts(ControllerScript c) {
+  static Ships ships;
+  public static void RegisterScripts(ControllerScript c, Ships s) {
     controller = c;
+    ships = s;
   }
 
   //*****************************************************************
@@ -198,6 +200,14 @@ public static class Mapmaking {
   static void UpdateGameObjects(string mapId, int position) {
     controller.getUser().setMapId(mapId);
     controller.getUser().getVillage().setPosition(position);
+    // Create the initial ship for the user
+    if (controller.getUser().getVillage().getShip(0) == null) {
+      Ship ship = new Ship("My Ship", MapPositions.get(position), 0);
+      ship.increaseLevel();
+      ship.setBuilt(true);
+      controller.getUser().getVillage().setShip(ship, 0);
+      ships.populateShip(ship);
+    }
     API.GetMapData(mapId);
   }
 

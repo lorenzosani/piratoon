@@ -194,22 +194,17 @@ public class Buildings : MonoBehaviour {
   }
 
   public void finishBuilding(Building b) {
-    Debug.Log("00");
     loadingBar.SetActive(false);
     b.increaseLevel();
-    Debug.Log("11");
     // Add building's value to user's bounty
     controller.getUser().addBounty(b.getValue());
     // Spawn the building on the scene
     spawn(b);
-    Debug.Log("22");
     b.setBuilt(true);
     b.startFunctionality(controller);
-    Debug.Log("33");
     // Reset global variables
     currentlyBuilding = null;
     newBuilding = true;
-    Debug.Log("44");
   }
 
   public void showPearlsConfirmation() {

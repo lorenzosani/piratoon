@@ -45,11 +45,15 @@ public class Attacks : MonoBehaviour {
 
   public void populateShips() {
     // Populate ships on the map
-    Ship[] ships = controller.getUser().getVillage().getShips();
-    for (int i = 0; i < ships.Length; i++) {
-      if (ships[i] != null) {
-        spawnShip(i);
+    try {
+      Ship[] ships = controller.getUser().getVillage().getShips();
+      for (int i = 0; i < ships.Length; i++) {
+        if (ships[i] != null) {
+          spawnShip(i);
+        }
       }
+    } catch {
+      Debug.Log("ERROR SPAWNING SHIPS");
     }
     InvokeRepeating("checkIfDestinationReached", 0.5f, 0.5f);
   }

@@ -27,7 +27,7 @@ public class ControllerScript : MonoBehaviour {
 
     DontDestroyOnLoad(transform.gameObject);
     API.RegisterScripts(this, spawner);
-    Mapmaking.RegisterScripts(this);
+    Mapmaking.RegisterScripts(this, GetComponent<Ships>());
     login();
   }
 

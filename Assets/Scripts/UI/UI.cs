@@ -98,6 +98,11 @@ public class UI : MonoBehaviour {
   public Text moreStone;
   public Text moreGold;
 
+  [Header("Tutorial")]
+  public Text interruptPopupText;
+  public Text interruptYes;
+  public Text interruptNo;
+
   ControllerScript controller;
   bool leaderboardLoaded = false;
 
@@ -139,6 +144,9 @@ public class UI : MonoBehaviour {
     moreWood.text = Language.Field["SHOP_WOOD"];
     moreStone.text = Language.Field["SHOP_STONE"];
     moreGold.text = Language.Field["SHOP_GOLD"];
+    interruptPopupText.text = Language.Field["INTERRUPT"];
+    interruptYes.text = Language.Field["YES"].ToUpper();
+    interruptNo.text = Language.Field["NO"].ToUpper();
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n" + Language.Field["CONNECTION"];
     InvokeRepeating("updateAccountMenu", 0.0f, 5.0f);
     setUsername();

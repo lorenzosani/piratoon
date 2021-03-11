@@ -14,14 +14,17 @@ public class Tutorial : MonoBehaviour {
   public GameObject step6;
   public GameObject step7;
   public GameObject step8;
+  public GameObject step9;
 
   public void showTutorial() {
+    setTutorialCompleted(false);
     showStep1();
   }
 
-  public void hideTutorial() {
+  public void interruptTutorial() {
     tutorialObject.SetActive(false);
     mainButtons.SetActive(true);
+    setTutorialCompleted(true);
   }
 
   public void showStep1() {
@@ -108,6 +111,17 @@ public class Tutorial : MonoBehaviour {
     setActiveStep(8);
   }
 
+  public void showStep9() {
+    string step9Text =
+      Language.Field["WELL_DONE"] + ", " + GetComponent<ControllerScript>().getUser().getUsername() + "!\n\n" +
+      Language.Field["JUMP_ON"] + "\n\n" +
+      Language.Field["EXPLORE"];
+    Transform textObj = step9.transform.Find("Text");
+    textObj.GetComponent<Text>().text = step9Text;
+    mainButtons.SetActive(true);
+    setActiveStep(9);
+  }
+
   void setActiveStep(int n) {
     step1.SetActive(n == 1);
     step2.SetActive(n == 2);
@@ -117,5 +131,14 @@ public class Tutorial : MonoBehaviour {
     step6.SetActive(n == 6);
     step7.SetActive(n == 7);
     step8.SetActive(n == 8);
+    step9.SetActive(n == 9);
+  }
+
+  public void setTutorialCompleted(bool completed) {
+    PlayerPrefs.SetInt("TutorialCompleted", completed ? 1 : 0);
+  }
+
+  public bool getTutorialCompleted() {
+    return PlayerPrefs.GetInt("TutorialCompleted", 0) > 0;
   }
 }

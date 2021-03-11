@@ -160,10 +160,15 @@ public class Authentication : MonoBehaviour {
       registrationPage.SetActive(false);
       populateAccountInfo();
       onLoginPage.SetActive(true);
+      // Continue with tutorial if there's a tutorial ongoing
+      if (GetComponent<Tutorial>().getTutorialCompleted() == false) {
+        accountMenu.SetActive(false);
+        GetComponent<Tutorial>().showTutorial();
+        GetComponent<Tutorial>().showStep9();
+      }
       // Add user to a map
       Mapmaking.Stop(false);
       Mapmaking.Start();
-      return;
     } else {
       GameObject field = null;
       if (inputField == "Username")field = usernameField;

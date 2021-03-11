@@ -32,6 +32,10 @@ public class MapController : MonoBehaviour {
       }
     }
     showMap();
+    // If it's the first time the map is shown, show the tutorial
+    if (GameObject.Find("GameController").GetComponent<Tutorial>().getTutorialCompleted() == false) {
+      GetComponent<MapTutorial>().showTutorial();
+    }
   }
 
   //*****************************************************************
