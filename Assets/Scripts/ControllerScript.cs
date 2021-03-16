@@ -16,6 +16,7 @@ public class ControllerScript : MonoBehaviour {
   Tutorial tutorial;
 
   string email;
+  float volume = 0.1f;
   public bool rememberLoginDetails = true;
   List<PlayerLeaderboardEntry> leaderboard = null;
 
@@ -24,6 +25,8 @@ public class ControllerScript : MonoBehaviour {
     tutorial = GetComponent<Tutorial>();
     ui = GameObject.Find("Rendered UI").GetComponent<UI>();
     user = new User(Guid.NewGuid().ToString(), new Village(0));
+    setVolume(getSavedVolume());
+    InvokeRepeating("saveVolume", 5.0f, 5.0f);
 
     DontDestroyOnLoad(transform.gameObject);
     API.RegisterScripts(this, spawner);
@@ -109,10 +112,26 @@ public class ControllerScript : MonoBehaviour {
     return leaderboard;
   }
 
+  public void setVolume(float newVolume) {
+    volume = newVolume;
+    AudioSource[] sources = GameObject.FindObjectsOfType(typeof(AudioSource))as AudioSource[];
+    foreach (AudioSource source in sources) {
+      source.volume = source.gameObject.name == "Rendered UI" ? volume * 5 : volume;
+    }
+  }
+
   //*****************************************************************
   // HELPER methods
   //*****************************************************************
   bool isEmpty(string value) {
     return value == "" || value == " " || value == null;
+  }
+
+  public float getSavedVolume() {
+    return float.Parse(PlayerPrefs.GetString("Volume", "0.1"));
+  }
+
+  void saveVolume() {
+    PlayerPrefs.SetString("Volume", volume.ToString());
   }
 }

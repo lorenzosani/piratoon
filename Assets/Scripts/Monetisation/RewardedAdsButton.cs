@@ -25,7 +25,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
     // Map the ShowRewardedVideo function to the button’s click listener:
     if (myButton)myButton.onClick.AddListener(ShowRewardedVideo);
     // Initialize the Ads listener and service:
-    Advertisement.Initialize(gameId, true);
+    Advertisement.Initialize(gameId, false);
   }
 
   // Implement a function for showing a rewarded video ad:
@@ -57,10 +57,10 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
   }
 
   public void OnUnityAdsDidError(string message) {
-    // Log the error.
+    Debug.Log("ADS ERROR: " + message);
   }
 
   public void OnUnityAdsDidStart(string surfacingId) {
-    // Optional actions to take when the end-users triggers an ad.
+    Debug.Log("AD SHOWN, ID: " + surfacingId);
   }
 }

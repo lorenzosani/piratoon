@@ -53,6 +53,7 @@ public class UI : MonoBehaviour {
   public Text notLoggedLoginButton;
   public Text registrationRegisterButton;
   public Text loginFormLoginButton;
+  public Slider volumeSlider;
 
   [Header("Leaderboard menu")]
   public GameObject leaderboardMenu;
@@ -148,6 +149,7 @@ public class UI : MonoBehaviour {
     interruptYes.text = Language.Field["YES"].ToUpper();
     interruptNo.text = Language.Field["NO"].ToUpper();
     connectionError.GetComponentInChildren<Text>().text = "Oops!\n" + Language.Field["CONNECTION"];
+    volumeSlider.value = controller.getSavedVolume();
     InvokeRepeating("updateAccountMenu", 0.0f, 5.0f);
     setUsername();
   }
@@ -427,5 +429,9 @@ public class UI : MonoBehaviour {
 
   public void showBuildingDescription(string buildingName) {
     showPopupMessage(Language.Field[buildingName.ToUpper() + "_DESC"]);
+  }
+
+  public void onVolumeChange() {
+    controller.setVolume(volumeSlider.value);
   }
 }
