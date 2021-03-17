@@ -21,6 +21,12 @@ public class Tutorial : MonoBehaviour {
     showStep1();
   }
 
+  public void reShowTutorial() {
+    setTutorialCompleted(false);
+    showStep1();
+    showStep7();
+  }
+
   public void interruptTutorial() {
     tutorialObject.SetActive(false);
     mainButtons.SetActive(true);

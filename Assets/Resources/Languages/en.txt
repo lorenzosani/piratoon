@@ -159,3 +159,7 @@ HIDEOUTS_DESC = These are the coves of other real pirates! You can PLUNDER them 
 OKAY = Okay
 TAP_CITY = Try to plunder the closest city! Tap on it on the map, to do so.
 LETS_GO = Let's go
+SETTINGS = Settings
+VOLUME = Volume
+LANGUAGE = Language
+SHOW_TUT = Show Tutorial

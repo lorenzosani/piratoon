@@ -54,6 +54,11 @@ public class UI : MonoBehaviour {
   public Text registrationRegisterButton;
   public Text loginFormLoginButton;
   public Slider volumeSlider;
+  public Text settingsTitle;
+  public Text volumeText;
+  public Text languageText;
+  public Text showTutorial;
+  public Text showBtnText;
 
   [Header("Leaderboard menu")]
   public GameObject leaderboardMenu;
@@ -120,6 +125,11 @@ public class UI : MonoBehaviour {
     levelText.text = Language.Field["LEVEL"] + ":";
     bountyText.text = Language.Field["BOUNTY"] + ":";
     storageText.text = Language.Field["STORAGE"] + ":";
+    settingsTitle.text = Language.Field["SETTINGS"];
+    volumeText.text = Language.Field["VOLUME"];
+    languageText.text = Language.Field["LANGUAGE"];
+    showTutorial.text = Language.Field["SHOW_TUT"];
+    showBtnText.text = Language.Field["SHOW"];
     passwordRecoveryButton.text = Language.Field["FORGOT_PASSWORD"];
     passwordRecoveryText.text = Language.Field["RECOVER_PASSWORD"];
     sendEmailButton.text = Language.Field["SEND"].ToUpper();

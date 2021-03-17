@@ -159,3 +159,7 @@ HIDEOUTS_DESC = Questi sono i covi di altri pirati in carne ed ossa! Puoi SACCHE
 OKAY = Okay
 TAP_CITY = Proviamo a saccheggiare la città più vicina facendo click su di essa!
 LETS_GO = Vai
+SETTINGS = Impostazioni
+VOLUME = Volume
+LANGUAGE = Lingua
+SHOW_TUT = Apri il Tutorial

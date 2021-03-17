@@ -21,7 +21,7 @@ class Language {
     /// <summary>
     /// Load language files from resources
     /// </summary>
-    private static void LoadLanguage() {
+    public static void LoadLanguage() {
         if (Field == null)
             Field = new Dictionary<string, string>();
 
@@ -53,7 +53,8 @@ class Language {
     /// </summary>
     /// <returns></returns>
     public static string GetLanguage() {
-        return Get2LetterISOCodeFromSystemLanguage().ToLower();
+        string savedLang = PlayerPrefs.GetString("Language", null);
+        return savedLang ?? Get2LetterISOCodeFromSystemLanguage().ToLower();
     }
 
     /// <summary>

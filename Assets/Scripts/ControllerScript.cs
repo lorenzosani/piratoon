@@ -81,6 +81,20 @@ public class ControllerScript : MonoBehaviour {
     Application.OpenURL(url);
   }
 
+  public void setVolume(float newVolume) {
+    volume = newVolume;
+    AudioSource[] sources = GameObject.FindObjectsOfType(typeof(AudioSource))as AudioSource[];
+    foreach (AudioSource source in sources) {
+      source.volume = source.gameObject.name == "Rendered UI" ? volume * 5 : volume;
+    }
+  }
+
+  public void setLanguage(string lang) {
+    PlayerPrefs.SetString("Language", lang);
+    Language.LoadLanguage();
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+  }
+
   //*****************************************************************
   // GETTERS and SETTERS methods
   //*****************************************************************
@@ -110,14 +124,6 @@ public class ControllerScript : MonoBehaviour {
 
   public List<PlayerLeaderboardEntry> getLeaderboard() {
     return leaderboard;
-  }
-
-  public void setVolume(float newVolume) {
-    volume = newVolume;
-    AudioSource[] sources = GameObject.FindObjectsOfType(typeof(AudioSource))as AudioSource[];
-    foreach (AudioSource source in sources) {
-      source.volume = source.gameObject.name == "Rendered UI" ? volume * 5 : volume;
-    }
   }
 
   //*****************************************************************
