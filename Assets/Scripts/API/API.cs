@@ -439,7 +439,6 @@ public static class API {
         fetchCitiesFile(r.Metadata["citiesData"].DownloadUrl);
         // Get resources' last collected data
         fetchLastCollectedFile(r.Metadata["lastCollectedData"].DownloadUrl);
-        Debug.Log(2);
         // Check if both datasets are retrieved, if not wait.
         while (cities == null || lastCollected == null) {
           await Task.Delay(100);

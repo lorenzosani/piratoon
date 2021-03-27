@@ -22,12 +22,11 @@ public class UI : MonoBehaviour {
   public GameObject loadingSpinner;
   public GameObject loadingButtons;
   public GameObject connectionError;
+  public GameObject mapButton;
+  public GameObject tutorialMapButton;
 
   [Header("Buttons")]
   public GameObject buttons;
-  public Text buildingsButton;
-  public Text mapButton;
-  public Text shipsButton;
   public GameObject leaderboardButton;
 
   [Header("Message Popup")]
@@ -117,9 +116,6 @@ public class UI : MonoBehaviour {
 
     showLoadingScreen();
     // Populate all texts in the device language
-    buildingsButton.text = Language.Field["BUILDINGS"];
-    mapButton.text = Language.Field["MAP"];
-    shipsButton.text = Language.Field["SHIPS"];
     accountMenuTitle.text = Language.Field["ACCOUNT"];
     notRegisteredText.text = Language.Field["NOT_REGISTERED"];
     levelText.text = Language.Field["LEVEL"] + ":";

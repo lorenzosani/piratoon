@@ -274,10 +274,10 @@ public class Buildings : MonoBehaviour {
         newBuilding = false;
       }
     }
-    if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0) {
+    if ((b.getCompletionTime() - System.DateTime.UtcNow).TotalSeconds > 0 && !b.isBuilt()) {
       if (!newBuilding)spawn(b);
       startConstruction(b);
-    } else if (b.isBuilt() == false) {
+    } else if (!b.isBuilt()) {
       finishBuilding(b);
     } else {
       spawn(b);

@@ -103,6 +103,7 @@ public class Building {
   }
 
   public void setCompletionTime(DateTime t) {
+    Debug.Log("New completion time");
     completionTime = t;
   }
 

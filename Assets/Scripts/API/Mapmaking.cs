@@ -9,6 +9,7 @@ using PlayFab.DataModels;
 using PlayFab.GroupsModels;
 using PlayFab.ServerModels;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class Mapmaking {
   static bool stopped = false;
@@ -33,6 +34,9 @@ public static class Mapmaking {
   public static void Start() {
     Debug.Log("********START ADD TO MAP***********"); // TO BE REMOVED
 
+    // Disable map button and tutorial button while mapmaking
+    controller.getUI().mapButton.GetComponent<Button>().interactable = false;
+    controller.getUI().tutorialMapButton.GetComponent<Button>().interactable = false;
     PlayFabServerAPI.GetTitleData(
       new GetTitleDataRequest {
         Keys = serverData
@@ -209,6 +213,9 @@ public static class Mapmaking {
       ships.populateShip(ship);
     }
     API.GetMapData(mapId);
+    // Set map button and tutorial button clickable
+    controller.getUI().mapButton.GetComponent<Button>().interactable = true;
+    controller.getUI().tutorialMapButton.GetComponent<Button>().interactable = true;
   }
 
   public static void Stop(bool val = true) {
