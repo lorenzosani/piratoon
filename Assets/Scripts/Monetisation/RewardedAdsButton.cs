@@ -22,6 +22,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
   void Start() {
     myButton = GetComponent<Button>();
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
+    myButton.interactable = Advertisement.IsReady(mySurfacingId);
     // Map the ShowRewardedVideo function to the button’s click listener:
     if (myButton)myButton.onClick.AddListener(ShowRewardedVideo);
     // Initialize the Ads listener and service:
@@ -54,6 +55,9 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
 
   public void OnUnityAdsReady(string surfacingId) {
     // If the ready Ad Unit or legacy Placement is rewarded, activate the button: 
+    if (surfacingId == mySurfacingId) {
+      myButton.interactable = true;
+    }
   }
 
   public void OnUnityAdsDidError(string message) {

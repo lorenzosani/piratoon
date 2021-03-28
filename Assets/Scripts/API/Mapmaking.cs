@@ -100,7 +100,7 @@ public static class Mapmaking {
               '}'
             })
           );
-          if (Position == -1 || Position > 33) {
+          if (Position == -1 || Position > MapPositions.get().Length) {
             Debug.Log("Position unavailable, creating new map");
             CreateNewMap();
           } else {
@@ -142,7 +142,7 @@ public static class Mapmaking {
               '}'
             })
           );
-          if (Position == -1 || Position > 33) {
+          if (Position == -1 || Position > MapPositions.get().Length) {
             Debug.Log("Position unavailable, creating new map");
             CreateNewMap();
           } else {
