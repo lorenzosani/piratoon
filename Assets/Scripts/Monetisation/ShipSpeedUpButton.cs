@@ -25,6 +25,12 @@ public class ShipSpeedUpButton : MonoBehaviour, IUnityAdsListener {
     if (myButton)myButton.onClick.AddListener(ShowRewardedVideo);
     // Initialize the Ads listener and service:
     Advertisement.Initialize(gameId, false);
+    myButton.interactable = Advertisement.IsReady(mySurfacingId);
+    InvokeRepeating("activateButton", 0.5f, 0.5f);
+  }
+
+  public void activateButton() {
+    myButton.interactable = Advertisement.IsReady(mySurfacingId);
   }
 
   // Implement a function for showing a rewarded video ad:

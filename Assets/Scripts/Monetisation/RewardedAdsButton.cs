@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
@@ -22,17 +23,22 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsListener {
   void Start() {
     myButton = GetComponent<Button>();
     controller = GameObject.Find("GameController").GetComponent<ControllerScript>();
-    myButton.interactable = Advertisement.IsReady(mySurfacingId);
     // Map the ShowRewardedVideo function to the button’s click listener:
     if (myButton)myButton.onClick.AddListener(ShowRewardedVideo);
     // Initialize the Ads listener and service:
+    Advertisement.AddListener(this);
     Advertisement.Initialize(gameId, false);
+    myButton.interactable = Advertisement.IsReady(mySurfacingId);
+    InvokeRepeating("activateButton", 0.5f, 0.5f);
+  }
+
+  public void activateButton() {
+    myButton.interactable = Advertisement.IsReady(mySurfacingId);
   }
 
   // Implement a function for showing a rewarded video ad:
   void ShowRewardedVideo() {
     Advertisement.RemoveListener(this);
-    Advertisement.AddListener(this);
     Advertisement.Show(mySurfacingId);
   }
 

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UserResources : MonoBehaviour {
   ControllerScript controller;
@@ -61,7 +63,7 @@ public class UserResources : MonoBehaviour {
     shownTooltips[resourceCode] = true;
   }
 
-  public void collectResources(int resourceCode) {
+  public async void collectResources(int resourceCode) {
     Building building = controller.getUser().getVillage().getBuildingInfo(productionBuildings[resourceCode]);
     GameObject tooltip = GameObject.Find(tooltipNames[resourceCode]);
     int storageSpaceLeft = controller.getUser().getStorageSpaceLeft()[resourceCode];
@@ -75,9 +77,17 @@ public class UserResources : MonoBehaviour {
       );
       return;
     }
-    controller.getUser().increaseResource(resourceCode, newResources);
+    tooltip.transform.Find("Particle System").GetComponent<AnimatedResources>().Animate(newResources);
     building.resetLocalStorage();
+    // Make tooltip transparent
+    tooltip.GetComponent<Image>().color = Color.clear;
+    tooltip.transform.Find("Image").GetComponent<Image>().color = Color.clear;
+    await Task.Delay(1000);
+    controller.getUser().increaseResource(resourceCode, newResources);
+    // Show tooltip again
     tooltip.SetActive(false);
+    tooltip.GetComponent<Image>().color = Color.white;
+    tooltip.transform.Find("Image").GetComponent<Image>().color = Color.white;
     shownTooltips[resourceCode] = false;
   }
 }
