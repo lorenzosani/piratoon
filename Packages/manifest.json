@@ -3,16 +3,12 @@
     {
       "name": "Packages from jillejr",
       "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity/",
-      "scopes": [
-        "jillejr"
-      ]
+      "scopes": ["jillejr"]
     },
     {
       "name": "npmjs",
       "url": "https://registry.npmjs.org/",
-      "scopes": [
-        "com.unity.uiextensions"
-      ]
+      "scopes": ["com.unity.uiextensions"]
     }
   ],
   "dependencies": {
