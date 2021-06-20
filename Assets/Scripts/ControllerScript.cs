@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using KWCore;
 using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -52,6 +53,8 @@ public class ControllerScript : MonoBehaviour {
     API.StoreRegistered(false);
     API.StorePlayerId(user.getId());
     API.NewPlayerLogin();
+    // Tell Kwalee the game is started
+    KWCore.Umbrella.GameCore.ProgressManager.StartStage();
     // Show the tutorial the first time the user logs in
     tutorial.showTutorial();
   }
