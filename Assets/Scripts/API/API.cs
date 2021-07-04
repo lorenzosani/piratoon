@@ -508,7 +508,7 @@ public static class API {
     www.SendWebRequest();
     int timeout = 10000;
     while (!www.isDone && timeout > 0) {
-      if (www.isNetworkError || www.isHttpError) {
+      if (www.isNetworkError || www.result == UnityWebRequest.Result.ProtocolError) {
         OnPlayFabError(null);
         Debug.Log(www.error);
         return;
@@ -623,8 +623,7 @@ public static class API {
   // ERROR handlers: these are called when something goes wrong
   //*****************************************************************
   public static void OnPlayFabError(PlayFabError error, bool login = false) {
-    Debug.LogWarning("Something went wrong with your API call.");
-    Debug.LogError(error.GenerateErrorReport());
+    Debug.LogWarning("Something went wrong with your API call. " + error.GenerateErrorReport());
     if (!login)controller.getUI().showConnectionError(true);
     // Retry to connect
     if (login) {

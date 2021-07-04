@@ -54,7 +54,7 @@ public class ControllerScript : MonoBehaviour {
     API.StorePlayerId(user.getId());
     API.NewPlayerLogin();
     // Tell Kwalee the game is started
-    KWCore.Umbrella.GameCore.ProgressManager.StartStage();
+    //KWCore.Umbrella.GameCore.ProgressManager.StartStage();
     // Show the tutorial the first time the user logs in
     tutorial.showTutorial();
   }

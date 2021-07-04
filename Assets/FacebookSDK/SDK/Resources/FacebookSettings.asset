@@ -18,7 +18,7 @@ MonoBehaviour:
   appIds:
   - 839660326669602
   appLabels:
-  - Piratoon
+  - App Name
   cookie: 1
   logging: 1
   status: 1
